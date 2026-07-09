@@ -13,10 +13,10 @@ Pizza Tracker
 | Name | Studiengang | Rolle | Git-Handle (optional) |
 |---|---|---|---|
 | Ramon Fernandez-Tascon | WI B.Sc. | Projektleiter:in | 
-| Ugur Koekser | WI B.Sc. | Software Architect |  
-| Mrtasa Shams| WI B.Sc. | Implementation Lead | … |
-| Mahin Hossain| WI B.Sc. | DevOps/Build Lead |
-| Burak Gül | WI B.Sc. | QA/Test Lead |
+| Ugur Koekser | WI B.Sc. | Backend - Entwickler |  
+| Mrtasa Shams| WI B.Sc. | Frontend - Entwickler / DevOps | … |
+| Mahin Hossain| WI B.Sc. | Frontend - Entwickler |
+| Burak Gül | WI B.Sc. | Backend - Entwickler |
 
 > **Spalte „Git-Handle" (optional):** Nur ausfüllen, wenn die Git-Commit-Identität nicht auf den Klarnamen gesetzt ist und Commits unter einem Plattform-Username (GitHub/GitLab) laufen. Damit bleibt die Zuordnung Commit → Person nachvollziehbar. Details und Alternativen: [`tutorials/git-identity.md`](tutorials/git-identity.md).
 
