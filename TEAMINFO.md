@@ -22,15 +22,14 @@ Pizza Tracker
 
 > **Datenschutz-Hinweis:** Im öffentlichen Repository erscheinen hier ausschließlich Name, Studiengang, Rolle und (optional) der ohnehin öffentliche Git-Plattform-Handle. **Keine** Matrikel-Nummern, **keine** privaten Telefonnummern, **keine** individuellen E-Mail-Adressen. Die **vollständige Mitgliederliste** mit Matrikel-Nummern und THM-E-Mails wird durch die/den Projektleiter:in **per Mail** an den Betreuer übermittelt — spätestens zu **M0+**, bei Änderungen aktualisiert spätestens zur **M3**-Abgabe.
 
-**Rollen-Empfehlung (frei änderbar):** Projektleiter:in, Software Architect, Spec/Requirements Lead, Implementation Lead, QA/Test Lead, DevOps/Build Lead.
 
 ## Technologien (voraussichtlich)
 
-- **Sprache(n):** z.B. Java 21, TypeScript 5
-- **Frameworks:** z.B. Spring Boot, React, Vue
-- **Persistenz:** z.B. PostgreSQL, SQLite
-- **Build/Tooling:** z.B. Maven, Gradle, Vite
-- **Sonstiges:** z.B. Docker, Auth-Provider, externe APIs
+- **Sprache(n):** PHP 8, JavaScript (2022)
+- **Frameworks:** Bootstrap 5.3
+- **Persistenz:** MySQL / MariaDB 10.4
+- **Build/Tooling:** kein Build Tool (Vanilla JS / PHP ohne Framework)
+- **Sonstiges:** Git, Github, XAMPP / MAMP für lokale Entwicklung 
 
 > Diese Liste ist eine Momentaufnahme — Änderungen im Projektverlauf sind erlaubt und in der Architekturbeschreibung (M2) endgültig festzulegen.
 
@@ -41,6 +40,6 @@ Pizza Tracker
 
 ## Eingesetzte KI-Werkzeuge (vorläufige Planung)
 
-- z.B. GitHub Copilot für Code-Vervollständigung
-- z.B. Claude Code / ChatGPT für Refactoring und Doku-Entwürfe
-- …
+- Claude (claude.ai) für Code-Generierung, Architekturentscheidungen und Dokumentation
+- GitHUb Copilot für Code-Vervollständigung
+  
