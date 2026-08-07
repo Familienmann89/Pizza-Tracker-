@@ -1,39 +1,58 @@
 # S3 — Inbetriebnahme
 
-Die folgenden Schritte beschreiben die lokale Einrichtung mit XAMPP. Eine ausführlichere Anleitung kann zusätzlich im Hauptordner des vollständigen Projekts abgelegt werden.
+## Ziel
+
+Dieser Abschnitt richtet sich an die IT-Abteilung bzw. die für den Betrieb verantwortlichen Personen. Er beschreibt, welche Voraussetzungen erfüllt sein müssen, damit der Pizza Tracker vollständig genutzt werden kann.
 
 ## Voraussetzungen
 
-| Software | Version | Download |
-|---|---|---|
-| PHP | 8.x | über XAMPP oder MAMP |
-| MySQL / MariaDB | 10.4+ | über XAMPP oder MAMP |
-| Webbrowser | aktuell | Chrome, Firefox, Safari |
+Für die Inbetriebnahme müssen folgende Bestandteile bereitgestellt werden:
 
-## Kurzübersicht (XAMPP)
+- die Anwendung des Pizza Trackers
+- eine geeignete Betriebsumgebung
+- eine Datenbank zur Speicherung der benötigten Informationen
+- ein aktueller Webbrowser
+- die erforderlichen Ausgangs- und Testdaten
 
-```
-1. XAMPP installieren → Apache + MySQL starten
-2. Projektordner nach C:\xampp\htdocs\pizza-tracker\ kopieren
-3. phpMyAdmin öffnen und die Datenbank `pizza_tracker` anlegen
-4. Die SQL-Datei mit dem Datenbankschema importieren und die Tabellen anlegen
-5. Falls vorhanden, die Datei mit Beispieldaten und Gutscheincodes importieren
-6. Im Browser `http://localhost/pizza-tracker/startseite.html` öffnen
-```
+## Bereitzustellende Daten
 
-## Umgebungen
+Vor der Nutzung müssen die für den Pizza Tracker benötigten Daten vorhanden sein. Dazu gehören insbesondere:
 
-| Umgebung | Beschreibung |
-|---|---|
-| Lokal (XAMPP) | Standardumgebung für Entwicklung und Bewertung |
-| Lokal (MAMP) | Alternative für macOS (Port 8888) |
-| Produktion | Nicht vorgesehen im Rahmen dieses Projekts |
+- Zutaten
+- Preise
+- Kalorienwerte
+- Gutscheincodes
+- die zu den Gutscheincodes gehörenden Rabatte
 
-## Test-Gutscheincodes
+Die Gutscheincodes müssen so hinterlegt sein, dass die Anwendung prüfen kann, ob ein eingegebener Gutschein gültig ist und welcher Rabatt angewendet werden soll.
+
+## Inbetriebnahme
+
+Die IT-Abteilung stellt sicher, dass:
+
+1. die Anwendung bereitgestellt ist,
+2. die benötigte Datenbasis vorhanden ist,
+3. die vorgesehenen Gutscheincodes und Rabatte hinterlegt sind,
+4. die Anwendung auf die benötigten Daten zugreifen kann,
+5. die wichtigsten Funktionen erfolgreich geprüft wurden.
+
+Zu den zu prüfenden Funktionen gehören insbesondere:
+
+- Registrierung und Anmeldung
+- Zusammenstellung einer Pizza
+- Berechnung von Preis und Kalorien
+- Prüfung und Anwendung von Gutscheincodes
+- Speicherung und Verwaltung eigener Pizza-Konfigurationen
+
+## Ergebnis
+
+Nach erfolgreicher Inbetriebnahme steht der Pizza Tracker den Benutzern vollständig zur Verfügung und die vorgesehenen Funktionen können ohne weitere Einrichtung genutzt werden.
+
+## Vorhandene Gutscheincodes
 
 | Code | Rabatt |
 |---|---|
-| `PIZZA10` | 10 % |
-| `SPARE20` | 20 % |
-| `WELCOME` | 15 % |
-| `STUDENT5` | 5 % |
+| PIZZA10 | 10 % |
+| SPARE20 | 20 % |
+| WELCOME | 15 % |
+| STUDENT5 | 5 % |
