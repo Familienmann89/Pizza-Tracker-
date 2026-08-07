@@ -1,13 +1,12 @@
 # N1 — Nichtfunktionale Anforderungen
 
-| ID | Kategorie | Anforderung |
+| ID    | Kategorie      | Anforderung |
 |---|---|---|
-| NFA01 | Performance | Seiten laden in unter 3 Sekunden bei lokaler Ausführung |
-| NFA02 | Sicherheit | Passwörter werden mit `password_hash()` und `PASSWORD_DEFAULT` gehasht und niemals im Klartext gespeichert |
-| NFA03 | Sicherheit | Alle Datenbankabfragen verwenden PDO Prepared Statements. Dadurch wird das Risiko von SQL-Injections deutlich reduziert |
-| NFA04 | Sicherheit | E-Mail-Adressen werden serverseitig mit `filter_var()` geprüft. Bei der HTML-Ausgabe werden Nutzereingaben mit `htmlspecialchars()` maskiert |
-| NFA05 | Sicherheit | API-Endpunkte, die eine Anmeldung erfordern, prüfen die Session über `requireLogin()` vor jeder Operation |
-| NFA06 | Usability | Die Oberfläche ist responsiv (Bootstrap 5.3) und auf Mobilgeräten vollständig bedienbar |
-| NFA07 | Wartbarkeit | PHP-Logik ist in separate API-Endpunkte aufgeteilt — keine Geschäftslogik in den HTML-Dateien |
-| NFA08 | Kompatibilität | Unterstützte Browser: Chrome, Firefox, Safari (aktuelle Versionen) |
-| NFA09 | Verfügbarkeit | Das System läuft lokal über XAMPP oder MAMP. Für einen Offline-Betrieb können Bootstrap und die Icons lokal eingebunden werden |
+| NFA01 | Performance    | Seiten stehen dem Nutzer ohne spürbare Verzögerung zur Verfügung |
+| NFA02 | Sicherheit     | Passwörter werden sicher gespeichert und sind nicht im Klartext lesbar |
+| NFA03 | Sicherheit     | Die Anwendung ist gegen das Einschleusen schädlicher Eingaben geschützt |
+| NFA04 | Sicherheit     | Bei der Registrierung wird geprüft, ob die eingegebene E-Mail-Adresse ein gültiges Format hat. Ungültige Adressen werden abgelehnt |
+| NFA05 | Sicherheit     | Funktionen, die eine Anmeldung erfordern, sind für nicht angemeldete Nutzer nicht zugänglich |
+| NFA06 | Usability      | Die Oberfläche passt sich an verschiedene Bildschirmgrößen an und ist sowohl auf Desktop als auch auf Mobilgeräten bedienbar |
+| NFA07 | Kompatibilität | Die Anwendung funktioniert in aktuellen Versionen gängiger Browser |
+| NFA08 | Verfügbarkeit  | Die Anwendung ist für den lokalen Betrieb ausgelegt |
