@@ -1,22 +1,21 @@
 # E2 — Glossar
 
-| Begriff | Definition |
-|---|---|
-| **Konfiguration** | Gesamte Zusammenstellung einer Pizza: Größe, Teig, Sauce, Käse, Beläge, optionaler Gutscheincode und berechneter Preis |
-| **Gutscheincode** | Code aus Buchstaben und Zahlen (z. B. `PIZZA10`), der beim Einlösen einen prozentualen Preisnachlass gewährt |
-| **Belag** | Wählbare Zutat auf der Pizza (z. B. Salami, Champignons, Rucola) |
-| **Teigart** | Grundlage der Pizza: Normal, Dünn & Knusprig, Dick & Fluffig, Vollkorn, Käserand |
-| **Sauce** | Basisschicht unter dem Käse: Tomate, Pesto, Knoblauch-Öl, Crème fraîche, BBQ |
-| **kcal** | Kilokalorie — Maßeinheit für den Energiegehalt einer Zutat. Die App summiert alle gewählten Zutaten |
-| **Session** | Anmeldestatus eines Nutzers, der serverseitig in PHP `$_SESSION` gespeichert wird |
-| **PDO** | PHP Data Objects — PHP-Schnittstelle für den Zugriff auf die Datenbank; Prepared Statements verringern das Risiko von SQL-Injections |
-| **bcrypt** | Verfahren zum sicheren Hashen von Passwörtern (`password_hash()` in PHP) |
-| **Prepared Statement** | Parametrisierte SQL-Abfrage, bei der Nutzereingaben getrennt vom eigentlichen SQL-Befehl verarbeitet werden. Dadurch wird das Risiko von SQL-Injections verringert |
-| **Bootstrap** | CSS/JS-Framework (v5.3) für responsives, mobiloptimiertes Webdesign |
-| **JSON** | JavaScript Object Notation — Datenformat für die Kommunikation zwischen Frontend und Backend sowie für Listenfelder in der Datenbank |
-| **Vorlage** | Vordefinierte Pizza-Konfiguration (Margherita, Salami, Hawaii) als Ausgangspunkt für eigene Anpassungen |
-| **Responsives Design** | Anpassung der Darstellung an Desktop, Tablet und Mobilgerät |
-| **REST-API** | Architekturstil für HTTP-basierte Kommunikation zwischen Frontend und Backend über definierte Endpunkte |
-| **Gast** | Nutzer ohne Anmeldung. Gäste können Pizzen konfigurieren, aber keine Zusammenstellungen speichern |
-| **XAMPP** | Lokales Webserver-Paket (Apache + MySQL + PHP) für die Entwicklungsumgebung |
-| **MAMP** | Alternatives lokales Webserver-Paket für macOS |
+| Begriff | Definition | Verweis auf Datentyp |
+| --- | --- | --- |
+| **bcrypt** | Verfahren zum sicheren Hashen von Passwörtern. | – |
+| **Belag** | Wählbare Zutat auf einer Pizza, beispielsweise Salami, Champignons oder Rucola. | siehe D2: `JSON` |
+| **Bootstrap** | Framework zur Gestaltung einer responsiven Benutzeroberfläche. | – |
+| **Gast** | Nutzer ohne Anmeldung. Gäste können Pizzen konfigurieren, aber keine persönlichen Konfigurationen speichern. | – |
+| **Gutscheincode** | Code, durch den bei Gültigkeit ein prozentualer Preisnachlass angewendet wird. | siehe D2: `VARCHAR(n)` |
+| **JSON** | Strukturiertes Datenformat zur Speicherung mehrerer Werte, beispielsweise ausgewählter Beläge. | siehe D2: `JSON` |
+| **kcal** | Kilokalorie; Maßeinheit für den Energiegehalt einer Pizza beziehungsweise ihrer Zutaten. | siehe D2: `INT` |
+| **Konfiguration** | Gesamte Zusammenstellung einer Pizza aus Größe, Teig, Sauce, Käse, Belägen und dem berechneten Preis. | siehe D2: `GRÖSSE`, `TEIG`, `SAUCE`, `KÄSE`, `JSON`, `DECIMAL(8,2)` |
+| **PDO** | PHP Data Objects; Schnittstelle für den Zugriff auf eine Datenbank. | – |
+| **Prepared Statement** | Parametrisierte Datenbankabfrage, bei der Eingabewerte getrennt vom SQL-Befehl verarbeitet werden. | – |
+| **Responsives Design** | Anpassung der Darstellung an unterschiedliche Bildschirmgrößen wie Desktop, Tablet und Smartphone. | – |
+| **Sauce** | Wählbare Basisschicht einer Pizza, beispielsweise Tomate, Pesto oder BBQ. | siehe D2: `SAUCE` |
+| **Session** | Sitzung eines Nutzers, durch die sein Anmeldestatus während der Nutzung erhalten bleibt. | – |
+| **Teigart** | Wählbare Grundlage einer Pizza, beispielsweise Normal, Vollkorn oder Käserand. | siehe D2: `TEIG` |
+| **Vorlage** | Vordefinierte Pizza-Konfiguration wie Margherita, Salami oder Hawaii als Ausgangspunkt für eigene Anpassungen. | siehe D2: `GRÖSSE`, `TEIG`, `SAUCE`, `KÄSE`, `JSON` |
+| **XAMPP** | Lokale Entwicklungsumgebung mit Webserver, PHP und Datenbank. | – |
+```
