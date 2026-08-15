@@ -1,119 +1,44 @@
 # F3 — Anwendungsfunktionen
 
-## API-Endpunkte
+## Gutschein-Prüfvorgang
 
-Die Backend-Funktionen liegen als einzelne PHP-Endpunkte im Ordner `api/`. Das Frontend ruft sie mit `fetch()` auf.
+Der Gutschein-Prüfvorgang ist die zentrale Anwendungsfunktion des Pizza Trackers, die über die reine Benutzerinteraktion hinausgeht. Sie beschreibt, wie das System einen eingegebenen Gutscheincode fachlich bewertet.
 
-| ID | Funktion | Methode | Endpunkt | Auth |
-|---|---|---|---|---|
-| F3.01 | Session prüfen | GET | `api/session.php` | — |
-| F3.02 | Login | POST | `api/login.php` | — |
-| F3.03 | Logout | POST | `api/logout.php` | — |
-| F3.04 | Registrierung | POST | `api/register.php` | — |
-| F3.05 | Gutschein prüfen | POST | `api/coupon.php` | — |
-| F3.06 | Konfiguration speichern | POST | `api/save_config.php` | ✅ Session |
-| F3.07 | Konfigurationen laden | GET | `api/load_configs.php` | ✅ Session |
-| F3.08 | Konfiguration löschen | POST | `api/delete_config.php` | ✅ Session |
+### Ablauf der Gutscheinprüfung
 
-## Beispiele für Anfragen und Antworten
+Wenn ein Nutzer einen Gutscheincode eingibt und auf „Einlösen" klickt, durchläuft das System folgende Prüfschritte:
 
-### F3.01 — Session prüfen
-
-Antwort bei aktiver Sitzung:
-
-```json
-{ "loggedIn": true, "user": { "id": 1, "vorname": "Ramon", "email": "ramon@example.de" } }
+```mermaid
+flowchart TD
+    A([Nutzer gibt Code ein]) --> B{Ist der Code\nim System vorhanden?}
+    B -->|Nein| C[Fehlermeldung:\nUngültiger Code]
+    B -->|Ja| D{Ist der Code\nnoch aktiv?}
+    D -->|Nein| E[Fehlermeldung:\nCode nicht aktiv]
+    D -->|Ja| F{Ist der Code\nnoch gültig?}
+    F -->|Abgelaufen| G[Fehlermeldung:\nCode abgelaufen]
+    F -->|Gültig| H[Rabatt berechnen]
+    H --> I[Neuen Preis anzeigen]
+    I --> J([Ende])
+    C --> J
+    E --> J
+    G --> J
 ```
 
-Antwort ohne aktive Sitzung:
+### Prüfschritte im Detail
 
-```json
-{ "loggedIn": false }
-```
-
-### F3.02 — Login
-
-Anfrage:
-
-```json
-{ "email": "max@example.de", "passwort": "geheim123" }
-```
-
-Erfolgreiche Antwort:
-
-```json
-{ "success": true, "user": { "id": 1, "vorname": "Max", "email": "max@example.de" } }
-```
-
-Fehlerantwort:
-
-```json
-{ "error": "E-Mail oder Passwort ist falsch." }
-```
-
-### F3.05 — Gutschein prüfen
-
-Anfrage:
-
-```json
-{ "code": "PIZZA10" }
-```
-
-Erfolgreiche Antwort:
-
-```json
-{ "success": true, "code": "PIZZA10", "rabatt_prozent": 10.00 }
-```
-
-Fehlerantwort:
-
-```json
-{ "error": "Ungültiger Gutscheincode." }
-```
-
-### F3.06 — Konfiguration speichern
-
-Anfrage:
-
-```json
-{
-  "name": "Meine Lieblingspizza",
-  "groesse": "XL",
-  "teig": "Käserand",
-  "sauce": "Tomate",
-  "kaese": "Mozzarella",
-  "belaege": ["Salami", "Champignons"],
-  "gutschein_code": "PIZZA10",
-  "preis": 14.39
-}
-```
-
-Erfolgreiche Antwort:
-
-```json
-{ "success": true, "id": 42 }
-```
-
-## HTTP-Statuscodes
-
-| Code | Bedeutung | Beispiel |
+| Schritt | Beschreibung | Ergebnis bei Fehler |
 |---|---|---|
-| 200 | Erfolg | Session-Abfrage, Login |
-| 201 | Ressource erstellt | Registrierung, Konfiguration speichern |
-| 400 | Ungültige Eingabe | Pflichtfeld fehlt, Passwort zu kurz |
-| 401 | Nicht angemeldet | Zugriff auf geschützten Endpunkt |
-| 404 | Ressource nicht gefunden | Ungültiger Gutscheincode, fremde Konfiguration |
-| 405 | Falsche HTTP-Methode | GET statt POST |
-| 409 | Konflikt | E-Mail bereits registriert |
-| 410 | Ressource abgelaufen | Gutscheincode abgelaufen |
+| 1. Code vorhanden | Das System prüft ob der eingegebene Code überhaupt existiert | Fehlermeldung: Ungültiger Gutscheincode |
+| 2. Code aktiv | Das System prüft ob der Code nicht deaktiviert wurde | Fehlermeldung: Code nicht aktiv |
+| 3. Gültigkeitsdatum | Das System prüft ob der Code noch nicht abgelaufen ist | Fehlermeldung: Gutscheincode abgelaufen |
+| 4. Rabatt anwenden | Der Rabatt wird in Prozent vom aktuellen Preis abgezogen | — |
+| 5. Preis anzeigen | Der neue reduzierte Preis wird dem Nutzer angezeigt | — |
 
-## Frontend-Funktionen (JavaScript)
+### Verfügbare Gutscheincodes
 
-| Datei | Funktion | Beschreibung |
+| Code | Rabatt | Art |
 |---|---|---|
-| `js/auth.js` | `checkSession()` | Prüft beim Seitenaufruf den Anmeldestatus und passt die Navigation an |
-| `js/auth.js` | `logoutUser()` | Ruft `api/logout.php` auf und leitet anschließend zur Startseite weiter |
-| `js/konfigurator.js` | `updatePreis()` | Berechnet Preis live nach jeder Auswahl |
-| `js/konfigurator.js` | `updateKalorien()` | Berechnet Kalorien live nach jeder Auswahl |
-| `js/konfigurator.js` | `validateCoupon()` | Sendet Code an `api/coupon.php`, zeigt Rabatt an |
-| `js/konfigurator.js` | `saveConfig()` | Sendet Konfiguration an `api/save_config.php` |
+| PIZZA10 | 10 % | Zeitlich begrenzt |
+| SPARE20 | 20 % | Zeitlich begrenzt |
+| WELCOME | 15 % | Einmalig bei Registrierung |
+| STUDENT5 | 5 % | Dauerhaft für Studenten |
