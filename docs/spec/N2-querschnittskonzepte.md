@@ -1,41 +1,47 @@
-# N2 — Querschnittskonzepte
+N2 — Querschnittskonzepte
 
-## Authentifizierung & Session-Management
+## Anmeldung und Benutzerstatus
 
-- PHP-Sessions (`$_SESSION`) für serverseitigen Anmeldestatus
-- Passwort-Hashing mit `password_hash()` / `password_verify()` (bcrypt, `PASSWORD_DEFAULT`)
-- `auth.js` prüft bei **jedem Seitenaufruf** den Session-Status über `api/session.php` und passt Navigation an
-- Für den überschaubaren Projektumfang werden serverseitige Sessions statt JWT verwendet
-- Session wird bei Logout vollständig zerstört (`session_destroy()`) und Cookie gelöscht
+- Nutzer können sich registrieren, anmelden und abmelden.
+- Bestimmte Funktionen stehen nur angemeldeten Nutzern zur Verfügung.
+- Der Anmeldestatus bleibt während der Nutzung der Anwendung erhalten.
+- Gespeicherte Pizza-Konfigurationen werden dem jeweiligen Nutzer zugeordnet.
+- Nutzer können nur auf ihre eigenen gespeicherten Konfigurationen zugreifen.
 
 ## Fehlerbehandlung
 
-- Alle API-Endpunkte geben strukturierte JSON-Antworten zurück:
-  - Erfolg: `{ "success": true, ... }`
-  - Fehler: `{ "error": "Beschreibung des Fehlers" }`
-- HTTP-Statuscodes werden korrekt gesetzt (200, 201, 400, 401, 404, 405, 409, 410)
-- Frontend zeigt Fehlermeldungen als Bootstrap-Hinweisfelder an (grün = Erfolg, rot = Fehler)
-- Die clientseitige Prüfung verbessert die Bedienung, ersetzt aber nicht die serverseitige Validierung
+- Fehler werden innerhalb der Anwendung einheitlich und verständlich behandelt.
+- Bei fehlerhaften oder unvollständigen Eingaben erhält der Nutzer eine entsprechende Rückmeldung.
+- Ungültige Aktionen werden verhindert und dem Nutzer verständlich erklärt.
+- Erfolgreich ausgeführte Aktionen werden dem Nutzer bestätigt.
 
-## Datenbankzugriff
+## Eingabevalidierung
 
-- Der Datenbankzugriff wird zentral über `config/database.php` hergestellt
-- Für Datenbankabfragen werden PDO Prepared Statements verwendet
-- Verbindungsfehler werden abgefangen und als JSON-Fehler zurückgegeben
-- Zeichensatz: `utf8mb4` für vollständige Unicode-Unterstützung (inkl. Emojis)
+- Erforderliche Eingaben werden vor der Verarbeitung auf Vollständigkeit und Gültigkeit geprüft.
+- Pflichtfelder müssen ausgefüllt sein.
+- Ungültige Eingaben werden nicht verarbeitet.
+- Der Nutzer erhält bei ungültigen Eingaben einen Hinweis auf die Ursache.
 
-## Datenschutz
+## Preisberechnung
 
-- Passwörter werden nicht im Klartext gespeichert
-- Passwörter werden mit `password_hash()` gehasht
-- Zugangsdaten und mögliche Secrets sollen nicht im Repository abgelegt werden (`.gitignore`)
-- Keine personenbezogenen Daten in URL-Parametern
+- Der Gesamtpreis einer Pizza ergibt sich aus der gewählten Größe und den ausgewählten Bestandteilen.
+- Zutaten oder Optionen mit einem Aufpreis erhöhen den Gesamtpreis entsprechend.
+- Änderungen an der Pizza führen zu einer Aktualisierung des Gesamtpreises.
+- Der aktuelle Preis ist während der Konfiguration für den Nutzer sichtbar.
+- Ein gültiger Rabatt wird bei der Berechnung des Endpreises berücksichtigt.
 
-## KI-Werkzeuge
+## Gutscheine und Rabatte
 
-| Werkzeug | Einsatzbereich | Prüfung / Überarbeitung |
-|---|---|---|
-| Claude | Unterstützung bei Code, Struktur und Formulierungen | Ergebnisse wurden von der Gruppe geprüft und angepasst |
-| GitHub Copilot | Unterstützung bei der Code-Vervollständigung | Vorschläge wurden nicht ungeprüft übernommen |
+- Für Pizza-Konfigurationen können gültige Gutscheincodes verwendet werden.
+- Ein Gutschein wird nur berücksichtigt, wenn er gültig und nicht abgelaufen ist.
+- Der jeweilige Rabatt wird auf den Preis der Pizza angewendet.
+- Ungültige oder abgelaufene Gutscheine werden nicht berücksichtigt.
+- Der Nutzer erhält eine Rückmeldung darüber, ob ein Gutschein erfolgreich angewendet wurde.
 
-Die Werkzeuge wurden nur unterstützend eingesetzt. Für Inhalt, Umsetzung und Prüfung ist die Projektgruppe verantwortlich.
+## Gespeicherte Konfigurationen
+
+- Angemeldete Nutzer können eigene Pizza-Konfigurationen speichern.
+- Gespeicherte Konfigurationen werden dem jeweiligen Benutzerkonto zugeordnet.
+- Nutzer können ihre gespeicherten Konfigurationen einsehen.
+- Nicht mehr benötigte Konfigurationen können gelöscht werden.
+```
