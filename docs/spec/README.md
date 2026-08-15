@@ -22,7 +22,7 @@ Quelle: SIEDERSLEBEN, J. (Hrsg.) 2003. *Softwaretechnik — Praxiswissen für So
 3. **F1–F3** — Was die App tut (Prozesse, Use Cases, Funktionen)
 4. **D1–D2** — Datenmodell und Typen
 5. **B1** — Wie die Oberfläche aussieht
-6. **S1 / S3** — Schnittstellen und Inbetriebnahme
+6. **S3** — Inbetriebnahme
 7. **N1 / N2** — Qualitätsanforderungen
 8. **E2** — Glossar zum Nachschlagen
 
@@ -79,7 +79,7 @@ Quelle: SIEDERSLEBEN, J. (Hrsg.) 2003. *Softwaretechnik — Praxiswissen für So
 
 | Block | Titel | Status | Datei |
 |---|---|---|---|
-| S1 | Nachbarsysteme | ✅ | [S1-nachbarsysteme.md](S1-nachbarsysteme.md) |
+| S1 | Nachbarsysteme | ⛔ | — |
 | S2 | Datenmigration | ⛔ | — |
 | S3 | Inbetriebnahme | ✅ | [S3-inbetriebnahme.md](S3-inbetriebnahme.md) |
 
@@ -108,6 +108,10 @@ Der Pizza Tracker hat keine Batch-Verarbeitung. Alles läuft synchron innerhalb 
 ### B3 — Druckausgaben
 
 Es gibt keine Druckfunktion, keine PDFs und keine Berichte. Der Browser zeigt alles direkt an.
+
+### S1 — Nachbarsysteme
+
+Der Pizza Tracker ist nicht an externe Systeme angebunden. Es gibt keine Nachbarsysteme im fachlichen Sinne — alle Daten werden intern verwaltet.
 
 ### S2 — Datenmigration
 
