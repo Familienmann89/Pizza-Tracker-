@@ -1,0 +1,76 @@
+{
+  "groessen": {
+    "S": {"label": "Klein", "preis": 5.90, "kcal": 420},
+    "M": {"label": "Mittel", "preis": 7.50, "kcal": 560},
+    "L": {"label": "Groß", "preis": 9.20, "kcal": 720},
+    "XL": {"label": "Extragroß", "preis": 11.20, "kcal": 900},
+    "XXL": {"label": "Familiengröße", "preis": 13.90, "kcal": 1150}
+  },
+  "teige": {
+    "Normal": {"preis": 0.00, "kcal": 0},
+    "Dünn & Knusprig": {"preis": 0.50, "kcal": -70},
+    "Dick & Fluffig": {"preis": 0.80, "kcal": 120},
+    "Vollkorn": {"preis": 0.80, "kcal": 40},
+    "Käserand": {"preis": 2.20, "kcal": 230}
+  },
+  "saucen": {
+    "Tomate": {"preis": 0.00, "kcal": 55},
+    "Pesto": {"preis": 1.20, "kcal": 140},
+    "Knoblauch-Öl": {"preis": 0.90, "kcal": 120},
+    "Crème fraîche": {"preis": 1.20, "kcal": 165},
+    "BBQ": {"preis": 0.80, "kcal": 95}
+  },
+  "kaese": {
+    "Mozzarella": {"preis": 0.00, "kcal": 240},
+    "Gouda": {"preis": 0.80, "kcal": 270},
+    "Gorgonzola": {"preis": 1.40, "kcal": 260},
+    "Ziegenkäse": {"preis": 1.50, "kcal": 245},
+    "Vegan": {"preis": 1.20, "kcal": 210}
+  },
+  "belaege": {
+    "Salami": {"preis": 1.50, "kcal": 165},
+    "Schinken": {"preis": 1.50, "kcal": 120},
+    "Champignons": {"preis": 1.00, "kcal": 25},
+    "Paprika": {"preis": 1.00, "kcal": 30},
+    "Zwiebeln": {"preis": 0.80, "kcal": 35},
+    "Mais": {"preis": 1.00, "kcal": 75},
+    "Ananas": {"preis": 1.00, "kcal": 65},
+    "Rucola": {"preis": 1.20, "kcal": 15},
+    "Oliven": {"preis": 1.20, "kcal": 80},
+    "Thunfisch": {"preis": 1.80, "kcal": 145}
+  },
+  "extras": {
+    "Extra Käse": {"preis": 1.50, "kcal": 180},
+    "Knoblauch-Dip": {"preis": 1.00, "kcal": 110},
+    "Chili-Öl": {"preis": 0.70, "kcal": 70}
+  },
+  "vorlagen": {
+    "margherita": {
+      "name": "Margherita",
+      "groesse": "M",
+      "teig": "Normal",
+      "sauce": "Tomate",
+      "kaese": "Mozzarella",
+      "belaege": [],
+      "extras": []
+    },
+    "salami": {
+      "name": "Salami",
+      "groesse": "M",
+      "teig": "Normal",
+      "sauce": "Tomate",
+      "kaese": "Mozzarella",
+      "belaege": ["Salami"],
+      "extras": []
+    },
+    "hawaii": {
+      "name": "Hawaii",
+      "groesse": "M",
+      "teig": "Normal",
+      "sauce": "Tomate",
+      "kaese": "Mozzarella",
+      "belaege": ["Schinken", "Ananas"],
+      "extras": []
+    }
+  }
+}
