@@ -9,7 +9,7 @@ Die Laufzeitsicht zeigt, wie die Bausteine aus [Kapitel 5](A05-bausteinsicht.md)
 architektonisch entscheidenden Szenarien zusammenwirken. Auswahlkriterium nach arc42:
 **Relevanz, nicht Vollständigkeit**.
 
-> ⟦**Zu entscheiden:** Das Aufgabenbriefing listet neun Abläufe. Davon tragen nicht alle eine
+> ⟦**Zu entscheiden:** Das Aufgabenbriefing listet insgesamt neun Abläufe. Davon tragen nicht alle eine
 > eigene Architekturaussage — „Logout" ist ein Session-Abbruch, „Meine Pizzen laden" ein
 > Standard-Lesezugriff. Zwei mögliche Wege:
 > (a) alle neun dokumentieren, aber nur die architektonisch tragenden mit Sequenzdiagramm;
