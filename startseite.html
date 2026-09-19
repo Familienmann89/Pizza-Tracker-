@@ -3,14 +3,15 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Pizza Tracker – Startseite</title>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 <nav class="navbar navbar-expand-lg navbar-dark bg-danger">
   <div class="container">
     <a class="navbar-brand" href="startseite.html">🍕 Pizza Tracker</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"><span class="navbar-toggler-icon"></span></button>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Navigation öffnen"><span class="navbar-toggler-icon"></span></button>
     <div class="collapse navbar-collapse" id="mainNav">
       <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
         <li class="nav-item"><a class="nav-link" href="startseite.html">Startseite</a></li>
@@ -22,35 +23,70 @@
     </div>
   </div>
 </nav>
-<header class="hero py-5 mb-5">
-  <div class="container py-4 text-center">
-    <span class="badge rounded-pill text-bg-light text-danger mb-3">Deine Pizza. Deine Regeln.</span>
-    <h1 class="display-4 fw-bold">Stell deine Wunschpizza zusammen</h1>
-    <p class="lead mx-auto" style="max-width:700px">Wähle Größe, Teig, Sauce, Käse und Beläge. Preis und Kalorien siehst du sofort.</p>
-    <a class="btn btn-light btn-lg px-4" href="konfigurator.html">Jetzt konfigurieren</a>
+<header class="hero mb-5">
+  <div class="container hero-content">
+    <div class="hero-copy">
+      <span class="hero-kicker">Frisch belegt. Im Steinofen vollendet. Nach deinen Werten berechnet.</span>
+      <h1>Deine Steinofenpizza.<br>Nach deinen Werten.</h1>
+      <p class="lead">Stelle deine Steinofenpizza individuell zusammen – mit frischen Zutaten, transparenten Nährwerten und leichteren Alternativen.</p>
+      <a class="btn btn-danger btn-lg px-4" href="konfigurator.html">Pizza konfigurieren</a>
+    </div>
   </div>
 </header>
 <main class="container pb-5">
   <section class="mb-5">
     <h2 class="section-title text-center mb-4">So funktioniert's</h2>
     <div class="row g-4 text-center">
-      <div class="col-md-4"><div class="feature-card bg-white shadow-sm rounded-4 p-4 h-100"><div class="fs-1">1️⃣</div><h3 class="h5">Pizza wählen</h3><p class="mb-0 text-secondary">Starte leer oder mit einer Vorlage.</p></div></div>
-      <div class="col-md-4"><div class="feature-card bg-white shadow-sm rounded-4 p-4 h-100"><div class="fs-1">2️⃣</div><h3 class="h5">Anpassen</h3><p class="mb-0 text-secondary">Preis und kcal werden live aktualisiert.</p></div></div>
-      <div class="col-md-4"><div class="feature-card bg-white shadow-sm rounded-4 p-4 h-100"><div class="fs-1">3️⃣</div><h3 class="h5">Speichern</h3><p class="mb-0 text-secondary">Mit Konto kannst du deine Pizza später wiederverwenden.</p></div></div>
+      <div class="col-md-4"><div class="feature-card bg-white shadow-sm rounded-4 p-4 h-100"><span class="step-number">1</span><h3 class="h5">Pizza wählen</h3><p class="mb-0 text-secondary">Starte leer oder mit einer Vorlage.</p></div></div>
+      <div class="col-md-4"><div class="feature-card bg-white shadow-sm rounded-4 p-4 h-100"><span class="step-number">2</span><h3 class="h5">Anpassen</h3><p class="mb-0 text-secondary">Preis, Kalorien und Nährwerte werden live aktualisiert.</p></div></div>
+      <div class="col-md-4"><div class="feature-card bg-white shadow-sm rounded-4 p-4 h-100"><span class="step-number">3</span><h3 class="h5">Speichern</h3><p class="mb-0 text-secondary">Mit Konto kannst du deine Pizza später wiederverwenden.</p></div></div>
     </div>
   </section>
 
   <section class="mb-5">
     <h2 class="section-title text-center mb-4">Beliebte Vorlagen</h2>
     <div class="row g-4">
-      <div class="col-md-4"><div class="template-card card border-0 shadow-sm h-100 text-center"><div class="card-body p-4"><div class="pizza-visual">🍕</div><h3 class="h4 mt-3">Margherita</h3><p class="text-secondary">Tomate · Mozzarella</p><button class="btn btn-outline-danger" data-template="margherita">Vorlage wählen</button></div></div></div>
-      <div class="col-md-4"><div class="template-card card border-0 shadow-sm h-100 text-center"><div class="card-body p-4"><div class="pizza-visual">🍕</div><h3 class="h4 mt-3">Salami</h3><p class="text-secondary">Tomate · Mozzarella · Salami</p><button class="btn btn-outline-danger" data-template="salami">Vorlage wählen</button></div></div></div>
-      <div class="col-md-4"><div class="template-card card border-0 shadow-sm h-100 text-center"><div class="card-body p-4"><div class="pizza-visual">🍕</div><h3 class="h4 mt-3">Hawaii</h3><p class="text-secondary">Schinken · Ananas</p><button class="btn btn-outline-danger" data-template="hawaii">Vorlage wählen</button></div></div></div>
+      <div class="col-md-4"><article class="template-card card border-0 shadow-sm h-100"><img class="template-image" src="img/margherita.webp" alt="Margherita mit Tomatensauce, Mozzarella und Basilikum"><div class="card-body p-4"><div class="d-flex justify-content-between align-items-start gap-3"><h3 class="h4 mb-1">Margherita</h3><strong class="template-price">7,50 €</strong></div><p class="text-secondary mb-2">Tomate · Mozzarella</p><p class="template-meta">M · 26 cm · 855 kcal</p><button class="btn btn-outline-danger w-100" data-template="margherita">Vorlage wählen</button></div></article></div>
+      <div class="col-md-4"><article class="template-card card border-0 shadow-sm h-100"><img class="template-image" src="img/salami.webp" alt="Salamipizza mit Tomatensauce und Mozzarella"><div class="card-body p-4"><div class="d-flex justify-content-between align-items-start gap-3"><h3 class="h4 mb-1">Salami</h3><strong class="template-price">9,00 €</strong></div><p class="text-secondary mb-2">Tomate · Mozzarella · Salami</p><p class="template-meta">M · 26 cm · 1.020 kcal</p><button class="btn btn-outline-danger w-100" data-template="salami">Vorlage wählen</button></div></article></div>
+      <div class="col-md-4"><article class="template-card card border-0 shadow-sm h-100"><img class="template-image" src="img/hawaii.webp" alt="Hawaii-Pizza mit Schinken, Ananas und Mozzarella"><div class="card-body p-4"><div class="d-flex justify-content-between align-items-start gap-3"><h3 class="h4 mb-1">Hawaii</h3><strong class="template-price">10,00 €</strong></div><p class="text-secondary mb-2">Tomate · Mozzarella · Schinken · Ananas</p><p class="template-meta">M · 26 cm · 1.040 kcal</p><button class="btn btn-outline-danger w-100" data-template="hawaii">Vorlage wählen</button></div></article></div>
+    </div>
+  </section>
+
+  <section class="nutrition-section rounded-4 p-4 p-md-5 mb-5">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7">
+        <span class="section-eyebrow">Nährwerte im Konfigurator</span>
+        <h2 class="section-title mb-2">Voller Geschmack. Deine Nährwerte im Blick.</h2>
+        <p class="mb-0">Entdecke proteinreiche Zutaten, leichtere Alternativen und Low-Carb-Optionen.</p>
+      </div>
+      <div class="col-lg-5">
+        <ul class="nutrition-highlights">
+          <li><strong>Protein, Kohlenhydrate und Fett</strong><span>aktualisieren sich bei jeder Änderung</span></li>
+          <li><strong>Leichtere Varianten</strong><span>Light-Mozzarella, Gouda light, Geflügelsalami, Hähnchenbrust</span></li>
+          <li><strong>Protein-Teig (Low Carb)</strong><span>als Alternative zum klassischen Teig</span></li>
+        </ul>
+        <p class="nutrition-note mb-0">Alle Nährwertangaben sind berechnete Richtwerte und können je nach Zutatenmenge abweichen.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="project-section rounded-4 p-4 p-md-5 mb-5">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7"><span class="section-eyebrow">Über das Projekt</span><h2 class="section-title mb-3">Mehr Überblick bei jeder Zusammenstellung</h2><p class="text-secondary mb-0">Pizza Tracker ist ein Hochschulprojekt, mit dem Nutzer Größe, Teig, Sauce, Käse, Beläge und Extras kombinieren können. Preis und Kalorien werden direkt aktualisiert. Mit einem Benutzerkonto lassen sich eigene Konfigurationen speichern und erneut öffnen.</p></div>
+      <div class="col-lg-5"><div class="project-note"><strong>Hinweis</strong><span>Diese Anwendung ist ein Softwaretechnik-Prototyp. Es werden keine echten Bestellungen oder Zahlungen durchgeführt.</span></div></div>
+    </div>
+  </section>
+
+  <section class="mb-5 faq-section">
+    <h2 class="section-title text-center mb-4">Häufige Fragen</h2>
+    <div class="accordion shadow-sm rounded-4 overflow-hidden" id="faqAccordion">
+      <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqOne">Kann ich hier wirklich Pizza bestellen?</button></h3><div id="faqOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion"><div class="accordion-body">Nein. Pizza Tracker ist ein Hochschulprojekt zur Konfiguration und Berechnung von Pizzen.</div></div></div>
+      <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqTwo">Brauche ich ein Benutzerkonto?</button></h3><div id="faqTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body">Zum Konfigurieren, Berechnen und Einlösen eines Gutscheins nicht. Ein Konto wird nur zum Speichern und Verwalten eigener Pizzen benötigt.</div></div></div>
+      <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqThree">Wie werden Preis und Kalorien berechnet?</button></h3><div id="faqThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body">Die Anwendung addiert die im Projekt hinterlegten Werte der gewählten Größe und Zutaten. Ein gültiger Gutschein reduziert anschließend den Preis, nicht die Kalorien.</div></div></div><div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqFour">Woher kommen die Nährwertangaben?</button></h3><div id="faqFour" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body">Protein, Kohlenhydrate und Fett sind je Zutat in den Projektdaten hinterlegt und werden wie Preis und Kalorien aufsummiert. Es sind berechnete Richtwerte für ein Hochschulprojekt und keine Ernährungsberatung. Hinweise zu Allergenen stehen auf der Seite <a href="allergene.html">Allergene &amp; Inhaltsstoffe</a>.</div></div></div>
     </div>
   </section>
 </main>
-<footer class="border-top py-4"><div class="container text-center small">Pizza Tracker · Softwaretechnik-Projekt</div></footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="js/auth.js"></script><script src="js/startseite.js"></script>
+<script src="js/auth.js"></script><script src="js/startseite.js"></script><script src="js/site-footer.js"></script>
 </body>
 </html>
