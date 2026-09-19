@@ -1,48 +1,496 @@
 {
   "groessen": {
-    "S": {"label": "Klein", "preis": 5.90, "kcal": 420},
-    "M": {"label": "Mittel", "preis": 7.50, "kcal": 560},
-    "L": {"label": "Groß", "preis": 9.20, "kcal": 720},
-    "XL": {"label": "Extragroß", "preis": 11.20, "kcal": 900},
-    "XXL": {"label": "Familiengröße", "preis": 13.90, "kcal": 1150}
+    "S": {
+      "label": "Klein",
+      "cm": 20,
+      "preis": 5.9,
+      "kcal": 420,
+      "protein": 14,
+      "kohlenhydrate": 77,
+      "fett": 6,
+      "ballaststoffe": 4,
+      "allergene": [
+        "Glutenhaltiges Getreide"
+      ],
+      "vegetarisch": true,
+      "vegan": true
+    },
+    "M": {
+      "label": "Mittel",
+      "cm": 26,
+      "preis": 7.5,
+      "kcal": 560,
+      "protein": 19,
+      "kohlenhydrate": 103,
+      "fett": 8,
+      "ballaststoffe": 5,
+      "allergene": [
+        "Glutenhaltiges Getreide"
+      ],
+      "vegetarisch": true,
+      "vegan": true
+    },
+    "L": {
+      "label": "Groß",
+      "cm": 30,
+      "preis": 9.2,
+      "kcal": 720,
+      "protein": 24,
+      "kohlenhydrate": 132,
+      "fett": 10,
+      "ballaststoffe": 6,
+      "allergene": [
+        "Glutenhaltiges Getreide"
+      ],
+      "vegetarisch": true,
+      "vegan": true
+    },
+    "XL": {
+      "label": "Extragroß",
+      "cm": 34,
+      "preis": 11.2,
+      "kcal": 900,
+      "protein": 30,
+      "kohlenhydrate": 165,
+      "fett": 13,
+      "ballaststoffe": 8,
+      "allergene": [
+        "Glutenhaltiges Getreide"
+      ],
+      "vegetarisch": true,
+      "vegan": true
+    },
+    "XXL": {
+      "label": "Familiengröße",
+      "cm": 40,
+      "preis": 13.9,
+      "kcal": 1150,
+      "protein": 39,
+      "kohlenhydrate": 211,
+      "fett": 16,
+      "ballaststoffe": 10,
+      "allergene": [
+        "Glutenhaltiges Getreide"
+      ],
+      "vegetarisch": true,
+      "vegan": true
+    }
   },
   "teige": {
-    "Normal": {"preis": 0.00, "kcal": 0},
-    "Dünn & Knusprig": {"preis": 0.50, "kcal": -70},
-    "Dick & Fluffig": {"preis": 0.80, "kcal": 120},
-    "Vollkorn": {"preis": 0.80, "kcal": 40},
-    "Käserand": {"preis": 2.20, "kcal": 230}
+    "Normal": {
+      "preis": 0.0,
+      "kcal": 0,
+      "protein": 0,
+      "kohlenhydrate": 0,
+      "fett": 0,
+      "ballaststoffe": 0,
+      "allergene": [],
+      "vegetarisch": true,
+      "vegan": true
+    },
+    "Dünn & Knusprig": {
+      "preis": 0.5,
+      "kcal": -70,
+      "protein": -2,
+      "kohlenhydrate": -13,
+      "fett": -1,
+      "ballaststoffe": -1,
+      "allergene": [],
+      "vegetarisch": true,
+      "vegan": true,
+      "leicht": true
+    },
+    "Dick & Fluffig": {
+      "preis": 0.8,
+      "kcal": 120,
+      "protein": 4,
+      "kohlenhydrate": 22,
+      "fett": 2,
+      "ballaststoffe": 1,
+      "allergene": [],
+      "vegetarisch": true,
+      "vegan": true
+    },
+    "Vollkorn": {
+      "preis": 0.8,
+      "kcal": 40,
+      "protein": 4,
+      "kohlenhydrate": 3,
+      "fett": 1,
+      "ballaststoffe": 6,
+      "allergene": [],
+      "vegetarisch": true,
+      "vegan": true,
+      "leicht": true
+    },
+    "Käserand": {
+      "preis": 2.2,
+      "kcal": 230,
+      "protein": 14,
+      "kohlenhydrate": 12,
+      "fett": 14,
+      "ballaststoffe": 0,
+      "allergene": [
+        "Milch"
+      ],
+      "vegetarisch": true,
+      "vegan": false
+    },
+    "Protein-Teig (Low Carb)": {
+      "preis": 2.4,
+      "kcal": -95,
+      "protein": 26,
+      "kohlenhydrate": -70,
+      "fett": 9,
+      "ballaststoffe": 4,
+      "allergene": [
+        "Glutenhaltiges Getreide",
+        "Soja"
+      ],
+      "vegetarisch": true,
+      "vegan": true,
+      "leicht": true,
+      "neu": true
+    }
   },
   "saucen": {
-    "Tomate": {"preis": 0.00, "kcal": 55},
-    "Pesto": {"preis": 1.20, "kcal": 140},
-    "Knoblauch-Öl": {"preis": 0.90, "kcal": 120},
-    "Crème fraîche": {"preis": 1.20, "kcal": 165},
-    "BBQ": {"preis": 0.80, "kcal": 95}
+    "Tomate": {
+      "preis": 0.0,
+      "kcal": 55,
+      "protein": 2,
+      "kohlenhydrate": 9,
+      "fett": 1,
+      "ballaststoffe": 2,
+      "allergene": [],
+      "vegetarisch": true,
+      "vegan": true
+    },
+    "Pesto": {
+      "preis": 1.2,
+      "kcal": 140,
+      "protein": 3,
+      "kohlenhydrate": 3,
+      "fett": 13,
+      "ballaststoffe": 1,
+      "allergene": [
+        "Milch"
+      ],
+      "vegetarisch": true,
+      "vegan": false
+    },
+    "Knoblauch-Öl": {
+      "preis": 0.9,
+      "kcal": 120,
+      "protein": 0,
+      "kohlenhydrate": 1,
+      "fett": 13,
+      "ballaststoffe": 0,
+      "allergene": [],
+      "vegetarisch": true,
+      "vegan": true
+    },
+    "Crème fraîche": {
+      "preis": 1.2,
+      "kcal": 165,
+      "protein": 2,
+      "kohlenhydrate": 3,
+      "fett": 16,
+      "ballaststoffe": 0,
+      "allergene": [
+        "Milch"
+      ],
+      "vegetarisch": true,
+      "vegan": false
+    },
+    "BBQ": {
+      "preis": 0.8,
+      "kcal": 95,
+      "protein": 1,
+      "kohlenhydrate": 20,
+      "fett": 1,
+      "ballaststoffe": 1,
+      "allergene": [],
+      "vegetarisch": true,
+      "vegan": true
+    }
   },
   "kaese": {
-    "Mozzarella": {"preis": 0.00, "kcal": 240},
-    "Gouda": {"preis": 0.80, "kcal": 270},
-    "Gorgonzola": {"preis": 1.40, "kcal": 260},
-    "Ziegenkäse": {"preis": 1.50, "kcal": 245},
-    "Vegan": {"preis": 1.20, "kcal": 210}
+    "Mozzarella": {
+      "preis": 0.0,
+      "kcal": 240,
+      "protein": 17,
+      "kohlenhydrate": 3,
+      "fett": 18,
+      "ballaststoffe": 0,
+      "allergene": [
+        "Milch"
+      ],
+      "vegetarisch": true,
+      "vegan": false
+    },
+    "Gouda": {
+      "preis": 0.8,
+      "kcal": 270,
+      "protein": 19,
+      "kohlenhydrate": 1,
+      "fett": 21,
+      "ballaststoffe": 0,
+      "allergene": [
+        "Milch"
+      ],
+      "vegetarisch": true,
+      "vegan": false
+    },
+    "Gorgonzola": {
+      "preis": 1.4,
+      "kcal": 260,
+      "protein": 16,
+      "kohlenhydrate": 1,
+      "fett": 21,
+      "ballaststoffe": 0,
+      "allergene": [
+        "Milch"
+      ],
+      "vegetarisch": true,
+      "vegan": false
+    },
+    "Ziegenkäse": {
+      "preis": 1.5,
+      "kcal": 245,
+      "protein": 16,
+      "kohlenhydrate": 2,
+      "fett": 19,
+      "ballaststoffe": 0,
+      "allergene": [
+        "Milch"
+      ],
+      "vegetarisch": true,
+      "vegan": false
+    },
+    "Vegan": {
+      "preis": 1.2,
+      "kcal": 210,
+      "protein": 2,
+      "kohlenhydrate": 16,
+      "fett": 15,
+      "ballaststoffe": 1,
+      "allergene": [],
+      "vegetarisch": true,
+      "vegan": true
+    },
+    "Light-Mozzarella": {
+      "preis": 0.6,
+      "kcal": 165,
+      "protein": 20,
+      "kohlenhydrate": 3,
+      "fett": 8,
+      "ballaststoffe": 0,
+      "allergene": [
+        "Milch"
+      ],
+      "vegetarisch": true,
+      "vegan": false,
+      "leicht": true,
+      "neu": true
+    },
+    "Gouda light": {
+      "preis": 1.0,
+      "kcal": 190,
+      "protein": 22,
+      "kohlenhydrate": 1,
+      "fett": 11,
+      "ballaststoffe": 0,
+      "allergene": [
+        "Milch"
+      ],
+      "vegetarisch": true,
+      "vegan": false,
+      "leicht": true,
+      "neu": true
+    }
   },
   "belaege": {
-    "Salami": {"preis": 1.50, "kcal": 165},
-    "Schinken": {"preis": 1.50, "kcal": 120},
-    "Champignons": {"preis": 1.00, "kcal": 25},
-    "Paprika": {"preis": 1.00, "kcal": 30},
-    "Zwiebeln": {"preis": 0.80, "kcal": 35},
-    "Mais": {"preis": 1.00, "kcal": 75},
-    "Ananas": {"preis": 1.00, "kcal": 65},
-    "Rucola": {"preis": 1.20, "kcal": 15},
-    "Oliven": {"preis": 1.20, "kcal": 80},
-    "Thunfisch": {"preis": 1.80, "kcal": 145}
+    "Salami": {
+      "preis": 1.5,
+      "kcal": 165,
+      "protein": 9,
+      "kohlenhydrate": 1,
+      "fett": 14,
+      "ballaststoffe": 0,
+      "allergene": [],
+      "vegetarisch": false,
+      "vegan": false
+    },
+    "Schinken": {
+      "preis": 1.5,
+      "kcal": 120,
+      "protein": 14,
+      "kohlenhydrate": 1,
+      "fett": 7,
+      "ballaststoffe": 0,
+      "allergene": [],
+      "vegetarisch": false,
+      "vegan": false
+    },
+    "Champignons": {
+      "preis": 1.0,
+      "kcal": 25,
+      "protein": 3,
+      "kohlenhydrate": 3,
+      "fett": 0,
+      "ballaststoffe": 1,
+      "allergene": [],
+      "vegetarisch": true,
+      "vegan": true,
+      "leicht": true
+    },
+    "Paprika": {
+      "preis": 1.0,
+      "kcal": 30,
+      "protein": 1,
+      "kohlenhydrate": 6,
+      "fett": 0,
+      "ballaststoffe": 2,
+      "allergene": [],
+      "vegetarisch": true,
+      "vegan": true,
+      "leicht": true
+    },
+    "Zwiebeln": {
+      "preis": 0.8,
+      "kcal": 35,
+      "protein": 1,
+      "kohlenhydrate": 8,
+      "fett": 0,
+      "ballaststoffe": 1,
+      "allergene": [],
+      "vegetarisch": true,
+      "vegan": true,
+      "leicht": true
+    },
+    "Mais": {
+      "preis": 1.0,
+      "kcal": 75,
+      "protein": 2,
+      "kohlenhydrate": 15,
+      "fett": 1,
+      "ballaststoffe": 2,
+      "allergene": [],
+      "vegetarisch": true,
+      "vegan": true
+    },
+    "Ananas": {
+      "preis": 1.0,
+      "kcal": 65,
+      "protein": 1,
+      "kohlenhydrate": 15,
+      "fett": 0,
+      "ballaststoffe": 1,
+      "allergene": [],
+      "vegetarisch": true,
+      "vegan": true
+    },
+    "Rucola": {
+      "preis": 1.2,
+      "kcal": 15,
+      "protein": 2,
+      "kohlenhydrate": 1,
+      "fett": 0,
+      "ballaststoffe": 1,
+      "allergene": [],
+      "vegetarisch": true,
+      "vegan": true,
+      "leicht": true
+    },
+    "Oliven": {
+      "preis": 1.2,
+      "kcal": 80,
+      "protein": 1,
+      "kohlenhydrate": 1,
+      "fett": 8,
+      "ballaststoffe": 1,
+      "allergene": [],
+      "vegetarisch": true,
+      "vegan": true
+    },
+    "Thunfisch": {
+      "preis": 1.8,
+      "kcal": 145,
+      "protein": 24,
+      "kohlenhydrate": 0,
+      "fett": 5,
+      "ballaststoffe": 0,
+      "allergene": [
+        "Fisch"
+      ],
+      "vegetarisch": false,
+      "vegan": false
+    },
+    "Geflügelsalami": {
+      "preis": 1.5,
+      "kcal": 105,
+      "protein": 13,
+      "kohlenhydrate": 1,
+      "fett": 5,
+      "ballaststoffe": 0,
+      "allergene": [],
+      "vegetarisch": false,
+      "vegan": false,
+      "leicht": true,
+      "neu": true
+    },
+    "Hähnchenbrust": {
+      "preis": 1.9,
+      "kcal": 110,
+      "protein": 23,
+      "kohlenhydrate": 0,
+      "fett": 2,
+      "ballaststoffe": 0,
+      "allergene": [],
+      "vegetarisch": false,
+      "vegan": false,
+      "leicht": true,
+      "neu": true
+    }
   },
   "extras": {
-    "Extra Käse": {"preis": 1.50, "kcal": 180},
-    "Knoblauch-Dip": {"preis": 1.00, "kcal": 110},
-    "Chili-Öl": {"preis": 0.70, "kcal": 70}
+    "Extra Käse": {
+      "preis": 1.5,
+      "kcal": 180,
+      "protein": 13,
+      "kohlenhydrate": 2,
+      "fett": 13,
+      "ballaststoffe": 0,
+      "allergene": [
+        "Milch"
+      ],
+      "vegetarisch": true,
+      "vegan": false
+    },
+    "Knoblauch-Dip": {
+      "preis": 1.0,
+      "kcal": 110,
+      "protein": 1,
+      "kohlenhydrate": 2,
+      "fett": 11,
+      "ballaststoffe": 0,
+      "allergene": [
+        "Milch"
+      ],
+      "vegetarisch": true,
+      "vegan": false
+    },
+    "Chili-Öl": {
+      "preis": 0.7,
+      "kcal": 70,
+      "protein": 0,
+      "kohlenhydrate": 0,
+      "fett": 8,
+      "ballaststoffe": 0,
+      "allergene": [],
+      "vegetarisch": true,
+      "vegan": true
+    }
   },
   "vorlagen": {
     "margherita": {
@@ -52,7 +500,8 @@
       "sauce": "Tomate",
       "kaese": "Mozzarella",
       "belaege": [],
-      "extras": []
+      "extras": [],
+      "bild": "img/margherita.webp"
     },
     "salami": {
       "name": "Salami",
@@ -60,8 +509,11 @@
       "teig": "Normal",
       "sauce": "Tomate",
       "kaese": "Mozzarella",
-      "belaege": ["Salami"],
-      "extras": []
+      "belaege": [
+        "Salami"
+      ],
+      "extras": [],
+      "bild": "img/salami.webp"
     },
     "hawaii": {
       "name": "Hawaii",
@@ -69,8 +521,20 @@
       "teig": "Normal",
       "sauce": "Tomate",
       "kaese": "Mozzarella",
-      "belaege": ["Schinken", "Ananas"],
-      "extras": []
+      "belaege": [
+        "Schinken",
+        "Ananas"
+      ],
+      "extras": [],
+      "bild": "img/hawaii.webp"
     }
+  },
+  "naehrwert_hinweis": "Alle Nährwertangaben sind berechnete Richtwerte und können je nach Zutatenmenge abweichen. Die Werte je Zutat wurden aus üblichen Lebensmittel-Referenzwerten abgeleitet und so gerundet, dass 4 kcal/g Protein + 4 kcal/g Kohlenhydrate + 9 kcal/g Fett die hinterlegten Kalorien plausibel ergeben.",
+  "kennzeichnungs_regeln": {
+    "High Protein": "Protein mindestens 30 g und mindestens 25 % der Kalorien aus Protein",
+    "Low Carb": "höchstens 30 % der Kalorien aus Kohlenhydraten",
+    "Vegetarisch": "keine Zutat mit vegetarisch=false",
+    "Vegan": "alle gewählten Zutaten mit vegan=true",
+    "Leichtere Wahl": "mindestens eine als leicht=true gekennzeichnete Zutatenvariante gewählt"
   }
 }
