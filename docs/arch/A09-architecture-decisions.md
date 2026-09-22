@@ -1,164 +1,393 @@
-# 9 Architekturentscheidungen
+# A09 – Architekturentscheidungen
 
-> **STATUS: GERÜST — NOCH KEINE DOKUMENTATION.**
-> Übernommen wurde die Optionsmatrix des Herold-Beispiels (Option / Beschreibung / Pro / Contra).
-> **Ergänzt gegenüber Herold:** getrennte positive und negative Konsequenzen — das Briefing
-> fordert beides als eigene Punkte, Herolds Template hat sie nicht.
-> Alle ⟦…⟧-Stellen sind zu belegen bzw. im Team zu klären.
+> **Standhinweis:** Dieses Kapitel beschreibt die im Projekt verwendeten Architekturentscheidungen auf Grundlage des bereitgestellten Projektstands `Pizza-Tracker--main(1).zip` und der vom Team bestätigten Entscheidungsgründe. Technische Aussagen beziehen sich auf den aktuell geprüften Stand. Änderungen von Person 1 an Rabatt-Rundung, WELCOME-Regel und Fehlerbehandlung können einzelne technische Details betreffen, ändern jedoch nicht die hier dokumentierten grundlegenden Architekturentscheidungen.
 
-Dieses Kapitel hält die tragenden Architekturentscheidungen fest. Jede Entscheidung dokumentiert
-Kontext, erwogene Alternativen, die getroffene Entscheidung, ihre Begründung und die daraus
-folgenden Konsequenzen in beide Richtungen.
+Dieses Kapitel dokumentiert zentrale technische Entscheidungen des Projekts „Pizza Tracker“. Für jede Entscheidung werden Kontext, gewählte Lösung, Begründung, betrachtete beziehungsweise nachträglich eingeordnete Alternativen sowie positive und negative Konsequenzen beschrieben.
 
-## Template
+---
 
-Jedes ADR folgt derselben Struktur:
+## 9.1 Einsatz von PHP im Backend
 
-```markdown
-## ADR-00X: Titel
+### Kontext
 
-**Status:** ⟦Akzeptiert / Akzeptiert (durch Rahmenbedingung vorgegeben) / Abgelöst durch ADR-00Y⟧
+Die Anwendung benötigt serverseitige Funktionen für:
 
-**Kontext:** Welche Situation, welche Rahmenbedingung, welcher Zeitpunkt.
+- Registrierung,
+- Login,
+- Sessionverwaltung,
+- Gutscheinprüfung,
+- Speichern von Pizza-Konfigurationen,
+- Laden eigener Konfigurationen,
+- Löschen eigener Konfigurationen,
+- Zugriff auf MySQL/MariaDB.
 
-**Alternativen:**
+Die Benutzeroberfläche besteht aus statischen HTML-Seiten mit JavaScript. Deshalb wird ein Backend benötigt, das HTTP-Anfragen verarbeitet und JSON-Antworten zurückgibt.
 
-| Option | Beschreibung | Pro | Contra |
-|--------|--------------|-----|--------|
-| A — … | … | … | … |
-| B — … | … | … | … |
+### Entscheidung
 
-**Entscheidung:** Option ⟦X⟧.
+Das Backend wird mit PHP umgesetzt.
 
-**Begründung:** Warum genau in diesem Projekt, mit diesem Team, unter diesen Rahmenbedingungen.
+Die PHP-Dateien liegen hauptsächlich unter:
 
-**Positive Konsequenzen:** Was dadurch einfacher oder möglich wurde.
+- `api/`
+- `config/`
 
-**Negative Konsequenzen / Trade-offs:** Was dadurch schwieriger, unmöglich oder aufwendiger wurde.
-⟦Dieser Punkt darf nicht leer sein. Eine Entscheidung ohne Nachteil war keine Entscheidung.⟧
+Die API-Endpunkte werden von JavaScript über `fetch()` aufgerufen.
+
+### Begründung
+
+Das Team hat PHP gewählt, weil es gut zur vorgesehenen lokalen XAMPP-Umgebung passt und für den Umfang der Anwendung ausreichend ist.
+
+PHP ermöglicht:
+
+- eine direkte Verarbeitung von HTTP-Anfragen,
+- einfachen Zugriff auf MySQL/MariaDB über PDO,
+- serverseitige Sessions,
+- Passwort-Hashing mit eingebauten PHP-Funktionen,
+- die Umsetzung kleiner API-Endpunkte ohne zusätzlichen Anwendungsserver.
+
+Für den Pizza Tracker ist kein komplexes Backend-Framework erforderlich.
+
+### Alternativen
+
+Als Alternativen wären beispielsweise denkbar:
+
+- Node.js mit Express,
+- Java mit Spring,
+- andere serverseitige Web-Technologien.
+
+Diese Alternativen wurden für die technische Einordnung betrachtet, aber nicht gewählt.
+
+### Positive Konsequenzen
+
+- Gute Integration in XAMPP.
+- Wenig zusätzlicher Einrichtungsaufwand.
+- Direkter Zugriff auf PDO, Sessions und Passwortfunktionen.
+- Für den Projektumfang ausreichend.
+- Frontend und Backend können klar getrennt bleiben.
+
+### Negative Konsequenzen
+
+- Frontend und Backend verwenden unterschiedliche Programmiersprachen.
+- PHP-Dateien müssen über einen Webserver ausgeführt werden und können nicht einfach als lokale Dateien gestartet werden.
+- Mit wachsender Projektgröße könnte ohne zusätzliche Strukturierung die Wartbarkeit schwieriger werden.
+- Die vorhandene Implementierung verwendet bewusst keinen zusätzlichen Backend-Framework-Layer.
+
+---
+
+## 9.2 Einsatz von MySQL/MariaDB
+
+### Kontext
+
+Die Anwendung muss dauerhaft Daten speichern, insbesondere:
+
+- Benutzerkonten,
+- gespeicherte Pizza-Konfigurationen,
+- Gutscheine.
+
+Zwischen Benutzern und gespeicherten Konfigurationen besteht eine eindeutige Beziehung. Zusätzlich werden Eigenschaften wie eindeutige E-Mail-Adressen und Fremdschlüssel benötigt.
+
+### Entscheidung
+
+Für die Persistenz wird MySQL beziehungsweise MariaDB verwendet.
+
+Das Datenbankschema befindet sich in:
+
+`database/schema.sql`
+
+Der Zugriff erfolgt in PHP über PDO.
+
+### Begründung
+
+Das Team hat MySQL/MariaDB gewählt, weil relationale Daten gut zum fachlichen Modell des Projekts passen.
+
+Die Datenbank unterstützt:
+
+- Primärschlüssel,
+- Fremdschlüssel,
+- eindeutige Constraints,
+- strukturierte Benutzer- und Gutscheindaten,
+- relationale Zuordnung von Konfigurationen zu Benutzern,
+- JSON-Spalten für Beläge und Extras.
+
+Außerdem lässt sich MySQL/MariaDB direkt in der vorgesehenen XAMPP-Umgebung betreiben.
+
+### Alternativen
+
+Als Alternativen wären beispielsweise möglich:
+
+- SQLite,
+- reine JSON-Dateien,
+- andere relationale Datenbanksysteme.
+
+SQLite wäre für ein kleines lokales Projekt technisch möglich gewesen, bietet aber eine andere Betriebsweise als die bereits vorhandene XAMPP-/MySQL-Umgebung.
+
+Eine reine Dateiablage wäre für Beziehungen, eindeutige E-Mail-Adressen und parallele Änderungen weniger geeignet.
+
+### Positive Konsequenzen
+
+- Strukturierte und dauerhafte Speicherung.
+- Beziehungen können über Fremdschlüssel abgebildet werden.
+- Eindeutige E-Mail-Adressen können direkt durch die Datenbank abgesichert werden.
+- Gute Unterstützung durch PDO.
+- Passt zur lokalen XAMPP-Umgebung.
+- SQL-Abfragen ermöglichen gezieltes Laden und Löschen nutzerspezifischer Daten.
+
+### Negative Konsequenzen
+
+- Für die lokale Ausführung muss ein Datenbankserver laufen.
+- Das Schema muss vor dem ersten Start importiert werden.
+- Schemaänderungen können später Migrationsschritte erforderlich machen.
+- Die Datenbank erhöht die Komplexität gegenüber einer rein dateibasierten Speicherung.
+
+---
+
+## 9.3 Einsatz von PHP-Sessions für die Authentifizierung
+
+### Kontext
+
+Die Anwendung muss erkennen können, ob ein Benutzer angemeldet ist.
+
+Geschützte Aktionen sind insbesondere:
+
+- Pizza-Konfiguration speichern,
+- eigene Pizzen laden,
+- eigene Pizzen löschen.
+
+Der angemeldete Nutzer muss über mehrere HTTP-Anfragen hinweg eindeutig identifiziert werden.
+
+### Entscheidung
+
+Der Pizza Tracker verwendet serverseitige PHP-Sessions.
+
+Nach erfolgreichem Login beziehungsweise erfolgreicher Registrierung werden unter anderem folgende Werte in `$_SESSION` gespeichert:
+
+- `user_id`,
+- `vorname`,
+- `email`.
+
+Die Session-ID wird über das PHP-Session-Cookie zwischen Browser und Server übertragen.
+
+### Begründung
+
+Das Team hat PHP-Sessions gewählt, weil sie für die lokale Webanwendung einfacher und ausreichend sind.
+
+Der Loginzustand bleibt serverseitig verwaltet. Der Browser muss keine Benutzer-ID als vertrauenswürdige Information selbst mitsenden.
+
+Die Anwendung kann bei geschützten Endpunkten über die Session feststellen, welcher Benutzer angemeldet ist.
+
+### Alternativen
+
+Eine mögliche Alternative wäre eine tokenbasierte Authentifizierung, zum Beispiel mit JWT.
+
+JWT wäre insbesondere bei stärker verteilten Systemen oder mehreren unabhängigen Clients interessant. Für die lokale Anwendung mit Browser und PHP-Backend wäre dies jedoch zusätzlicher Aufwand.
+
+### Positive Konsequenzen
+
+- Einfache Integration mit PHP.
+- Benutzer-ID wird serverseitig verwaltet.
+- Geschützte Endpunkte können zentral prüfen, ob eine Anmeldung besteht.
+- Kein eigener Token-Lebenszyklus erforderlich.
+- Logout kann durch Zerstören der Session umgesetzt werden.
+
+### Negative Konsequenzen
+
+- Der Server verwaltet Sessionzustand.
+- Der Browser benötigt das Session-Cookie.
+- Bei einer späteren stark verteilten Architektur wäre eine andere Authentifizierungsstrategie möglicherweise geeigneter.
+- Session- und Cookie-Konfiguration müssen korrekt umgesetzt werden.
+
+---
+
+## 9.4 Kommunikation über `fetch()` und JSON-API
+
+### Kontext
+
+Die Benutzeroberfläche soll Aktionen ausführen können, ohne bei jedem Vorgang eine vollständig neue HTML-Seite vom Server laden zu müssen.
+
+Dazu gehören unter anderem:
+
+- Registrierung,
+- Login,
+- Sessionprüfung,
+- Gutscheinprüfung,
+- Speichern,
+- Laden,
+- Löschen.
+
+Die vorhandenen HTML-Seiten werden statisch ausgeliefert. Dynamische Daten werden durch JavaScript verarbeitet.
+
+### Entscheidung
+
+Das Frontend kommuniziert über `fetch()` mit PHP-Endpunkten.
+
+Die Daten werden überwiegend als JSON gesendet und empfangen.
+
+Beispielhafter Ablauf:
+
+```text
+Browser
+  ↓ fetch()
+PHP-API
+  ↓
+Validierung / Datenbank
+  ↓
+JSON-Antwort
+  ↓
+JavaScript aktualisiert Benutzeroberfläche
 ```
 
-> **Hinweis zur Ehrlichkeit.** Wo eine Technologie durch die Aufgabenstellung, die
-> Lehrveranstaltung oder vorhandene Kenntnisse festgelegt war, gehört das in den **Kontext** —
-> nicht in eine erfundene Bewertungsmatrix. Ein ADR darf lauten: „vorgegeben; die Alternativen
-> wurden nachträglich zur Einordnung betrachtet". Das ist belastbarer als eine rückwärts
-> konstruierte Abwägung.
-> ⟦Vor dem Schreiben im Team klären, welche Entscheidungen frei waren und welche nicht.⟧
+### Begründung
+
+Das Team hat `fetch()` und JSON gewählt, weil diese Kommunikation gut zur interaktiven Oberfläche des Pizza Trackers passt.
+
+Aktionen können im Hintergrund durchgeführt werden, ohne dass die gesamte Seite neu geladen werden muss.
+
+Dadurch lassen sich:
+
+- Formularantworten,
+- Fehlermeldungen,
+- Gutscheinergebnisse,
+- gespeicherte Konfigurationen
+
+direkt mit JavaScript in der bestehenden Seite darstellen.
+
+### Alternativen
+
+Eine Alternative wären klassische HTML-Formulare mit vollständigem Seitenwechsel beziehungsweise Server-Rendering.
+
+Auch andere Schnittstellenkonzepte wären grundsätzlich denkbar. Für den aktuellen Projektumfang ist eine kleine JSON-API jedoch ausreichend.
+
+### Positive Konsequenzen
+
+- Kein vollständiger Seitenreload für API-Aktionen erforderlich.
+- Klare Trennung zwischen Benutzeroberfläche und Backend-Verarbeitung.
+- JSON lässt sich in JavaScript und PHP einfach verarbeiten.
+- API-Antworten können strukturierte Erfolgs- und Fehlerdaten enthalten.
+- Gut geeignet für den interaktiven Konfigurator.
+
+### Negative Konsequenzen
+
+- JavaScript muss Netzwerk- und API-Fehler behandeln.
+- Frontend und Backend müssen sich über Request- und Response-Strukturen einig sein.
+- Fehlerhafte oder ungültige JSON-Antworten müssen berücksichtigt werden.
+- Bei fehlgeschlagenen Netzwerkzugriffen ist zusätzliche Benutzerkommunikation notwendig.
+
+Im aktuell geprüften Stand ist die Fehlerbehandlung für Netzwerk- und JSON-Fehler noch nicht an allen Stellen einheitlich umgesetzt.
 
 ---
 
-## ADR-001: PHP als Backend-Technologie
+## 9.5 Einsatz von `pizza_data.json` als zentrale Fachdatenquelle
 
-**Status:** ⟦…⟧
+### Kontext
 
-**Kontext:** ⟦War PHP vorgegeben, durch XAMPP nahegelegt, oder frei gewählt? Welche Kenntnisse
-lagen im Team vor? Zeitrahmen des Projekts?⟧
+Der Pizza-Konfigurator benötigt eine gemeinsame Menge fachlicher Daten:
 
-**Alternativen:** ⟦PHP · Node.js/Express · Java/Spring. Für jede realistisch einschätzen —
-Contra-Spalten wie „steilere Lernkurve im gegebenen Zeitrahmen" sind zulässig und ehrlich;
-pauschale Technologieurteile nicht.⟧
+- Größen,
+- Teige,
+- Saucen,
+- Käsesorten,
+- Beläge,
+- Extras,
+- Preise,
+- kcal,
+- Vorlagen.
 
-**Entscheidung / Begründung / Konsequenzen:** ⟦…⟧
+Diese Werte werden sowohl im Browser für die Auswahl und Live-Berechnung als auch im Backend für die Validierung und serverseitige Berechnung benötigt.
 
-⟦Negative Konsequenz, die hier hingehört: ohne Framework keine vorgegebene Struktur —
-Querverweis auf [Kapitel 11](A11-risiken-und-technische-schulden.md).⟧
+### Entscheidung
 
----
+Diese Fachdaten werden zentral in
 
-## ADR-002: MySQL/MariaDB als relationale Persistenz
+`data/pizza_data.json`
 
-**Status:** ⟦…⟧
+gespeichert.
 
-**Kontext:** ⟦Es bestehen Beziehungen zwischen Nutzern, Konfigurationen und Gutscheinen —
-das ist das eigentliche Argument und sollte konkret aus `database/schema.sql` belegt werden.⟧
+Sowohl JavaScript als auch PHP lesen diese Datei.
 
-**Alternativen:** ⟦MySQL/MariaDB · SQLite · reine JSON-Dateien.
-SQLite ist die interessanteste Alternative: relational, aber ohne separaten Dienst.
-Warum wurde sie nicht gewählt — oder wurde sie nie erwogen? Beides ist dokumentierbar.⟧
+### Begründung
 
-**Entscheidung / Begründung / Konsequenzen:** ⟦…⟧
+Das Team hat sich für `pizza_data.json` entschieden, damit die relativ statischen Produktdaten an einer zentralen Stelle gepflegt werden können.
 
-⟦Falls Beläge/Extras als JSON-Spalte abgelegt sind: hier den Trade-off benennen —
-die Entscheidung für relational wurde an dieser Stelle teilweise wieder aufgeweicht.
-Verweis auf § 8.1 und A11.⟧
+Dadurch müssen Preise, kcal und Auswahlwerte nicht doppelt direkt in JavaScript und PHP hinterlegt werden.
 
----
+Der Browser kann die Datei verwenden, um:
 
-## ADR-003: Session-basierte Authentifizierung
+- Optionen anzuzeigen,
+- Live-Preise und kcal zu berechnen,
+- Vorlagen zu laden.
 
-**Status:** ⟦…⟧
+Das Backend verwendet dieselbe Datei, um:
 
-**Kontext:** ⟦Serverseitig gerenderte Seiten plus fetch-Aufrufe an dieselbe Herkunft —
-das ist der Kontext, der Sessions naheliegend macht. Keine mobile App, kein Drittanbieter-Client.⟧
+- übermittelte Auswahlwerte zu prüfen,
+- Preis und kcal beim Speichern erneut zu berechnen.
 
-**Alternativen:** ⟦PHP Session · JWT · keine Authentifizierung.
-„Keine Authentifizierung" ist ernst zu nehmen: Die Konfiguration einer Pizza ist kein
-schützenswertes Geheimnis. Das eigentliche Argument ist die Zuordnung gespeicherter
-Konfigurationen zu einem Nutzer — genau das gehört in die Begründung.⟧
+### Alternativen
 
-**Entscheidung / Begründung / Konsequenzen:** ⟦…⟧
+Eine Alternative wäre, alle Pizza-Daten in Datenbanktabellen zu speichern.
 
----
+Ebenfalls möglich wäre eine direkte Festschreibung der Daten im JavaScript- beziehungsweise PHP-Code.
 
-## ADR-004: JSON-basierte PHP-API statt Formular-Postbacks
+### Positive Konsequenzen
 
-**Status:** ⟦…⟧
+- Eine gemeinsame Quelle für Preise, kcal und Auswahlwerte.
+- Änderungen einfacher Fachdaten können zentral vorgenommen werden.
+- Browser und Backend können dieselben fachlichen Werte verwenden.
+- Kein zusätzlicher Datenbankzugriff für jede Konfiguratoroption erforderlich.
+- Die Datei ist leicht lesbar und nachvollziehbar.
 
-**Kontext:** ⟦Der Konfigurator braucht Live-Aktualisierung ohne Seitenreload — das ist die
-Anforderung, aus der diese Entscheidung folgt. Bezug zum Qualitätsziel „Benutzbarkeit" in
-[Kapitel 10](A10-qualitaetsanforderungen.md).⟧
+### Negative Konsequenzen
 
-**Alternativen:** ⟦klassische Formular-Postbacks mit serverseitigem Rendering ·
-fetch/JSON gegen einzelne Endpunkte · ⟦serverseitiges Templating mit partiellen Updates?⟧⟧
-
-**Entscheidung / Begründung / Konsequenzen:** ⟦…⟧
-
-⟦Negative Konsequenz: Zustand und Berechnungslogik existieren nun teilweise doppelt —
-im Browser und auf dem Server. Direkter Zusammenhang mit § 8.9 und der Frage, ob der Server
-den Clientpreis nachrechnet. Erst schreiben, wenn das geklärt ist.⟧
+- Änderungen erfolgen direkt an einer Projektdatei und nicht über eine Administrationsoberfläche.
+- Bei häufig veränderlichen Produktdaten wäre eine Datenbank flexibler.
+- Frontend und Backend laden die Datei jeweils separat.
+- Die Verwendung derselben Datenquelle garantiert nicht automatisch dieselbe Berechnungslogik. Beispielsweise kann eine unterschiedliche Rundungsregel weiterhin zu abweichenden Endpreisen führen.
+- Bei Erweiterung des fachlichen Modells können neben der JSON-Datei zusätzliche Codeänderungen erforderlich werden.
 
 ---
 
-## ADR-005: `pizza_data.json` als zentrale fachliche Datenquelle
+## 9.6 Zusammenfassung der Entscheidungen
 
-**Status:** ⟦…⟧
+Die fünf Entscheidungen ergänzen sich zu einer einfachen lokalen Webarchitektur:
 
-**Kontext:** ⟦Optionen, Preise, kcal und Vorlagen mussten irgendwo liegen. Warum nicht in der
-Datenbank, wo bereits eine Persistenz existiert? Das ist die Frage, die dieses ADR beantworten muss.⟧
+```mermaid
+flowchart LR
+    UI["HTML / Bootstrap / JavaScript"]
+    DATA["pizza_data.json"]
+    API["PHP-API"]
+    SESSION["PHP-Session"]
+    DB[("MySQL / MariaDB")]
 
-**Alternativen:** ⟦JSON-Datei · Datenbanktabellen · fest im JavaScript-Code.⟧
+    DATA --> UI
+    UI -->|"fetch() / JSON"| API
+    API -->|"JSON"| UI
+    DATA --> API
+    SESSION --> API
+    API -->|"PDO"| DB
+```
 
-**Entscheidung / Begründung / Konsequenzen:** ⟦…⟧
+Die Architektur ist auf den überschaubaren Umfang des Hochschulprojekts ausgerichtet.
 
-⟦Das Briefing nennt den Trade-off bereits: zentrale Pflege als Vorteil, Konsistenz zwischen
-Client und Server als Nachteil. Konkret ausführen — wer liest die Datei, und was passiert,
-wenn sich ein Preis ändert, nachdem eine Konfiguration gespeichert wurde? Werden historische
-Preise mitgespeichert oder neu aufgelöst? Das ist aus `schema.sql` und `save_config.php`
-ablesbar und macht den Unterschied zwischen einem generischen und einem echten ADR.⟧
+- PHP übernimmt die serverseitige Verarbeitung.
+- MySQL/MariaDB übernimmt die dauerhafte Speicherung.
+- PHP-Sessions verwalten den Loginzustand.
+- `fetch()` und JSON verbinden JavaScript mit dem Backend.
+- `pizza_data.json` stellt gemeinsame Fachdaten für Frontend und Backend bereit.
+
+Die gewählten Lösungen halten den Technologie-Stack klein und passen zur lokalen XAMPP-Ausführung. Gleichzeitig entstehen Grenzen hinsichtlich Skalierung, zentraler Datenpflege und Fehlerbehandlung, die bei einer größeren oder produktiven Anwendung neu bewertet werden müssten.
 
 ---
 
-## Weitere Kandidaten
+## 9.7 Prüfpunkte vor der finalen Abgabe
 
-⟦Das Briefing fordert 3–5 ADRs; fünf sind oben angelegt. Falls eines davon nicht trägt,
-sind das mögliche Ersatzkandidaten — jeweils nur aufnehmen, wenn im Repository belegbar:⟧
+Vor der finalen M3-Abgabe sollte dieses Kapitel noch einmal gegen den zusammengeführten `main`-Stand geprüft werden.
 
-- ⟦**Bootstrap 5.3 statt eigenem CSS-Framework** — trägt, falls die CDN-Frage (A11) daran hängt.⟧
-- ⟦**Ein Endpunkt pro Aktion statt eines zentralen Controllers** — die Struktur unter `api/`
-  ist eine bewusste oder unbewusste Entscheidung; falls bewusst, ist sie ein ADR wert.⟧
-- ⟦**Preisberechnung im Browser** — falls das nicht schon in ADR-004 aufgeht, verdient es
-  ein eigenes ADR, weil daran das Sicherheitsargument hängt.⟧
-- ⟦**Kein Framework (Vanilla JS statt Vue/React)** — falls im Team tatsächlich erwogen.⟧
+Dabei ist insbesondere sicherzustellen:
 
----
-
-## Vor dem Schreiben zu klären
-
-| # | Frage | Klären mit |
-|---|-------|-----------|
-| 1 | Welche Technologien waren vorgegeben, welche frei gewählt? | Team / Aufgabenstellung |
-| 2 | Wurden Alternativen tatsächlich erwogen oder werden sie nachträglich eingeordnet? | Team |
-| 3 | Sind ADRs bereits in A01–A04 angedeutet? Dann konsistent halten, nicht widersprechen. | `docs/arch/` |
-| 4 | Werden Preise beim Speichern historisiert oder neu aufgelöst? | `schema.sql`, `save_config.php` |
-| 5 | Werden Beläge/Extras relational oder als JSON abgelegt? | `schema.sql` |
-| 6 | Existiert eine Namenskonvention für ADR-Dateien im Projekt? | `docs/arch/` |
+1. PHP bleibt die serverseitige Technologie.
+2. Die Anwendung verwendet weiterhin MySQL/MariaDB über PDO.
+3. Die Authentifizierung basiert weiterhin auf PHP-Sessions.
+4. Die Browser-Server-Kommunikation erfolgt weiterhin über `fetch()` und JSON.
+5. `pizza_data.json` bleibt die gemeinsame Fachdatenquelle für Konfiguratorwerte.
+6. Änderungen von Person 1 haben keine grundlegende Architekturentscheidung verändert.
+7. A06, A08 und A09 beschreiben denselben tatsächlichen Projektstand.
