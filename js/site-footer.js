@@ -11,10 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     <strong>Pizza Tracker</strong>
                     <div class="small text-secondary">Hochschulprojekt · Keine echte Bestellplattform</div>
                 </div>
-                <nav class="footer-links" aria-label="Rechtliche und ergänzende Informationen">
+                <nav class="footer-links" aria-label="Ergänzende Informationen">
                     <a href="allergene.html">Allergene &amp; Inhaltsstoffe</a>
-                    <a href="datenschutz.html">Datenschutz</a>
-                    <a href="impressum.html">Impressum</a>
                 </nav>
             </div>
             <div class="small text-secondary mt-3">© 2026 Projektgruppe Pizza Tracker · Wirtschaftsinformatik-Projekt I (Softwaretechnik), WK_1106</div>
