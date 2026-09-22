@@ -14,6 +14,7 @@ Jeder Dialog setzt einen oder mehrere Anwendungsfälle aus F2 um. Die Zuordnung 
   - [DLG-03 Anmeldung](#dlg-03--anmeldung)
   - [DLG-04 Registrierung](#dlg-04--registrierung)
   - [DLG-05 Meine Pizzen](#dlg-05--meine-pizzen)
+  - [DLG-06 Informationsseiten](#dlg-06--informationsseiten)
 - [B1.4 Übergreifende Muster](#b14-übergreifende-muster)
 
 ---
@@ -27,6 +28,7 @@ Jeder Dialog setzt einen oder mehrere Anwendungsfälle aus F2 um. Die Zuordnung 
 | [DLG-03](#dlg-03--anmeldung) | Anmeldung | Nur Gäste | [UC06](F2-anwendungsfaelle.md#uc06--nutzer-einloggen) Einloggen |
 | [DLG-04](#dlg-04--registrierung) | Registrierung | Nur Gäste | [UC05](F2-anwendungsfaelle.md#uc05--nutzer-registrieren) Registrieren |
 | [DLG-05](#dlg-05--meine-pizzen) | Meine Pizzen | Nur angemeldet | [UC09](F2-anwendungsfaelle.md#uc09--gespeicherte-pizzen-anzeigen) Gespeicherte Pizzen anzeigen · [UC10](F2-anwendungsfaelle.md#uc10--konfiguration-löschen) Konfiguration löschen |
+| [DLG-06](#dlg-06--informationsseiten) | Projektinformationen | Alle | Ergänzende Informationen ohne eigenen Anwendungsfall |
 
 ---
 
@@ -79,7 +81,8 @@ Die Navigation ist auf allen Seiten sichtbar. Welche Menüpunkte angezeigt werde
 | Schritt-Erklärung | Anzeige | Drei kurze Schritte zur Bedienung |
 | Pizza-Vorlagen | Auswahl | Drei vordefinierte Pizzen (Margherita, Salami, Hawaii) mit Bild und Preis |
 | Funktionshinweise | Anzeige | Vier Symbole mit kurzen Beschreibungen |
-| Fußzeile | Anzeige | Copyright |
+| Projektinformation und FAQ | Anzeige | Erklärt Funktionsumfang und Projektgrenzen |
+| Fußzeile | Navigation | Verlinkt Allergene, Datenschutz und Impressum und kennzeichnet das Hochschulprojekt |
 
 #### Aktionen (GUI Dynamik)
 
@@ -110,15 +113,21 @@ Die Navigation ist auf allen Seiten sichtbar. Welche Menüpunkte angezeigt werde
 
 | Feld | Art | Beschreibung |
 |---|---|---|
-| Größenauswahl | Pflichtauswahl | S, M, L, XL oder XXL |
-| Teigart | Pflichtauswahl | Normal, Dünn & Knusprig, Dick & Fluffig, Vollkorn oder Käserand |
+| Größenauswahl | Pflichtauswahl | S (20 cm), M (26 cm), L (30 cm), XL (34 cm) oder XXL (40 cm); jede Karte zeigt Name, Durchmesser, Aufpreis und Kalorien vollständig innerhalb der Karte |
+| Teigart | Pflichtauswahl | Normal, Dünn & Knusprig, Dick & Fluffig, Vollkorn, Käserand oder Protein-Teig (Low Carb) |
 | Sauce | Pflichtauswahl | Tomate, Pesto, Knoblauch-Öl, Crème fraîche oder BBQ |
-| Käse | Pflichtauswahl | Mozzarella, Gouda, Gorgonzola, Ziegenkäse oder Vegan |
+| Käse | Pflichtauswahl | Mozzarella, Gouda, Gorgonzola, Ziegenkäse, Vegan, Light-Mozzarella oder Gouda light |
 | Beläge | Mehrfachauswahl | Auswahl aus vordefinierten Zutaten |
 | Extras | Optionale Auswahl | Zusätzliche Zutaten |
 | Gutscheinfeld | Texteingabe (optional) | Eingabefeld für einen Gutscheincode mit Schaltfläche „Einlösen" |
 | Preisanzeige | Anzeige | Wird nach jeder Änderung sofort aktualisiert |
 | Kalorienanzeige | Anzeige | Summe der Kalorien aller gewählten Zutaten |
+| Pizza-Vorschau | Anzeige | Lokales Pizzafoto als Grundbild; bei einer erkannten Vorlage das passende Vorlagenbild, sonst eine als solche gekennzeichnete Beispielabbildung |
+| Zutaten-Chips | Anzeige | Alle gewählten Zutaten als Liste neben der Pizza; ersetzt die früher auf die Pizza gezeichneten Symbole |
+| Separat servierte Extras | Anzeige | Knoblauch-Dip und Chili-Öl erscheinen als eigene Kennzeichnung neben der Pizza, nicht als Belag |
+| Nährwertanzeige | Anzeige | Preis, Kalorien, Protein, Kohlenhydrate und Fett; Ballaststoffe, sobald vorhanden |
+| Ernährungskennzeichnungen | Anzeige | High Protein, Low Carb, Vegetarisch, Vegan und Leichtere Wahl nach den Regeln aus [D2](D2-datentypen.md) |
+| Richtwert-Hinweis | Anzeige | „Alle Nährwertangaben sind berechnete Richtwerte und können je nach Zutatenmenge abweichen." |
 | Schaltfläche „Speichern" | Aktion | Nur für angemeldete Nutzer sichtbar |
 
 #### Aktionen (GUI Dynamik)
@@ -246,6 +255,22 @@ Die Navigation ist auf allen Seiten sichtbar. Welche Menüpunkte angezeigt werde
 
 ---
 
+### DLG-06 — Informationsseiten
+
+| Abschnitt | Inhalt |
+|---|---|
+| **Kennung** | DLG-06 |
+| **Name** | Allergene, Datenschutz und Impressum |
+| **Zweck** | Transparente Hinweise zu Projektgrenzen, verarbeiteten Daten und eindeutig ableitbaren Allergenen |
+| **Zugang** | Über die gemeinsame Fußzeile auf allen Seiten |
+| **Ergebnis** | Der Nutzer erhält Informationen; es werden keine Daten verändert |
+
+Anmeldung (DLG-03) und Registrierung (DLG-04) verwenden dasselbe zweispaltige Layout mit dunklem Bildbereich und hellem Formularbereich. Auf schmalen Bildschirmen stapeln sich beide Bereiche untereinander.
+
+Die Informationsseiten kennzeichnen Pizza Tracker ausdrücklich als Hochschulprojekt ohne echte Bestell- oder Zahlungsfunktion. Nicht belegte Produktrezepturen oder Unternehmensdaten werden nicht erfunden.
+
+---
+
 ## B1.4 Übergreifende Muster
 
 ### Bestätigungsdialog
@@ -255,6 +280,8 @@ Unwiderrufliche Aktionen — aktuell nur das Löschen einer Konfiguration — we
 ### Fehlermeldungen
 
 Fehlermeldungen erscheinen direkt im betroffenen Dialog — nicht als kurz aufblitzendes Hinweisfenster. Der Nutzer kann die Eingabe korrigieren und erneut versuchen.
+
+Bei nicht erreichbaren JSON- oder API-Ressourcen erscheint eine verständliche Verbindungsmeldung. Während Gutscheinprüfung, Anmeldung, Registrierung, Speicherung und Löschung wird die ausgelöste Schaltfläche vorübergehend deaktiviert, um Mehrfachanfragen zu verhindern.
 
 ### Nicht angemeldet
 

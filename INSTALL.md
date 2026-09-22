@@ -37,6 +37,9 @@ Alternativ können die Umgebungsvariablen `PIZZA_DB_HOST`, `PIZZA_DB_PORT`, `PIZ
 1. Registrierung durchführen.
 2. Pizza konfigurieren und Live-Preis/Kalorien prüfen.
 3. `PIZZA10` einlösen.
-4. Konfiguration speichern.
-5. Unter „Meine Pizzen“ öffnen, erneut bearbeiten und löschen.
-6. Abmelden und prüfen, dass „Meine Pizzen“ nicht mehr in der Navigation sichtbar ist.
+4. Prüfen, ob S/M/L/XL/XXL mit 20/26/30/34/40 cm angezeigt werden.
+5. Knoblauch-Dip und Chili-Öl als separate Kennzeichnung neben der Pizza prüfen.
+6. Nährwertzeile mit Protein, Kohlenhydraten und Fett prüfen; Gutschein darf sie nicht verändern.
+7. Konfiguration speichern, unter „Meine Pizzen“ erneut öffnen und löschen.
+8. Startseite sowie Impressum, Datenschutz und Allergene auf Desktop und Mobilansicht öffnen.
+9. Abmelden und prüfen, dass „Meine Pizzen“ nicht mehr in der Navigation sichtbar ist.

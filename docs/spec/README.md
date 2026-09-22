@@ -125,3 +125,4 @@ Für das Projekt gibt es kein Vorgängersystem und keine Altdaten. Die Datenbank
 |---|---|---|
 | Claude | Unterstützung bei Code, Struktur und Formulierungen | Inhalte wurden durch die Gruppe geprüft und angepasst |
 | GitHub Copilot | Unterstützung bei der Code-Vervollständigung | Vorschläge wurden vor der Übernahme geprüft |
+| ChatGPT/Codex | Unterstützung bei Analyse, Planung, Fehlerprüfung und Code-Review | Ergebnisse wurden durch die Gruppe geprüft und lokal getestet |

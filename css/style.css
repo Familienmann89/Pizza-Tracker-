@@ -1,19 +1,177 @@
-:root { --pizza-red: #c62828; --pizza-dark: #211a18; --pizza-cream: #fff7ed; }
-body { background: #fffaf5; color: var(--pizza-dark); }
+:root { --pizza-red: #c62828; --pizza-red-bright: #e43d35; --pizza-dark: #211a18; --pizza-cream: #fff7ed; }
+body { background: #fffaf5; color: var(--pizza-dark); font-family: Inter, "Segoe UI", Arial, sans-serif; }
+.navbar.bg-danger { background: #151313 !important; }
 .navbar-brand { font-weight: 800; letter-spacing: -.02em; }
-.hero { background: linear-gradient(135deg, #a91515, #df3b2f); color: white; border-radius: 0 0 2rem 2rem; }
-.hero .lead { color: rgba(255,255,255,.9); }
+.hero { position: relative; min-height: 540px; display: grid; align-items: center; overflow: hidden; color: white; border-radius: 0 0 2rem 2rem; background: #0c0b0b url("../img/hero-pizza.webp") center right / cover no-repeat; }
+.hero::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(8,7,7,.98) 0%, rgba(8,7,7,.9) 35%, rgba(8,7,7,.28) 72%, rgba(8,7,7,.1) 100%); }
+.hero-content { position: relative; z-index: 1; padding-block: 5rem; }
+.hero-copy { max-width: 660px; }
+.hero-kicker { display: inline-block; margin-bottom: 1rem; color: #ffb06b; font-size: .82rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.hero h1 { max-width: 650px; margin-bottom: 1.25rem; font-size: clamp(2.5rem, 5vw, 4.75rem); font-weight: 900; line-height: .98; letter-spacing: -.045em; }
+.hero .lead { max-width: 600px; color: rgba(255,255,255,.82); }
+.hero .btn-danger { background: var(--pizza-red-bright); border-color: var(--pizza-red-bright); box-shadow: 0 .75rem 2rem rgba(228,61,53,.25); }
 .section-title { font-weight: 800; letter-spacing: -.02em; }
 .template-card, .feature-card { transition: transform .15s ease, box-shadow .15s ease; }
 .template-card:hover, .feature-card:hover { transform: translateY(-3px); box-shadow: 0 1rem 2rem rgba(0,0,0,.08)!important; }
-.pizza-visual { width: 110px; height: 110px; border-radius: 50%; display: grid; place-items: center; font-size: 4rem; background: #ffd27f; margin-inline: auto; box-shadow: inset 0 0 0 8px #d88b3a; }
-.option-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .75rem; }
-.option-card { display: flex; gap: .6rem; align-items: flex-start; padding: .85rem; background: white; border: 1px solid #e8ddd4; border-radius: .9rem; cursor: pointer; }
+.template-card { overflow: hidden; text-align: left; }
+.template-image { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.template-price { color: var(--pizza-red); font-size: 1.15rem; white-space: nowrap; }
+.template-meta { color: #8a7770; font-size: .86rem; font-weight: 600; }
+.project-section { background: linear-gradient(135deg, #fff 0%, #fff1e7 100%); border: 1px solid #f0dfd4; }
+.section-eyebrow { display: block; margin-bottom: .5rem; color: var(--pizza-red); font-size: .78rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.project-note { display: flex; flex-direction: column; gap: .4rem; padding: 1.25rem; color: #fff; border-radius: 1rem; background: #211a18; box-shadow: 0 .75rem 2rem rgba(33,26,24,.14); }
+.project-note strong { color: #ffb06b; text-transform: uppercase; letter-spacing: .08em; font-size: .78rem; }
+.faq-section { max-width: 900px; margin-inline: auto; }
+.option-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: .75rem; align-items: stretch; }
+.option-card { display: flex; flex-direction: column; gap: .3rem; min-width: 0; height: 100%; padding: .85rem; background: white; border: 1px solid #e8ddd4; border-radius: .9rem; cursor: pointer; overflow-wrap: anywhere; transition: border-color .15s ease, box-shadow .15s ease; }
+.option-card:hover { border-color: #d8c6b8; }
 .option-card:has(input:checked) { border-color: var(--pizza-red); box-shadow: 0 0 0 2px rgba(198,40,40,.12); }
-.option-title { font-weight: 700; display: block; }
-.option-meta { display: block; color: #6c757d; font-size: .8rem; margin-left: auto; text-align: right; }
+.option-head { display: flex; gap: .55rem; align-items: flex-start; min-width: 0; }
+.option-head .form-check-input { flex: 0 0 auto; margin-top: .15rem; }
+.option-name { min-width: 0; font-weight: 700; line-height: 1.2; overflow-wrap: anywhere; hyphens: auto; }
+.option-label { color: #6c757d; font-size: .8rem; }
+.option-size { font-size: .78rem; font-weight: 600; color: var(--pizza-red); }
+.option-tags { display: flex; flex-wrap: wrap; gap: .3rem; }
+.option-tag { padding: .05rem .4rem; border-radius: 999px; font-size: .66rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+.option-tag-new { color: #7a3a00; background: #ffe2c2; }
+.option-tag-light { color: #1f4d2c; background: #d9efdf; }
+.option-meta { display: flex; flex-wrap: wrap; gap: .1rem .5rem; margin-top: auto; padding-top: .35rem; color: #6c757d; font-size: .8rem; }
+.option-price { font-weight: 700; color: #2b211c; }
 .preview-panel { position: sticky; top: 1rem; background: white; border-radius: 1.25rem; box-shadow: 0 .5rem 2rem rgba(0,0,0,.07); }
-.preview-pizza { width: min(260px, 75vw); aspect-ratio: 1; border-radius: 50%; margin-inline: auto; background: radial-gradient(circle at center, #f6d063 0 68%, #c97931 69% 78%, #9a542a 79%); box-shadow: inset 0 0 0 1rem rgba(255,255,255,.14), 0 1rem 2rem rgba(0,0,0,.08); display: grid; place-items: center; font-size: 5rem; }
+.pizza-stage { display: flex; flex-direction: column; align-items: center; gap: .75rem; min-height: 300px; justify-content: center; }
+.pizza-size-badge { background: var(--pizza-red); color: white; font-weight: 700; font-size: .82rem; padding: .3rem .8rem; border-radius: 2rem; }
+.pizza-summary { list-style: none; padding: 0; margin: 0 0 1rem; font-size: .88rem; }
+.pizza-summary li { display: flex; justify-content: space-between; gap: 1rem; padding: .4rem 0; border-bottom: 1px dashed #ece2d8; }
+.pizza-summary li:last-child { border-bottom: 0; }
+.pizza-summary span { color: #6c757d; }
+.pizza-summary strong { text-align: right; font-weight: 600; }
 .form-card { max-width: 760px; margin-inline: auto; }
-footer { color: #786d68; }
+.site-footer { color: #d9d0cc; background: #151313; }
+.site-footer .text-secondary { color: #a99e99 !important; }
+.footer-links { display: flex; flex-wrap: wrap; gap: .75rem 1.25rem; }
+.footer-links a { color: #f1e8e4; text-decoration: none; }
+.footer-links a:hover { color: #ffb06b; text-decoration: underline; }
+.legal-page { max-width: 900px; }
+.legal-page section { margin-top: 2rem; padding: 1.5rem; border: 1px solid #ede2da; border-radius: 1rem; background: #fff; box-shadow: 0 .35rem 1.25rem rgba(0,0,0,.04); }
+.legal-page h2 { font-size: 1.2rem; font-weight: 800; }
+.btn:focus-visible, .form-control:focus-visible, .form-check-input:focus-visible, .nav-link:focus-visible, a:focus-visible { outline: 3px solid #ffb06b; outline-offset: 3px; box-shadow: none; }
 @media (max-width: 991.98px) { .preview-panel { position: static; } }
+@media (max-width: 767.98px) {
+  .hero { min-height: 500px; background-position: 62% center; }
+  .hero::before { background: linear-gradient(90deg, rgba(8,7,7,.96), rgba(8,7,7,.7)); }
+  .hero-content { padding-block: 4rem; }
+  .hero-copy { max-width: 92%; }
+  .template-image { aspect-ratio: 16 / 10; }
+}
+
+/* M3 visual polish: dark framing, photo-based configurator and compact registration. */
+.config-page,
+.register-page {
+  background:
+    radial-gradient(circle at 88% 7%, rgba(228,61,53,.22), transparent 24rem),
+    linear-gradient(180deg, #111 0 22rem, #f3f0ec 22rem 100%);
+}
+.config-heading { color: #fff; }
+.config-heading p { color: rgba(255,255,255,.68); }
+.configurator-surface { background: rgba(255,255,255,.98); border: 1px solid rgba(255,255,255,.12); border-radius: 1.25rem; box-shadow: 0 1rem 3rem rgba(0,0,0,.12); }
+.accordion-item { overflow: hidden; border-color: #e3ddd7; }
+.accordion-button:not(.collapsed) { color: #fff; background: #211e1c; box-shadow: none; }
+.accordion-button:not(.collapsed)::after { filter: brightness(0) invert(1); }
+
+.register-shell { display: grid; grid-template-columns: minmax(300px,.85fr) minmax(520px,1.15fr); overflow: hidden; max-width: 1180px; margin-inline: auto; border-radius: 1.5rem; background: #fff; box-shadow: 0 1.5rem 4rem rgba(0,0,0,.25); }
+.register-story { position: relative; min-height: 720px; display: flex; align-items: flex-end; color: #fff; background: #161311 url("../img/hero-pizza.webp") 66% center / cover no-repeat; }
+.register-story::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg,rgba(5,4,4,.12),rgba(5,4,4,.94)); }
+.register-story-content { position: relative; z-index: 1; padding: 3rem; }
+.register-story h1 { font-size: clamp(2.4rem,4vw,4rem); font-weight: 900; line-height: .98; letter-spacing: -.04em; }
+.register-story p { color: rgba(255,255,255,.78); font-size: 1.05rem; }
+.register-story ul { display: grid; gap: .7rem; padding: 0; margin: 1.5rem 0 0; list-style: none; }
+.register-story li::before { content: "✓"; display: inline-grid; width: 1.35rem; height: 1.35rem; margin-right: .55rem; place-items: center; color: #111; border-radius: 50%; background: #ffad66; font-size: .72rem; font-weight: 900; }
+.register-form-panel { padding: 2.5rem 3rem; }
+.register-form-panel .form-control { min-height: 46px; background: #fbfaf8; }
+.btn-danger { background: var(--pizza-red-bright); border-color: var(--pizza-red-bright); }
+.btn-danger:hover { background: #c82e29; border-color: #c82e29; }
+
+@media (max-width: 991.98px) {
+  .register-shell { grid-template-columns: 1fr; }
+  .register-story { min-height: 360px; }
+  .register-story-content { padding: 2rem; }
+}
+@media (max-width: 575.98px) {
+  .register-form-panel { padding: 1.5rem; }
+  .config-page, .register-page { background: linear-gradient(180deg,#111 0 16rem,#f3f0ec 16rem); }
+}
+
+/* Pizza-Vorschau: lokales Foto als Grundlage, Zutaten als Chips daneben.
+   Es gibt keine freigestellten Zutatenbilder im Projekt, deshalb werden
+   bewusst keine gezeichneten Zutaten auf die Pizza gelegt. */
+.preview-pizza { --pizza-size: 170px; position: relative; width: min(var(--pizza-size), 78vw); aspect-ratio: 1; overflow: hidden; border-radius: 50%; border: .4rem solid #c97939; background: #1d1b1a; box-shadow: 0 1.1rem 2.4rem rgba(45,24,12,.28); transition: width .35s cubic-bezier(.34,1.3,.64,1); }
+.pizza-photo { width: 100%; height: 100%; object-fit: cover; display: block; }
+.preview-pizza[data-empty="true"] { border-color: #4a4038; background: linear-gradient(135deg,#1d1b1a,#38312c); box-shadow: 0 1rem 2rem rgba(0,0,0,.16); }
+.preview-pizza[data-empty="true"] .pizza-photo { opacity: .28; filter: grayscale(.55); }
+.pizza-hint { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; color: rgba(255,255,255,.88); font-size: .75rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; pointer-events: none; }
+.preview-pizza[data-empty="true"] .pizza-hint { opacity: 1; }
+.pizza-photo-note { margin: 0; color: #8a7770; font-size: .74rem; text-align: center; }
+.pizza-sides { display: flex; flex-wrap: wrap; justify-content: center; gap: .4rem; }
+.side-marker { display: inline-flex; align-items: center; gap: .35rem; padding: .3rem .6rem .3rem .3rem; border: 1px solid #eee1cf; border-radius: 999px; background: #fffaf0; color: #2b211c; font-size: .76rem; font-weight: 700; }
+.side-marker-dot { display: grid; place-items: center; width: 1.5rem; height: 1.5rem; border-radius: 50%; background: #2b211c; color: #ffb06b; font-size: .6rem; font-weight: 800; }
+
+/* Zutaten-Chips */
+.chip-block-title { display: block; margin-bottom: .4rem; color: #8a7770; font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.pizza-chips { display: flex; flex-wrap: wrap; gap: .35rem; }
+.pizza-chip { padding: .25rem .6rem; border: 1px solid #e8ddd4; border-radius: 999px; background: #fff; font-size: .78rem; font-weight: 600; overflow-wrap: anywhere; }
+.pizza-chip.chip-teige { border-color: #e2d2bf; background: #fdf6ec; }
+.pizza-chip.chip-saucen { border-color: #f0cfc9; background: #fdf1ef; }
+.pizza-chip.chip-kaese { border-color: #eedebd; background: #fdf9ec; }
+.pizza-chip.chip-extras { border-color: #d9d2ea; background: #f6f4fd; }
+.pizza-chip.chip-light { border-color: #bfe0c9; background: #eef8f1; }
+
+/* Naehrwerte */
+.nutrition-panel { padding: .9rem 1rem; border: 1px solid #ece2d8; border-radius: 1rem; background: #fbf8f5; }
+.nutrition-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(84px, 1fr)); gap: .5rem .75rem; }
+.nutrition-cell { min-width: 0; }
+.nutrition-key { display: block; color: #8a7770; font-size: .7rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.nutrition-value { display: block; font-size: 1.05rem; font-weight: 800; overflow-wrap: anywhere; }
+.nutrition-price { color: var(--pizza-red); }
+.nutrition-line { margin: .75rem 0 0; padding-top: .6rem; border-top: 1px dashed #e4d8cc; color: #4a3f39; font-size: .82rem; font-weight: 600; overflow-wrap: anywhere; }
+.nutrition-badges { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .6rem; }
+.nutrition-badge { padding: .2rem .6rem; border-radius: 999px; background: #211e1c; color: #ffd0a4; font-size: .72rem; font-weight: 800; letter-spacing: .03em; }
+.nutrition-note { margin: .6rem 0 0; color: #8a7770; font-size: .72rem; line-height: 1.45; }
+.nutrition-note a { color: #8a5a2b; }
+
+/* Anmeldung im gleichen Steinofen-Look wie die Registrierung */
+.login-page { background: radial-gradient(circle at 88% 7%, rgba(228,61,53,.22), transparent 24rem), linear-gradient(180deg, #111 0 22rem, #f3f0ec 22rem 100%); }
+.login-shell { display: grid; grid-template-columns: minmax(280px,.9fr) minmax(360px,1.1fr); overflow: hidden; max-width: 980px; margin-inline: auto; border-radius: 1.5rem; background: #fff; box-shadow: 0 1.5rem 4rem rgba(0,0,0,.25); }
+.login-story { position: relative; min-height: 520px; display: flex; align-items: flex-end; color: #fff; background: #161311 url("../img/hero-pizza.webp") 60% center / cover no-repeat; }
+.login-story::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg,rgba(5,4,4,.15),rgba(5,4,4,.94)); }
+.login-story-content { position: relative; z-index: 1; padding: 2.5rem; }
+.login-story h2 { font-size: clamp(1.9rem,3vw,2.8rem); font-weight: 900; line-height: 1.02; letter-spacing: -.035em; }
+.login-story p { margin-bottom: 0; color: rgba(255,255,255,.78); }
+.login-form-panel { padding: 2.5rem 3rem; }
+.login-form-panel .form-control { min-height: 46px; background: #fbfaf8; }
+@media (max-width: 991.98px) {
+  .login-shell { grid-template-columns: 1fr; }
+  .login-story { min-height: 260px; }
+  .login-story-content { padding: 1.75rem; }
+}
+@media (max-width: 575.98px) {
+  .login-form-panel { padding: 1.5rem; }
+  .login-page { background: linear-gradient(180deg,#111 0 16rem,#f3f0ec 16rem); }
+}
+
+/* Startseite: Schrittnummern statt Emojis, Naehrwertbereich */
+.step-number { display: inline-grid; place-items: center; width: 2.75rem; height: 2.75rem; margin-bottom: .75rem; border-radius: 50%; background: #211e1c; color: #ffb06b; font-size: 1.25rem; font-weight: 900; }
+.nutrition-section { color: #fff; background: linear-gradient(135deg, #171413 0%, #2c211b 60%, #3a2417 100%); border: 1px solid rgba(255,255,255,.08); }
+.nutrition-section .section-title { color: #fff; }
+.nutrition-section .section-eyebrow { color: #ffb06b; }
+.nutrition-section > .row > div > p { color: rgba(255,255,255,.76); }
+.nutrition-section .nutrition-note { color: rgba(255,255,255,.55); }
+.nutrition-highlights { display: grid; gap: .6rem; padding: 0; margin: 0 0 .9rem; list-style: none; }
+.nutrition-highlights li { display: grid; padding: .6rem .85rem; border-radius: .75rem; background: rgba(255,255,255,.07); }
+.nutrition-highlights strong { font-size: .92rem; }
+.nutrition-highlights span { color: rgba(255,255,255,.66); font-size: .8rem; }
+
+/* Tabellen scrollen innerhalb ihres Containers - auch wenn das Bootstrap-CSS
+   (CDN) nicht geladen werden konnte, damit keine Seite horizontal ueberlaeuft. */
+.table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.legal-page table { min-width: 0; }
+.legal-page code { overflow-wrap: anywhere; }

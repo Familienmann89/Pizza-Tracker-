@@ -11,6 +11,12 @@ Der Pizza Tracker ist eine Webanwendung, in der Nutzer ihre eigene Pizza zusamme
 - Gutscheincodes für prozentuale Rabatte einlösen
 - Registrierung und Login
 - Eigene Konfigurationen speichern, anzeigen und löschen
+- Pizza-Größen mit Durchmesser anzeigen
+- Auswahl in einer dynamischen Pizza-Vorschau darstellen
+- Projekt-, Datenschutz- und Allergenhinweise bereitstellen
+- Makronährstoffe (Protein, Kohlenhydrate, Fett, Ballaststoffe) live mitberechnen
+- Leichtere Zutatenvarianten und einen Protein-/Low-Carb-Teig anbieten
+- Nachvollziehbare Ernährungskennzeichnungen aus den hinterlegten Zutatendaten ableiten
 
 ## Gutschein-System
 
@@ -33,7 +39,7 @@ Es gibt verschiedene Arten von Gutscheincodes:
 | Gast (nicht angemeldet) | Nutzer | Pizza konfigurieren sowie Preis und Kalorien sehen |
 | Registrierter Nutzer | Hauptnutzer | Konfigurationen speichern und wiederverwenden |
 | Projektgruppe | Entwickler | Eine funktionierende und nachvollziehbare Umsetzung |
-| Betreuer (Carsten Lucke) | Prüfer | Nachvollziehbare Softwareentwicklung im Rahmen von WK_1208 |
+| Betreuer (Carsten Lucke) | Prüfer | Nachvollziehbare Softwareentwicklung im Rahmen von WK_1106 |
 
 ## Was gehört dazu — und was nicht?
 
@@ -50,12 +56,16 @@ Es gibt verschiedene Arten von Gutscheincodes:
 - Admin-Bereich für Pizzeria
 - Native App für Handy
 - Echtzeit-Tracking
+- Getränke, Warenkorb und sonstige Produktkategorien
+- Verbindliche Ernährungs- oder Allergenberatung (die Nährwert- und Allergenangaben sind ausdrücklich Richtwerte)
+- Mengengenaue Rezepturen und Herstellerangaben je Zutat
+- Echter Warenkorb, Bestellprozess und Zahlungsanbieter (PayPal, Apple Pay, Google Pay, Kreditkarte) — mögliche spätere Erweiterung
 
 ## Rahmenbedingungen
 
 | Kategorie | Was gilt |
 |---|---|
-| Kurs | Softwaretechnik (WK_1208), THM |
+| Kurs | Wirtschaftsinformatik-Projekt I (Softwaretechnik), WK_1106, THM |
 | Gruppe | 5 Personen, Wirtschaftsinformatik B.Sc. |
 | Technik | PHP 8, JavaScript, MySQL/MariaDB, Bootstrap 5.3 |
 | Betrieb | Lokal per XAMPP oder MAMP |
