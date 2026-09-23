@@ -1,84 +1,76 @@
 # 10 Qualitätsanforderungen
 
-> **STATUS: GERÜST — NOCH KEINE DOKUMENTATION.**
-> Übernommen wurden die Zweiteilung (Übersicht + Szenarien), die Priorisierung und die
-> Unterscheidung Nutzungs-/Änderungsszenario aus dem Herold-Beispiel.
-> **Angepasst:** Messkriterien müssen hier manuell prüfbar sein — es gibt keine automatisierten
-> Tests, auf die verwiesen werden könnte.
-> Alle ⟦…⟧-Stellen sind zu belegen.
+Dieses Kapitel konkretisiert die Qualitätsziele aus [Kapitel 1.2](01-einfuehrung-ziele.md#12-qualitätsziele) und die nichtfunktionalen Anforderungen aus [N1](../spec/N1-nichtfunktional.md). Die Anforderungen werden durch überprüfbare Nutzungsszenarien und Änderungsszenarien beschrieben. Da das Projekt keine automatisierten Tests enthält, sind die Kriterien so formuliert, dass sie mit Browser, Entwicklerwerkzeugen, HTTP-Aufrufen und Datenbankabfragen manuell geprüft werden können.
 
-Dieses Kapitel sammelt die Qualitätsanforderungen, die die Architektur über die Qualitätsziele
-aus [§ 1.2](A01-einfuehrung-und-ziele.md) hinaus prägen. ⟦Dateiname und Abschnittsnummer von
-A01 prüfen.⟧
+Die Prioritäten bedeuten:
 
-> ⟦**Zuerst A01 lesen.** Die dort genannten Qualitätsziele sind verbindlich. Dieses Kapitel
-> verfeinert sie und erfindet keine neuen. Falls A01 andere Ziele nennt als die sieben unten
-> aus dem Briefing: A01 hat Vorrang, Abweichung im Konsistenzcheck festhalten.⟧
+- **A — architekturprägend:** Ein Verfehlen widerspricht einem zentralen Qualitätsziel oder einer wesentlichen Architekturentscheidung.
+- **B — verbindlich:** Die Anforderung ist für den Projektumfang relevant, kann aber lokal und ohne grundlegenden Architekturwechsel erfüllt werden.
+- **C — wünschenswert:** Die Anforderung verbessert die Anwendung, ist für den vereinbarten Projektumfang jedoch nicht zwingend.
 
 ---
 
 ## 10.1 Qualitätsbaum
 
-⟦Priorisierung: **A** — architekturprägend, ein Verfehlen entwertet eine Architekturentscheidung;
-**B** — verbindlich, aber lokal umsetzbar; **C** — wünschenswert.
-Nicht alle sieben Kategorien sind A. Ehrlich einstufen — eine Tabelle mit sieben A-Anforderungen
-sagt nichts aus.⟧
+| Qualitätsaspekt | Konkretisierte Anforderung | Priorität | Bezug zu Kapitel 1 / Spezifikation | Realisierung und Nachweis |
+|---|---|---:|---|---|
+| **Funktionale Korrektheit** | Eine identische Pizza-Konfiguration ergibt bei identischem Gutschein denselben serverseitig berechneten Endpreis. | A | Qualitätsziel 2; UC01–UC04 | Serverseitige Neuberechnung aus `pizza_data.json` gemäß [§ 8.9](A08-cross-cutting-concepts.md#89-preis--und-kalorienberechnung); QS-01 und QS-03 |
+| **Sicherheit** | Nutzer können nur ihre eigenen gespeicherten Konfigurationen laden und löschen. | A | Qualitätsziel 1; NFA05 | Sessionprüfung und Eigentumsbedingung gemäß [§ 8.6](A08-cross-cutting-concepts.md#86-autorisierung); QS-02 und QS-05 |
+| **Sicherheit** | Passwörter werden ausschließlich als Hash gespeichert. | A | Qualitätsziel 1; NFA02 | `password_hash()` und `password_verify()` gemäß [§ 8.7](A08-cross-cutting-concepts.md#87-passwortschutz) |
+| **Sicherheit** | Datenbankeingaben werden über vorbereitete SQL-Anweisungen verarbeitet. | A | Qualitätsziel 1; NFA03–NFA04 | PDO mit deaktivierter Emulation und Prepared Statements gemäß [§ 8.8](A08-cross-cutting-concepts.md#88-datenbankzugriff) |
+| **Benutzbarkeit** | Preis, Kalorien und Nährwerte werden unmittelbar nach einer Änderung der Auswahl aktualisiert. | B | Qualitätsziel 3; NFA06; UC01–UC03 | Clientseitige Berechnung und DOM-Aktualisierung; QS-04 |
+| **Performance** | Die Neuberechnung im Konfigurator erfolgt ohne vollständigen Seitenreload. | B | Qualitätsziel 4; NFA01 | Browserlogik und JSON-basierte Kommunikation gemäß [ADR 9.4](A09-architecture-decisions.md#94-kommunikation-über-fetch-und-json-api); QS-04 |
+| **Wartbarkeit** | Optionen innerhalb bestehender Kategorien werden zentral in `data/pizza_data.json` gepflegt. | B | Ergänzende Architekturanforderung; [ADR 9.5](A09-architecture-decisions.md#95-einsatz-von-pizza_datajson-als-zentrale-fachdatenquelle) | Browser und Backend lesen dieselbe Fachdatenquelle gemäß [§ 8.2](A08-cross-cutting-concepts.md#82-zentrale-fachdaten--pizza_datajson); QS-07 und QS-08 |
+| **Kompatibilität** | Die Anwendung ist in aktuellen Desktop-Browsern und bei typischen mobilen sowie Desktop-Breiten bedienbar. | B | Qualitätsziel 5; NFA07 | Bootstrap und eigenes responsives CSS gemäß [§ 8.11](A08-cross-cutting-concepts.md#811-responsive-benutzeroberfläche); QS-06 |
+| **Betreibbarkeit** | Die Anwendung kann anhand der mitgelieferten Anleitung in einer lokalen XAMPP- oder MAMP-Umgebung eingerichtet werden. | B | Qualitätsziel 6; NFA08 | Installationsschritte in `README.md` und `INSTALL.md` sowie [§ 7.3](A07-deployment-view.md#73-inbetriebnahme); QS-09 |
+| **Fehlertransparenz** | Ungültige oder abgelaufene Gutscheine werden abgelehnt und dem Nutzer verständlich gemeldet. | B | Funktionale Korrektheit; N2 „Fehlerbehandlung“ | Gemeinsame JSON-Fehlerantworten und Statuscodes; QS-10 |
 
-| Kategorie (ISO 25010) | Anforderung | Priorität | Qualitätsziel (A01) | Realisiert durch |
-|-----------------------|-------------|-----------|---------------------|------------------|
-| **Funktionale Korrektheit** | Gleiche Konfiguration ergibt konsistente Preisberechnung | ⟦A?⟧ | ⟦QZ-…⟧ | ⟦§ 8.9, § 8.2⟧ |
-| **Sicherheit** | Fremde Konfigurationen sind serverseitig nicht löschbar | ⟦A⟧ | ⟦QZ-…⟧ | [§ 8.6](A08-querschnittliche-konzepte.md#86-autorisierung) |
-| | ⟦Passwörter nur als Hash gespeichert⟧ | ⟦B⟧ | ⟦…⟧ | [§ 8.7](A08-querschnittliche-konzepte.md#87-passwortschutz) |
-| | ⟦SQL-Injection ausgeschlossen (Prepared Statements)⟧ | ⟦B⟧ | ⟦…⟧ | [§ 8.8](A08-querschnittliche-konzepte.md#88-datenbankzugriff) |
-| **Benutzbarkeit** | Preis und kcal aktualisieren sich unmittelbar bei Auswahl | ⟦B⟧ | ⟦…⟧ | ⟦§ 6.4, ADR-004⟧ |
-| **Performance** | Neuberechnung ohne vollständigen Seitenreload | ⟦B⟧ | ⟦…⟧ | ⟦ADR-004⟧ |
-| **Wartbarkeit** | Pizza-Optionen zentral über `pizza_data.json` pflegbar | ⟦A⟧ | ⟦…⟧ | [§ 8.2](A08-querschnittliche-konzepte.md#82-zentrale-fachdaten--pizza_datajson), ADR-005 |
-| **Kompatibilität** | Nutzbar in gängigen modernen Browsern, verschiedene Bildschirmgrößen | ⟦B⟧ | ⟦…⟧ | [§ 8.11](A08-querschnittliche-konzepte.md#811-responsive-ui) |
-| **Betreibbarkeit** | Nachvollziehbare lokale Inbetriebnahme mit XAMPP | ⟦B⟧ | ⟦…⟧ | [§ 7.3](A07-verteilungssicht.md#73-inbetriebnahme) |
+### Bewusst nicht vertiefte Qualitätsaspekte
 
-**Bewusst nicht enthalten.** ⟦Herold benennt weggelassene Zweige samt Begründung — das ist
-wirksam gegen den Eindruck, etwas übersehen zu haben. Kandidaten für euch:
-Barrierefreiheit, Internationalisierung, Skalierbarkeit/Lastverhalten, Verfügbarkeit,
-Datenschutz/DSGVO. Je einen Halbsatz mit Begründung, nicht mehr.
-Aber nur schreiben, wenn es tatsächlich eine bewusste Entscheidung war.⟧
+- **Skalierbarkeit und Hochverfügbarkeit:** Die Anwendung ist für einen lokalen Lehrbetrieb auf einem einzelnen Rechner vorgesehen. Lastverteilung, Failover und Mehrserverbetrieb liegen außerhalb des Projektumfangs.
+- **Internationalisierung:** Die Benutzerschnittstelle ist ausschließlich deutschsprachig. Eine mehrsprachige Oberfläche ist nicht Teil der M3-Version.
+- **Produktiver Internetbetrieb:** TLS-Terminierung, öffentliches Hosting und produktive Serverhärtung sind nicht vorgesehen, weil die Anwendung lokal über XAMPP beziehungsweise MAMP betrieben wird.
+- **Vollständige Barrierefreiheit:** Semantische HTML-Elemente und Beschriftungen werden verwendet, ein formaler Test nach WCAG ist jedoch nicht Bestandteil des Projekts. Deshalb wird keine vollständige Barrierefreiheit zugesichert.
+
+Diese Abgrenzungen heben die grundlegenden Sicherheitsanforderungen an gespeicherte Passwörter, Eingabevalidierung und Autorisierung nicht auf.
 
 ---
 
 ## 10.2 Qualitätsszenarien
 
-**U** = Nutzungsszenario, **Ä** = Änderungsszenario.
+**U** bezeichnet ein Nutzungsszenario, **Ä** ein Änderungsszenario. Die Tabelle formuliert Soll-Kriterien. Die Durchführung und das tatsächliche Ergebnis werden in einem manuellen Testprotokoll mit Datum, Browser, geprüftem Commit und Ist-Ergebnis festgehalten.
 
-⟦Jedes Szenario braucht laut Briefing: Auslöser, Umgebung, erwartete Reaktion, prüfbares
-Kriterium. Die Tabellenform unten deckt das ab — „Kontext/Auslöser" enthält beides.
-**Prüfregel für jedes Kriterium: Könnte ein Kommilitone es in unter fünf Minuten ohne
-Vorwissen nachprüfen?** Wenn nein, ist es kein Kriterium, sondern ein Wunsch.⟧
-
-| ID | Art | Kontext / Auslöser | Erwartete Reaktion | Prüfbares Kriterium |
-|----|-----|--------------------|--------------------|---------------------|
-| QS-01 | U | ⟦Dieselbe Konfiguration wird zweimal zusammengestellt und gespeichert.⟧ | ⟦…⟧ | ⟦Beide Datensätze weisen denselben Preis aus. Prüfbar per SELECT.⟧ |
-| QS-02 | U | ⟦Angemeldeter Nutzer A sendet eine Löschanfrage mit der ID einer Konfiguration von Nutzer B — z. B. über die Entwicklerkonsole.⟧ | ⟦Server lehnt ab; Datensatz bleibt bestehen.⟧ | ⟦HTTP-Status ⟦…⟧; Zeile in `konfigurationen` unverändert. Manuell nachstellbar.⟧ |
-| QS-03 | U | ⟦Client sendet beim Speichern einen manipulierten Preis.⟧ | ⟦…⟧ | ⟦**Erst formulieren, wenn § 8.9 geklärt ist.** Falls der Server nicht nachrechnet, gehört dieses Szenario nicht hierher, sondern als Befund nach A11 — ein Szenario, das der Code nicht erfüllt, darf nicht als erfüllt dokumentiert werden.⟧ |
-| QS-04 | U | ⟦Nutzer wählt im Konfigurator eine zusätzliche Zutat.⟧ | ⟦Preis und kcal aktualisieren sich ohne Seitenwechsel.⟧ | ⟦Anzeige aktualisiert, ohne dass im Netzwerk-Tab ein Dokument-Request erscheint. Gute Kriterien sind beobachtbar, nicht gefühlt.⟧ |
-| QS-05 | U | ⟦Nicht angemeldeter Besucher ruft einen geschützten Endpunkt direkt auf.⟧ | ⟦…⟧ | ⟦…⟧ |
-| QS-06 | U | ⟦Anwendung wird auf ⟦Breite⟧ px dargestellt.⟧ | ⟦…⟧ | ⟦Bedienbar ohne horizontales Scrollen; welche Browser wurden tatsächlich geprüft? Nur die nennen.⟧ |
-| QS-07 | Ä | ⟦Eine neue Zutat mit Preis und kcal soll aufgenommen werden.⟧ | ⟦Ein Eintrag in `pizza_data.json`; Konfigurator zeigt sie an, Preis rechnet mit.⟧ | ⟦Null Änderungen an HTML-, JS- oder PHP-Dateien. **Vor dem Schreiben ausprobieren** — falls die Zutat auch im HTML stehen muss, ist das Wartbarkeitsziel nicht erfüllt und der Befund gehört nach A11.⟧ |
-| QS-08 | Ä | ⟦Ein Preis wird in `pizza_data.json` geändert, nachdem Konfigurationen gespeichert wurden.⟧ | ⟦…⟧ | ⟦Ändert sich der Preis alter Konfigurationen rückwirkend? Beides ist ein legitimes Ergebnis, aber es muss dokumentiert und gewollt sein. Siehe ADR-005.⟧ |
-| QS-09 | Ä | ⟦Das Projekt wird auf einem fremden Rechner in Betrieb genommen.⟧ | ⟦…⟧ | ⟦In unter ⟦X⟧ Minuten lauffähig, ausschließlich anhand der README. **Einmal von jemandem ausprobieren lassen, der es nicht gebaut hat** — das ist der einzige ehrliche Test für Betreibbarkeit.⟧ |
-| QS-10 | U | ⟦Ungültiger oder abgelaufener Gutscheincode wird eingegeben.⟧ | ⟦…⟧ | ⟦…⟧ |
-
-**Rückverfolgbarkeit.** ⟦Nach der Szenarientabelle ein bis zwei Sätze: Welches Szenario belegt
-welches Qualitätsziel aus A01? Herold macht das am Kapitelende und es kostet zwei Zeilen.⟧
+| ID | Art | Kontext und Auslöser | Erwartete Reaktion | Prüfbares Kriterium |
+|---|:---:|---|---|---|
+| **QS-01** | U | Ein angemeldeter Nutzer stellt dieselbe Pizza zweimal mit identischer Größe, identischen Zutaten und identischem Gutschein zusammen und speichert beide Konfigurationen. | Der Server berechnet in beiden Fällen denselben Endpreis. | Die beiden Datensätze in `konfigurationen` besitzen denselben Wert in `preis`. Unterschiede bei ID, Name oder Erstellungszeitpunkt sind zulässig. |
+| **QS-02** | U | Nutzer A sendet an `api/delete_config.php` die ID einer Konfiguration von Nutzer B. | Die fremde Konfiguration wird nicht gelöscht und es werden keine Informationen über ihren Inhalt ausgegeben. | Der Endpunkt antwortet mit HTTP 404 und `success: false`. Eine anschließende Datenbankabfrage zeigt, dass der Datensatz unverändert vorhanden ist. |
+| **QS-03** | U | Ein angemeldeter Nutzer ergänzt den JSON-Request an `api/save_config.php` um einen manipulierten Preis. | Der übertragene Preis wird ignoriert. Der Server validiert die Auswahl und berechnet den Preis selbst aus `pizza_data.json` und einem gegebenenfalls gültigen Gutschein. | Der gespeicherte Preis entspricht dem Ergebnis von `calculatePizzaTotals()` und nicht dem manipulierten Request-Wert. |
+| **QS-04** | U | Im Konfigurator wird Größe, Teig, Sauce, Käse, Belag oder Extra geändert. | Preis, Kalorien, Makronährwerte, Vorschau und Zusammenfassung werden unmittelbar aktualisiert. | Die sichtbaren Werte ändern sich ohne Seitenwechsel. Im Netzwerk-Tab entsteht durch die Auswahländerung kein neuer Dokument-Request. |
+| **QS-05** | U | Ein nicht angemeldeter Besucher ruft `api/save_config.php`, `api/load_configs.php` oder `api/delete_config.php` direkt auf. | Der Server verweigert die geschützte Aktion. | Jeder korrekt aufgerufene geschützte Endpunkt antwortet mit HTTP 401 und einer JSON-Antwort mit `success: false`; es wird kein Datensatz angelegt, geladen oder gelöscht. |
+| **QS-06** | U | Die Anwendung wird in einem aktuellen Browser mit einer mobilen Breite von 360 Pixeln und einer Desktop-Breite von 1280 Pixeln geöffnet. | Navigation, Formulare, Konfigurator und Tabellen bleiben erreichbar und bedienbar. | Bei beiden Breiten gibt es auf Seitenebene kein horizontales Scrollen; Texte und Bedienelemente überdecken sich nicht. Breite Tabellen dürfen innerhalb ihres vorgesehenen Containers horizontal scrollbar sein. Der verwendete Browser wird im Testprotokoll genannt. |
+| **QS-07** | Ä | Innerhalb einer bestehenden Kategorie soll eine neue Pizzaoption mit Preis, Kalorien, Nährwerten und Kennzeichnungen ergänzt werden. | Die neue Option wird aus `pizza_data.json` im Konfigurator erzeugt und vom Backend als gültige Auswahl akzeptiert. | Für die neue Option ist nur eine Änderung an `data/pizza_data.json` erforderlich; HTML-, JavaScript- und PHP-Dateien bleiben unverändert. Preis und Nährwerte werden nach Auswahl korrekt einbezogen. |
+| **QS-08** | Ä | Der Preis einer bestehenden Option in `pizza_data.json` wird geändert, nachdem bereits Konfigurationen gespeichert wurden. | Neue Speichervorgänge verwenden den geänderten Preis; bereits gespeicherte Datensätze behalten ihren historischen Preis. | Vorhandene Zeilen in `konfigurationen.preis` bleiben unverändert. Eine anschließend neu gespeicherte identische Konfiguration verwendet den neuen Preis aus `pizza_data.json`. |
+| **QS-09** | Ä | Das Repository wird auf einem Rechner eingerichtet, auf dem der Pizza Tracker zuvor nicht installiert war. | Eine Person kann die Anwendung ausschließlich mithilfe von `README.md` und `INSTALL.md` unter XAMPP oder MAMP starten. | Repository in den DocumentRoot kopieren, Apache und MySQL/MariaDB starten, `database/schema.sql` importieren und `startseite.html` öffnen. Ziel: lauffähige Anwendung innerhalb von 15 Minuten und ohne Quellcodeänderung. Tatsächliche Dauer und zusätzliche Rückfragen werden protokolliert. |
+| **QS-10** | U | Im Konfigurator wird ein unbekannter, inaktiver oder abgelaufener Gutscheincode eingegeben. | Der Gutschein wird nicht aktiviert, der Preis bleibt ohne Rabatt und die Oberfläche zeigt eine verständliche Fehlermeldung. | Unbekannter Code führt zu HTTP 404, inaktiver Code zu HTTP 400 und abgelaufener Code zu HTTP 410. Die Antwort enthält `success: false`; `activeCoupon` bleibt beziehungsweise wird `null`. |
 
 ---
 
-## Was noch zu klären ist
+## 10.3 Rückverfolgbarkeit
 
-| # | Frage | Quelle |
-|---|-------|--------|
-| 1 | Welche Qualitätsziele nennt A01 § 1.2 genau? | `docs/arch/A01-…` |
-| 2 | Enthält `docs/spec/` einen NFR-Katalog mit Messkriterien? | `docs/spec/` |
-| 3 | Rechnet der Server den Preis nach? (entscheidet über QS-03) | `api/save_config.php` |
-| 4 | Funktioniert QS-07 tatsächlich ohne Codeänderung? | ausprobieren |
-| 5 | Werden Preise historisiert? (entscheidet über QS-08) | `schema.sql` |
-| 6 | Welche Browser wurden tatsächlich geprüft? | Team |
-| 7 | Existiert eine README mit Inbetriebnahme? | Repo-Wurzel |
+Die Szenarien decken die Qualitätsziele aus Kapitel 1 wie folgt ab:
+
+- **Funktionale Korrektheit:** QS-01, QS-03, QS-08 und QS-10
+- **Sicherheit:** QS-02, QS-03 und QS-05
+- **Benutzbarkeit:** QS-04 und QS-06
+- **Performance:** QS-04
+- **Wartbarkeit der Fachdaten:** QS-07 und QS-08
+- **Kompatibilität:** QS-06
+- **Betreibbarkeit:** QS-09
+
+Die Szenarien QS-03 und QS-08 belegen außerdem die in [ADR 9.5](A09-architecture-decisions.md#95-einsatz-von-pizza_datajson-als-zentrale-fachdatenquelle) beschriebene Entscheidung, dieselbe Fachdatenquelle für Browser und Backend zu verwenden. QS-02 und QS-05 konkretisieren die in [§ 8.5](A08-cross-cutting-concepts.md#85-authentifizierung-und-session) und [§ 8.6](A08-cross-cutting-concepts.md#86-autorisierung) dokumentierte Trennung zwischen sichtbarer Benutzeroberfläche und serverseitiger Zugriffskontrolle.
+
+---
+
+## 10.4 Nachweisgrenzen
+
+Die Szenarien definieren überprüfbare Anforderungen, ersetzen aber kein ausgefülltes Testprotokoll. Insbesondere Aussagen zur Browserkompatibilität, Darstellung bei 360 beziehungsweise 1280 Pixeln und Einrichtungsdauer auf einem fremden Rechner gelten erst nach dokumentierter Durchführung als nachgewiesen. Bis dahin handelt es sich um verbindliche Abnahmekriterien für den finalen M3-Stand.
