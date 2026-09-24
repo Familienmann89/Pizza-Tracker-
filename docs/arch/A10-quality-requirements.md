@@ -97,4 +97,4 @@ Die vorhandene Implementierung weist bekannte Grenzen auf, die nicht durch abges
 
 Die 15 Minuten für QS-09 sind ein projektspezifisches Ziel, keine hier nachgewiesene Vorgabe des Prüfers. Wird es verfehlt, wird die Überschreitung mit Ursache dokumentiert. Der Status einer Anforderung wird nicht allein durch eine Quellcodeprüfung auf „bestanden“ gesetzt.
 
-Nach Durchführung wird hier auf das tatsächlich angelegte Testprotokoll verwiesen. Nicht durchgeführte, blockierte oder fehlgeschlagene Prüfungen bleiben ausdrücklich erkennbar.
+Das ausgefüllte Testprotokoll steht unter [docs/test/testprotokoll.md](../test/testprotokoll.md).
