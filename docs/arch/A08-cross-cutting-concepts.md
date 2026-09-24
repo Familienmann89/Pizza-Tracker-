@@ -1,6 +1,6 @@
 # A08 – Querschnittliche Konzepte
 
-> **Standhinweis:** Grundlage dieses Kapitels ist der bereitgestellte Projektstand `Pizza-Tracker--main(1).zip`. Angekündigte Änderungen von Person 1 an Rabatt-Rundung, WELCOME-Regel und Fehlerbehandlung sind in diesem Stand noch nicht als umgesetzt belegt. Die betroffenen Abschnitte müssen vor der finalen M3-Abgabe gegen den zusammengeführten `main`-Stand geprüft werden.
+> **Nachweisgrenze:** Die beschriebenen Mechanismen sind aus dem vorliegenden Quellcode abgeleitet. Vorhandene Schutzmaßnahmen werden von bekannten Grenzen getrennt; eine erfolgreiche Durchführung der Qualitätstests wird damit nicht behauptet.
 
 Dieses Kapitel beschreibt technische Konzepte, die in mehreren Bausteinen des Pizza Trackers verwendet werden. Die fachlichen Vorgaben stammen insbesondere aus [N2 – Querschnittskonzepte](../spec/N2-querschnittskonzepte.md), [P2 – Architekturüberblick](../spec/P2-architekturueberblick.md) und [A04 – Lösungsstrategie](A04-loesungsstrategie.md). Die konkrete Realisierung wird hier anhand des aktuellen Codes beschrieben.
 
@@ -16,7 +16,7 @@ Dieses Kapitel beschreibt technische Konzepte, die in mehreren Bausteinen des Pi
 | [8.8](#88-datenbankzugriff) | PDO und Prepared Statements | `config/database.php`, `api/*.php`, `config/helpers.php` |
 | [8.9](#89-preis--und-kalorienberechnung) | Live- und Serverberechnung | `js/konfigurator.js`, `config/helpers.php` |
 | [8.10](#810-fehlerbehandlung-und-benutzerfeedback) | Fehlerantworten und UI-Rückmeldungen | `config/helpers.php`, `api/*.php`, `js/*.js` |
-| [8.11](#811-responsive-benutzeroberflaeche) | Bootstrap und eigenes CSS | HTML-Dateien, `css/style.css` |
+| [8.11](#811-responsive-benutzeroberfläche) | Bootstrap und eigenes CSS | HTML-Dateien, `css/style.css` |
 | [8.12](#812-datenbankkonfiguration-und-zugangsdaten) | Lokale DB-Konfiguration | `config/database.php`, `.gitignore` |
 
 ---
@@ -65,6 +65,8 @@ Wichtige Spalten sind:
 
 Beläge und Extras werden nicht in eigenen Zuordnungstabellen gespeichert. Vor dem Speichern werden die PHP-Arrays mit `json_encode()` in JSON umgewandelt. Beim Laden werden sie in `api/load_configs.php` mit `json_decode()` wieder in Arrays zurückverwandelt.
 
+Der gespeicherte Preis ist der zum Speicherzeitpunkt berechnete Endpreis. Spätere Änderungen der Fachdaten ändern diesen Wert nicht automatisch. Kalorien, Makronährwerte und die vollständigen damaligen Fachdaten werden nicht gespeichert. Beim erneuten Öffnen wird die Anzeige mit den dann geladenen Fachdaten berechnet; der Datensatz ist deshalb kein vollständiger historischer Nährwert-Schnappschuss.
+
 Zwischen `konfigurationen.user_id` und `users.id` besteht ein Fremdschlüssel mit `ON DELETE CASCADE`. Wird ein Benutzer in der Datenbank gelöscht, werden seine gespeicherten Konfigurationen deshalb durch die Datenbankbeziehung mitgelöscht.
 
 ### `gutscheine`
@@ -100,20 +102,23 @@ Sie enthält die Bereiche:
 - `extras`,
 - `vorlagen`.
 
-Für die auswählbaren Bestandteile sind insbesondere Preis- und kcal-Werte hinterlegt. Die Vorlagen definieren vorkonfigurierte Pizzen wie Margherita, Salami und Hawaii.
+Für die auswählbaren Bestandteile sind Preis, Kalorien und ergänzende Nährwerte (`protein`, `kohlenhydrate`, `fett`, `ballaststoffe`) sowie Allergene und Ernährungsmerkmale hinterlegt. Größen besitzen außerdem einen Durchmesser in Zentimetern. Die Vorlagen definieren vorkonfigurierte Pizzen wie Margherita, Salami und Hawaii.
 
 ### Verwendung im Browser
 
 `js/konfigurator.js` lädt die Datei beim Start des Konfigurators:
 
 ```javascript
-pizzaData = await fetch('data/pizza_data.json').then(r => r.json());
+// Schematisch: Die konkrete Ladefunktion prüft zusätzlich die Antwort.
+const response = await fetch('data/pizza_data.json');
+pizzaData = await response.json();
 ```
 
 Das Frontend verwendet diese Daten, um:
 
 - die auswählbaren Optionen zu erzeugen,
-- Preise und kcal während der Konfiguration live zu berechnen,
+- Preise, Kalorien und Makronährwerte während der Konfiguration live zu berechnen,
+- Kennzeichnungen und die Zusammenfassung zu aktualisieren,
 - Vorlagen zu laden.
 
 ### Verwendung im Backend
@@ -125,13 +130,13 @@ Die serverseitigen Funktionen verwenden diese Daten unter anderem für:
 - die Prüfung gültiger Größen, Teige, Saucen, Käsesorten, Beläge und Extras,
 - die erneute Berechnung von Preis und kcal beim Speichern.
 
-Damit verlässt sich das Backend beim Speichern nicht auf einen vom Browser übermittelten Preis.
+Damit verlässt sich das Backend beim Speichern nicht auf einen vom Browser übermittelten Preis. Die Backend-Berechnung ermittelt Preis und Kalorien, aber keine Makronährwerte oder Ernährungsempfehlungen. Die gemeinsame Datei bedeutet also nicht, dass Browser und Backend jedes Datenfeld gleich auswerten.
 
 ### Konsequenz
 
 Frontend und Backend verwenden dieselbe Datei als Fachdatenquelle. Dadurch müssen Preise, kcal und gültige Auswahlwerte nicht in zwei unterschiedlichen Codebeständen gepflegt werden.
 
-Die beiden Seiten laden die Datei jedoch unabhängig voneinander. Entscheidend ist deshalb, dass Browser und PHP auf denselben ausgelieferten Projektstand zugreifen.
+Die beiden Seiten laden die Datei unabhängig voneinander. PHP hält die eingelesenen Daten innerhalb desselben Requests in einer statischen Variablen vor; der Browser behält seine geladenen Daten während der Seitennutzung. Eine bereits geöffnete Seite erhält spätere Dateiänderungen nicht automatisch. Derselbe ausgelieferte Projektstand und ein erneutes Laden nach Änderungen sind deshalb wichtig.
 
 Eine einfache Änderung eines bestehenden Preises oder kcal-Wertes kann grundsätzlich in `pizza_data.json` vorgenommen werden. Werden dagegen neue fachliche Kategorien oder neue Darstellungslogiken eingeführt, kann zusätzlich eine Codeanpassung notwendig sein.
 
@@ -139,7 +144,7 @@ Eine einfache Änderung eines bestehenden Preises oder kcal-Wertes kann grundsä
 
 ## 8.3 Frontend-Backend-Kommunikation
 
-Die HTML-Seiten werden im Browser ausgeführt. JavaScript kommuniziert mit den PHP-Endpunkten unter `api/` über `fetch()`.
+Der Browser stellt die HTML-Seiten dar und führt deren JavaScript aus. JavaScript kommuniziert mit den PHP-Endpunkten unter `api/` über `fetch()`.
 
 Die Anwendung verwendet keine serverseitig gerenderten PHP-Seiten als Benutzeroberfläche. PHP dient als JSON-API für Anmeldung, Sessionstatus, Gutscheine und Persistenz.
 
@@ -167,7 +172,7 @@ headers: { 'Content-Type': 'application/json' },
 body: JSON.stringify(...)
 ```
 
-Die PHP-Seite liest den Body mit `readJsonBody()` aus `php://input` und dekodiert ihn über `json_decode()`.
+Endpunkte mit fachlichen Eingabedaten lesen den Body mit `readJsonBody()` aus `php://input` und dekodieren ihn über `json_decode()`. Ein leerer Body wird als leere Eingabeliste behandelt; nicht als Array dekodierbare JSON-Werte führen zu HTTP 400. Die GET-Aufrufe senden keinen JSON-Body. Der Logout benötigt keine fachlichen Eingabedaten und liest den gesendeten leeren JSON-Body nicht aus.
 
 ### Response-Format
 
@@ -235,7 +240,7 @@ Die Anwendung prüft Eingaben sowohl im Browser als auch serverseitig. Die Brows
 | Registrierung | `api/register.php` | Pflichtfelder, E-Mail-Format, Passwortlänge, Passwortbestätigung, doppelte E-Mail | JSON-Fehler, meist HTTP 400 oder 409 |
 | Login | `api/login.php` | E-Mail und Passwort vorhanden, Zugangsdaten korrekt | HTTP 400 oder 401 |
 | Konfiguration | `normalizeConfig()` in `config/helpers.php` | Pflichtauswahl, Name maximal 100 Zeichen, alle Auswahlwerte existieren in `pizza_data.json` | HTTP 400 |
-| Gutschein | `validateCoupon()` in `config/helpers.php` | Code vorhanden, aktiv, nicht abgelaufen, WELCOME-Regel | HTTP 401/404/409/410 oder Erfolg |
+| Gutschein | `validateCoupon()` in `config/helpers.php` | Code vorhanden, aktiv, nicht abgelaufen, WELCOME-Regel | HTTP 400/401/404/409/410 oder Erfolg |
 | Löschen | `api/delete_config.php` | gültige positive Konfigurations-ID und Eigentum | HTTP 400 oder 404 |
 
 ### Registrierung
@@ -260,9 +265,13 @@ geprüft.
 
 Mit `assertChoice()` und `assertChoices()` wird außerdem geprüft, ob die übertragenen Werte tatsächlich in `pizza_data.json` vorhanden sind. Dadurch reicht es nicht aus, im Browser beliebige Werte in den Request einzufügen.
 
+### Grenzen der Eingabeprüfung
+
+Beläge und Extras werden als Listen erwartet. Werte, die keine Arrays sind, normalisiert `normalizeConfig()` jedoch zu leeren Listen, statt sie ausdrücklich abzulehnen. Innerhalb der Listen werden Typ und Existenz geprüft, aber keine doppelten Einträge entfernt. Manipulierte Wiederholungen können somit mehrfach in die Berechnung eingehen. Die vorhandene Validierung ist keine vollständige Prüfung gegen ein formales Request-Schema.
+
 ### Ausgabe von Benutzerdaten
 
-Beim Rendern gespeicherter Konfigurationen verwendet `js/meine-pizzen.js` die Funktion `escapeHtml()`, bevor Namen und andere geladene Textwerte in HTML eingefügt werden.
+Beim Rendern gespeicherter Konfigurationen verwendet `js/meine-pizzen.js` die Funktion `escapeHtml()`, bevor Namen und andere geladene Textwerte in HTML eingefügt werden. Diese Ausgabemaskierung verhindert dort, dass solche Texte als HTML interpretiert werden. Sie ist von Eingabevalidierung und parametrisierten SQL-Anfragen zu unterscheiden und belegt für sich allein keine vollständige XSS-Sicherheit der Anwendung.
 
 ---
 
@@ -276,6 +285,8 @@ Die zentrale Hilfsfunktion `startAppSession()` in `config/helpers.php` startet d
 - `samesite: Lax`,
 - `secure: true`, wenn die Anfrage über HTTPS erfolgt,
 - `path: /`.
+
+`HttpOnly` verhindert den direkten Zugriff auf das Cookie durch JavaScript; es verschlüsselt keine Verbindung. `SameSite=Lax` begrenzt die Übermittlung in bestimmten seitenübergreifenden Situationen. Bei lokalem HTTP wird `Secure` nicht gesetzt. Diese Einstellungen ersetzen weder HTTPS bei einem Internetbetrieb noch eine vollständige Sicherheitsprüfung.
 
 ### Anmeldung
 
@@ -402,7 +413,7 @@ password_verify($password, $user['passwort'])
 
 Das Klartextpasswort wird nicht in die PHP-Session übernommen und nicht in einer API-Antwort zurückgesendet.
 
-Die aktuell serverseitig belegte Mindestanforderung beträgt sechs Zeichen.
+Die aktuell serverseitig belegte Mindestanforderung beträgt sechs Zeichen. Passwort-Hashing schützt die gespeicherten Passwörter, nicht deren Übertragung über unverschlüsseltes HTTP. Der vorliegende Login-Endpunkt implementiert keine Begrenzung wiederholter Anmeldeversuche. Aus den vorhandenen Mechanismen wird deshalb keine Eignung für einen ungeschützten produktiven Internetbetrieb abgeleitet.
 
 ---
 
@@ -485,7 +496,9 @@ Die Funktion addiert die Werte aus `pizza_data.json` für:
 
 Ein aktiver Gutschein reduziert anschließend den angezeigten Preis.
 
-Die Funktion `updateTotals()` schreibt Preis und kcal direkt in die Benutzeroberfläche. Dadurch sieht der Nutzer Änderungen ohne zusätzliche Serveranfrage.
+Die Funktion summiert zusätzlich Protein, Kohlenhydrate, Fett und Ballaststoffe. `updateTotals()` aktualisiert die sichtbaren Werte, die Zusammenfassung, Kennzeichnungen und die Foto-Vorschau. Ein Gutschein reduziert nur den Preis, nicht die Nährwerte. Eine geänderte Auswahl setzt einen zuvor aktiven Gutschein zurück.
+
+Die Berechnung benötigt keine zusätzliche API-Anfrage. Ein Wechsel des Vorschaubildes kann dennoch einen Abruf einer statischen Bilddatei auslösen.
 
 ### Serverseitige Neuberechnung
 
@@ -510,7 +523,7 @@ calculatePizzaTotals(...)
 
 auf. Die Funktion liest ebenfalls `pizza_data.json` und berechnet die Werte neu.
 
-Damit entscheidet der Server über den tatsächlich gespeicherten Preis.
+Damit entscheidet der Server über den tatsächlich gespeicherten Preis. Ein zusätzlich im Request übergebener Preis wird nicht übernommen. Die Kalorien werden berechnet und in der Erfolgsantwort zurückgegeben, aber nicht in `konfigurationen` gespeichert. Makronährwerte werden ausschließlich im Browser berechnet.
 
 ### Gutscheinprüfung
 
@@ -528,9 +541,7 @@ Der Server berechnet:
 
 Im Browser wird der prozentuale Rabatt derzeit direkt vom JavaScript-Zwischenergebnis abgezogen. Dadurch kann bei bestimmten Beträgen eine Abweichung von einem Cent entstehen.
 
-Beispiel aus dem bekannten Befund ist STUDENT5 bei einer Margherita M.
-
-Dieser Punkt gehört zu den angekündigten Änderungen von Person 1 und muss vor der finalen Fassung erneut geprüft werden.
+Ein Vergleichstest muss die angezeigten und gespeicherten Werte bei identischer Auswahl und identischem Rabatt gegenüberstellen. Die gemeinsame Datenquelle allein garantiert keine identischen Ergebnisse, wenn sich die Rechenschritte unterscheiden.
 
 ### WELCOME-Regel im aktuellen Stand
 
@@ -538,7 +549,7 @@ Bei `WELCOME` prüft `validateCoupon()`, ob bereits eine Konfiguration des Nutze
 
 Dadurch ist der Nutzungsnachweis im aktuell geprüften Stand an eine noch vorhandene gespeicherte Konfiguration gekoppelt. Wird diese gelöscht, kann der Nachweis verschwinden.
 
-Auch diese Logik ist als mögliche Änderung von Person 1 angekündigt und muss vor der Abgabe erneut mit dem zusammengeführten Stand abgeglichen werden.
+Die Prüfung garantiert daher keine dauerhafte einmalige Nutzung unabhängig von späteren Löschungen. Sie kontrolliert außerdem nicht, ob dies die erste überhaupt gespeicherte Pizza des Nutzers ist, sondern nur, ob noch eine mit WELCOME gespeicherte Konfiguration existiert.
 
 ---
 
@@ -574,14 +585,15 @@ Die Frontend-Fehlerbehandlung ist nicht an allen Stellen gleich vollständig.
 Beispiele:
 
 - `auth.js` fängt Fehler bei der Sessionprüfung mit `try/catch` ab und behandelt den Nutzer dann als ausgeloggt.
-- Login und Registrierung zeigen fachliche API-Fehler in Bootstrap-Alerts an.
-- Gutscheinprüfung und Speichern behandeln nicht erfolgreiche HTTP-Antworten, besitzen im aktuellen Stand aber keinen eigenen `try/catch` um Netzwerk- oder JSON-Fehler.
+- Login und Registrierung zeigen fachliche API-Fehler in Bootstrap-Alerts an, besitzen jedoch keinen eigenen `try/catch` für Netzwerk- oder JSON-Fehler.
+- Gutscheinprüfung und Speichern behandeln nicht erfolgreiche HTTP-Antworten sowie Netzwerk- und JSON-Fehler mit `try/catch/finally`. Die jeweilige Schaltfläche ist während der Anfrage gesperrt und wird anschließend wieder freigegeben.
+- Das Laden der Fachdaten im Konfigurator besitzt ebenfalls eine Fehlerbehandlung mit sichtbarem Hinweis.
 - `loadConfigs()` unterscheidet HTTP 401 von anderen HTTP-Fehlern, besitzt jedoch ebenfalls keinen allgemeinen Netzwerkfehler-Handler.
 - Beim Löschen wird die Karte bei erfolgreichem HTTP-Status entfernt. Bei einem fehlgeschlagenen Request wird im aktuellen Code keine eigene sichtbare Fehlermeldung ausgegeben.
 
 Damit ist das in N2 formulierte Ziel einer einheitlichen und verständlichen Fehlerbehandlung im aktuellen Stand nur teilweise umgesetzt.
 
-Person 1 bearbeitet möglicherweise genau diesen Bereich. Vor der finalen Abgabe muss dieser Abschnitt daher erneut gegen den zusammengeführten Code geprüft werden.
+Auch beim Logout fehlen eine Prüfung des HTTP-Erfolgsstatus und ein eigener Netzwerkfehler-Handler. Eine Weiterleitung allein belegt daher keine erfolgreiche Abmeldung. Die konkreten Abläufe und Sonderfälle sind in [A06 – Laufzeitsicht](A06%20-%20Laufzeitsicht.md) beschrieben.
 
 ---
 
@@ -616,7 +628,7 @@ Dadurch ändert sich die Anzahl der Karten pro Zeile abhängig von der verfügba
 Der Konfigurator verwendet für die Optionen:
 
 ```css
-grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
 ```
 
 Die Optionskarten passen sich dadurch automatisch an die vorhandene Breite an.
@@ -632,6 +644,8 @@ Das Vorschau-Panel ist auf größeren Ansichten `sticky`. Für kleinere Bildschi
 ```
 
 Damit bleibt die Vorschau auf kleineren Geräten im normalen Seitenfluss.
+
+Eigenes CSS begrenzt außerdem die Pizza-Vorschau relativ zur Ansichtsbreite und erlaubt horizontales Scrollen innerhalb von Tabellencontainern. Bootstrap bleibt eine externe CDN-Abhängigkeit; eine lokale Kopie wird nicht mitgeliefert. Ohne Netzverbindung beziehungsweise verfügbaren Cache sind deshalb nicht alle Bootstrap-Stile und -Interaktionen zuverlässig verfügbar.
 
 Die Anwendung besitzt damit sowohl responsive Bootstrap-Strukturen als auch eigenes responsives CSS. Die tatsächliche Bedienbarkeit auf konkreten mobilen Geräten ist eine Testfrage und wird nicht allein durch den vorhandenen CSS-Code bewiesen.
 
@@ -657,7 +671,9 @@ Sind diese Variablen nicht gesetzt, verwendet die lokale Standardkonfiguration:
 
 Diese Defaults entsprechen einer typischen lokalen XAMPP-Entwicklungsumgebung und sind keine Produktionszugangsdaten.
 
-Die Datei `.gitignore` schließt unter anderem `.env` vom Repository aus. Im aktuell geprüften Stand existiert jedoch keine zusätzliche `.env`-Beispieldatei, die für die Anwendung zwingend benötigt würde, weil `database.php` lokale Standardwerte besitzt.
+Die Datei `.gitignore` schließt unter anderem `.env` vom Repository aus. `database.php` lädt aber keine `.env`-Datei: Das bloße Anlegen einer solchen Datei setzt die Werte für `getenv()` nicht. Abweichende Parameter müssen der PHP-Laufzeit tatsächlich als Umgebungsvariablen zur Verfügung stehen oder gemäß Installationsanleitung lokal konfiguriert werden.
+
+Die Standardwerte passen nicht automatisch zu jeder MAMP-/XAMPP-Installation. Port, Benutzer und Passwort müssen zur tatsächlich laufenden Datenbank passen. Die PHP-Laufzeit benötigt wegen des Rückgabetyps `never` mindestens PHP 8.1; verwendet werden außerdem PDO mit MySQL-Treiber und `mbstring`. Weitere Betriebsdetails stehen in [A07 – Verteilungssicht](A07-deployment-view.md).
 
 Echte Passwörter oder produktive Zugangsdaten sollten nicht in das Repository eingetragen werden.
 
@@ -669,12 +685,12 @@ Die querschnittlichen Konzepte verbinden Frontend, PHP-API und Datenbank:
 
 ```mermaid
 flowchart LR
-    B["Browser<br>HTML / Bootstrap / JavaScript"]
+    B["Browser: HTML, Bootstrap, JavaScript"]
     D["data/pizza_data.json"]
-    A["PHP-API<br>Session / Validierung / Fachlogik"]
+    A["PHP-API: Session, Validierung, Fachlogik"]
     DB[("MySQL / MariaDB")]
 
-    D -->|"Optionen, Preise, kcal"| B
+    D -->|"Optionen, Preise, Nährwerte"| B
     B -->|"fetch() / JSON"| A
     A -->|"JSON-Antwort"| B
     D -->|"Validierung und Neuberechnung"| A
@@ -696,14 +712,17 @@ Wesentliche Architekturprinzipien des aktuellen Stands sind:
 
 ---
 
-## 8.14 Offene Prüfpunkte vor der finalen Abgabe
+## 8.14 Abgleich und verbleibende Prüfpunkte
 
-Die folgenden Punkte müssen nach Integration der Änderungen von Person 1 erneut geprüft werden:
+Die beschriebenen Mechanismen sind mit [A06 – Laufzeitsicht](A06%20-%20Laufzeitsicht.md), [A09 – Architekturentscheidungen](A09-architecture-decisions.md), [A10 – Qualitätsanforderungen](A10-quality-requirements.md) und [A11 – Risiken und technische Schulden](A11-risks-and-technical-debts.md) abzugleichen. Offene Fehler werden durch ihre Dokumentation nicht behoben.
 
-1. **Rabatt-Rundung:** Verwenden Browser und Server anschließend exakt dieselbe Cent-Rundungsregel?
-2. **WELCOME-Regel:** Ist der Einmalnachweis dauerhaft und unabhängig von löschbaren Konfigurationen umgesetzt?
-3. **Fehlerbehandlung:** Werden Netzwerkfehler, ungültige JSON-Antworten und unerwartete Serverfehler verständlich behandelt?
-4. **Speichern:** Sendet der Browser weiterhin keinen Preis oder keine Benutzer-ID, sondern berechnet das Backend diese Werte weiterhin selbst?
-5. **Datenbankschema:** Wurde für die neue WELCOME-Regel eine Schemaänderung oder Migration ergänzt?
-6. **Prepared Statements:** Falls neue SQL-Abfragen hinzugekommen sind, müssen auch diese auf parametrisierte Ausführung geprüft werden.
-7. **Dokumentationsabgleich:** A06 und A08 müssen nach dem finalen Merge denselben tatsächlichen Ablauf beschreiben.
+Vor der Abgabe sind insbesondere folgende Punkte praktisch zu prüfen und mit tatsächlichen Ergebnissen zu dokumentieren:
+
+1. **Zugriffsschutz:** Geschützte Aktionen ohne Anmeldung sowie Laden und Löschen fremder Konfigurationen.
+2. **Preisberechnung:** Manipulierter Request-Preis und Rundungsunterschiede zwischen Anzeige und Speicherung.
+3. **Gutscheine:** Ungültige, inaktive und abgelaufene Codes sowie die Grenzen des WELCOME-Nachweises.
+4. **Fehlerfälle:** Unterbrochene Verbindung, ungültige Antworten und fehlende Fachdaten; Unterschiede zwischen den Browserabläufen berücksichtigen.
+5. **Persistenz:** Erneutes Speichern erzeugt einen neuen Datensatz; alte Preise bleiben bei Änderungen der Fachdaten erhalten.
+6. **Darstellung und Einrichtung:** Relevante Ansichtsbreiten, CDN-Abhängigkeit und Installation mit den tatsächlich verwendeten Datenbankparametern.
+
+Dieses Kapitel beschreibt vorhandene Architekturmechanismen und ihre Grenzen. Es behauptet weder vollständige Sicherheit noch bestandene Tests, die nicht durchgeführt wurden.

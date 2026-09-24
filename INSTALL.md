@@ -2,8 +2,12 @@
 
 ## Voraussetzungen
 
-- XAMPP mit Apache, PHP 8 und MySQL/MariaDB
+- XAMPP mit Apache, PHP ab 8.1 und MySQL/MariaDB
+- PHP-Erweiterungen `pdo_mysql` und `mbstring` (in XAMPP üblicherweise aktiv)
 - aktueller Browser
+- Internetzugang beim Laden der Seiten, da Bootstrap 5.3.3 von `cdn.jsdelivr.net` geladen wird
+
+MAMP ist als Alternative vorgesehen, verwendet aber in der Standardeinstellung andere Datenbankwerte als XAMPP. In diesem Fall müssen die Verbindungswerte (siehe unten) angepasst werden. Dieser Weg ist bisher nicht in einem Testprotokoll nachgewiesen.
 
 ## Installation unter Windows / XAMPP
 
@@ -29,8 +33,8 @@ Alternativ können die Umgebungsvariablen `PIZZA_DB_HOST`, `PIZZA_DB_PORT`, `PIZ
 
 - `PIZZA10` — 10 %
 - `SPARE20` — 20 %
-- `WELCOME` — 15 %, einmal pro registriertem Nutzer
-- `STUDENT5` — 5 %
+- `WELCOME` — 15 %, nur für angemeldete Nutzer; die Nutzung wird über vorhandene gespeicherte Konfigurationen geprüft
+- `STUDENT5` — 5 %, kein Ablaufdatum
 
 ## Kurztest
 
@@ -41,5 +45,5 @@ Alternativ können die Umgebungsvariablen `PIZZA_DB_HOST`, `PIZZA_DB_PORT`, `PIZ
 5. Knoblauch-Dip und Chili-Öl als separate Kennzeichnung neben der Pizza prüfen.
 6. Nährwertzeile mit Protein, Kohlenhydraten und Fett prüfen; Gutschein darf sie nicht verändern.
 7. Konfiguration speichern, unter „Meine Pizzen“ erneut öffnen und löschen.
-8. Startseite sowie Impressum, Datenschutz und Allergene auf Desktop und Mobilansicht öffnen.
+8. Startseite und Allergene-Seite auf Desktop und Mobilansicht öffnen.
 9. Abmelden und prüfen, dass „Meine Pizzen“ nicht mehr in der Navigation sichtbar ist.

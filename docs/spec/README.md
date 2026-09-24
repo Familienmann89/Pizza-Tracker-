@@ -123,6 +123,8 @@ Für das Projekt gibt es kein Vorgängersystem und keine Altdaten. Die Datenbank
 
 | Werkzeug | Wofür | Wie geprüft |
 |---|---|---|
-| Claude | Unterstützung bei Code, Struktur und Formulierungen | Inhalte wurden durch die Gruppe geprüft und angepasst |
+| Claude | Unterstützung bei Code, Struktur und Formulierungen; in der Abschlussphase Abgleich der Spezifikation mit dem Quellcode | Inhalte wurden durch die Gruppe gelesen, mit dem Code abgeglichen und angepasst |
 | GitHub Copilot | Unterstützung bei der Code-Vervollständigung | Vorschläge wurden vor der Übernahme geprüft |
-| ChatGPT/Codex | Unterstützung bei Analyse, Planung, Fehlerprüfung und Code-Review | Ergebnisse wurden durch die Gruppe geprüft und lokal getestet |
+| ChatGPT/Codex | Unterstützung bei Analyse, Planung, Fehlerprüfung, Code-Review, Frontend-Überarbeitung und Dokumentation; Erstellung der lokalen Pizza-Bilder | Ergebnisse wurden durch die Gruppe geprüft; Funktionstests werden im Testprotokoll dokumentiert |
+
+Die Offenlegung für die Architekturdokumentation steht in [`../arch/README.md`](../arch/README.md#eingesetzte-ki-werkzeuge).

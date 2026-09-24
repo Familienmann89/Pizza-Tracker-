@@ -1,5 +1,22 @@
 # D2 — Datentypenverzeichnis
 
+## Basistypen
+
+Die Typnamen in [D1](D1-datenmodell.md) sind fachliche Basistypen. Die Tabelle ordnet sie der Umsetzung in `database/schema.sql` zu.
+
+| Typ | Bedeutung | Umsetzung in der Datenbank |
+|---|---|---|
+| Zahl | Ganzzahlige technische Kennung | `INT UNSIGNED` |
+| Text | Zeichenkette mit Höchstlänge | `VARCHAR(n)`, Länge je Spalte |
+| Liste | Liste von Optionsnamen (Beläge, Extras) | `JSON`-Array |
+| Betrag | Eurobetrag mit zwei Nachkommastellen | `DECIMAL(8,2)` |
+| Prozent | Rabatt in Prozent | `DECIMAL(5,2)` |
+| JaNein | Wahrheitswert | `TINYINT(1)` (1 = ja, 0 = nein) |
+| Datum | Kalenderdatum bzw. Zeitpunkt | `DATE` (`gueltig_bis`), `DATETIME` (`erstellt_am`) |
+| Kalorien | Ganze Kilokalorien; wird berechnet, nicht gespeichert | — |
+
+Die Domänentypen `Groesse`, `Teig`, `Sauce` und `Kaese` werden als Text gespeichert; zulässig sind nur die unten aufgeführten Werte. Beläge und Extras werden als Liste gespeichert; zulässig sind die Namen aus den Tabellen „Beläge“ und „Extras“ weiter unten. Maßgeblich ist `data/pizza_data.json`; der Server lehnt unbekannte Werte ab.
+
 ## Domänenwerte
 
 ### Groesse (Pizza-Größe)
@@ -21,6 +38,7 @@
 | Dick & Fluffig | Dicker Teig |
 | Vollkorn | Vollkornteig |
 | Käserand | Teig mit Käserand |
+| Protein-Teig (Low Carb) | Teig mit höherem Protein- und geringerem Kohlenhydratanteil |
 
 ### Sauce
 
@@ -41,6 +59,8 @@
 | Gorgonzola | Gorgonzola |
 | Ziegenkäse | Ziegenkäse |
 | Vegan | Veganer Käseersatz |
+| Light-Mozzarella | Fettreduzierter Mozzarella |
+| Gouda light | Fettreduzierter Gouda |
 
 ---
 

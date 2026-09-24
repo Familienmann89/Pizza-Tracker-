@@ -54,7 +54,7 @@ graph LR
 |---|---|
 | **Akteur** | Gast oder angemeldeter Nutzer |
 | **Vorbedingung** | Der Konfigurator ist geöffnet |
-| **Normaler Ablauf** | 1. Größe wählen (S, M, L, XL oder XXL) <br> 2. Teigart wählen (Normal, Dünn & Knusprig, Dick & Fluffig, Vollkorn oder Käserand) <br> 3. Sauce wählen (Tomate, Pesto, Knoblauch-Öl, Crème fraîche oder BBQ) <br> 4. Käse wählen (Mozzarella, Gouda, Gorgonzola, Ziegenkäse oder Vegan) <br> 5. Beläge auswählen (Mehrfachauswahl möglich) <br> 6. Preis und Kalorien werden nach jeder Auswahl sofort aktualisiert |
+| **Normaler Ablauf** | 1. Größe wählen (S, M, L, XL oder XXL) <br> 2. Teigart wählen (Normal, Dünn & Knusprig, Dick & Fluffig, Vollkorn, Käserand oder Protein-Teig (Low Carb)) <br> 3. Sauce wählen (Tomate, Pesto, Knoblauch-Öl, Crème fraîche oder BBQ) <br> 4. Käse wählen (Mozzarella, Gouda, Gorgonzola, Ziegenkäse, Vegan, Light-Mozzarella oder Gouda light) <br> 5. Beläge auswählen (Mehrfachauswahl möglich) <br> 6. Extras auswählen (optional, Mehrfachauswahl möglich) <br> 7. Preis, Kalorien und Nährwerte werden nach jeder Auswahl sofort aktualisiert |
 | **Ergebnis** | Fertige Konfiguration mit angezeigtem Preis und Kalorien |
 | **Alternativer Ablauf** | Nutzer wählt eine Vorlage (UC11) → Felder werden vorausgefüllt und können anschließend geändert werden |
 | **Fehlerfälle** | Pflichtauswahl fehlt: Die Konfiguration kann nicht gespeichert werden |
@@ -65,7 +65,7 @@ flowchart TD
     B --> C[Teigart wählen]
     C --> D[Sauce wählen]
     D --> E[Käse wählen]
-    E --> F[Beläge wählen]
+    E --> F[Beläge und Extras wählen]
     F --> G[Preis und Kalorien\nwerden aktualisiert]
     G --> H{Gutschein\nverwenden?}
     H -->|Ja| I[UC04\nGutschein einlösen]
@@ -92,6 +92,9 @@ flowchart TD
 | **Normaler Ablauf** | Das System berechnet den Gesamtpreis auf Basis der gewählten Zutaten und zeigt ihn sofort an. Bei einem eingelösten Gutschein wird der Rabatt abgezogen. |
 | **Ergebnis** | Aktueller Preis wird angezeigt |
 
+**Akzeptanzkriterium:**
+- Die Vorlage Margherita in Größe M zeigt 7,50 €; mit PIZZA10 werden 6,75 € angezeigt.
+
 ---
 
 ### UC03 — Kalorien berechnen
@@ -103,6 +106,9 @@ flowchart TD
 | **Normaler Ablauf** | Das System summiert die Kalorienwerte aller gewählten Zutaten und zeigt das Ergebnis sofort an. |
 | **Ergebnis** | Aktuelle Kalorienanzahl wird angezeigt |
 
+**Akzeptanzkriterium:**
+- Die Vorlage Margherita in Größe M zeigt 855 kcal; ein Gutschein verändert diesen Wert nicht.
+
 ---
 
 ### UC04 — Gutscheincode einlösen
@@ -113,11 +119,11 @@ flowchart TD
 | **Vorbedingung** | Eine Pizza wurde konfiguriert |
 | **Normaler Ablauf** | 1. Nutzer gibt einen Gutscheincode ein <br> 2. Das System prüft ob der Code gültig und nicht abgelaufen ist <br> 3. Der Rabatt wird vom Preis abgezogen <br> 4. Der neue Preis wird angezeigt |
 | **Ergebnis** | Reduzierter Preis wird angezeigt |
-| **Fehlerfälle** | Ungültiger Code: Fehlermeldung wird angezeigt · Abgelaufener Code: Fehlermeldung wird angezeigt |
-| **Verfügbare Codes** | PIZZA10 (10 %), SPARE20 (20 %), WELCOME (15 %), STUDENT5 (5 %) |
+| **Fehlerfälle** | Ungültiger Code: Fehlermeldung wird angezeigt · Abgelaufener oder deaktivierter Code: Fehlermeldung wird angezeigt · WELCOME ohne Anmeldung oder bereits verwendet: Fehlermeldung wird angezeigt |
+| **Verfügbare Codes** | PIZZA10 (10 %), SPARE20 (20 %), WELCOME (15 %, nur angemeldet, einmal pro Nutzerkonto; die Nutzung wird über eine noch vorhandene gespeicherte Konfiguration erkannt, siehe [A11](../arch/A11-risks-and-technical-debts.md), R-03), STUDENT5 (5 %, kein Ablaufdatum, keine Prüfung des Studentenstatus) |
 
 **Akzeptanzkriterium:**
-- Der Code PIZZA10 reduziert den Preis um 10 %. Bei einem ungültigen Code erscheint eine Fehlermeldung.
+- PIZZA10 reduziert den Preis der Margherita in Größe M von 7,50 € auf 6,75 €; bei einem ungültigen Code erscheint eine Fehlermeldung.
 
 ---
 
@@ -190,6 +196,9 @@ flowchart TD
 | **Ergebnis** | Alle gespeicherten Pizzen des Nutzers werden angezeigt |
 | **Leere Ansicht** | Wenn noch keine Konfigurationen gespeichert wurden, erscheint ein Hinweis mit Link zum Konfigurator |
 
+**Akzeptanzkriterium:**
+- Ein angemeldeter Nutzer sieht nur seine eigenen gespeicherten Konfigurationen, die neueste zuerst. Ohne Anmeldung erscheint ein Hinweis mit Link zur Anmeldung.
+
 ---
 
 ### UC10 — Konfiguration löschen
@@ -215,3 +224,6 @@ flowchart TD
 | **Vorbedingung** | Nutzer befindet sich auf der Startseite |
 | **Normaler Ablauf** | 1. Nutzer klickt auf eine der drei Vorlagen (Margherita, Salami oder Hawaii) <br> 2. Der Konfigurator öffnet sich mit den vorausgefüllten Werten der Vorlage <br> 3. Nutzer kann die Vorlage nach Belieben anpassen |
 | **Ergebnis** | Konfigurator ist mit Vorlage vorausgefüllt |
+
+**Akzeptanzkriterium:**
+- Nach Auswahl der Vorlage Salami sind M, Normal, Tomate, Mozzarella und Salami gewählt; angezeigt werden 9,00 € und 1.020 kcal.

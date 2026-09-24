@@ -4,9 +4,12 @@ Die Bausteinsicht zeigt, aus welchen Teilen der Pizza Tracker besteht, welche Ve
 und über welche Schnittstellen die Teile zusammenarbeiten. Jeder Baustein ist einem konkreten Verzeichnis
 oder einer konkreten Datei im Repository zugeordnet.
 
-> **Grundlage:** Stand des Branches `main`, Commit `619acf4a4fb4d81b9e78fa133e6c9ecf135fa65b`.
-> Alle Aussagen sind aus dem Quellcode dieses Stands abgeleitet. Änderungen am Code nach diesem Commit
-> erfordern eine erneute Prüfung dieses Kapitels.
+> **Grundlage:** Quellcode aus `Pizza-Tracker--docs-final-documentation (3).zip`,
+> Export-Commit `04c330d159a67955149a12b2d9a7be1b8745379c` (ZIP-Kommentar), geprüft am 24.09.2026.
+> Beschrieben wird die im Code erkennbare Umsetzung. Dies ist kein Nachweis bestandener Funktionstests.
+> Änderungen am Code erfordern einen erneuten Abgleich der betroffenen Aussagen.
+
+Die Tabellenzeile **Anforderungsbezug** ordnet Bausteine den Anforderungen zu; sie bestätigt keine erfolgreiche Abnahme.
 
 **Aufbau des Kapitels.** Die Beschreibung verfeinert das System schrittweise von außen nach innen:
 
@@ -30,16 +33,16 @@ geforderten Angaben. Die Schichtbegriffe *Präsentations-*, *Anwendungs-* und *P
 ```mermaid
 flowchart TD
     subgraph Browser["Browser des Nutzers"]
-        P["Präsentationsschicht<br/>5 HTML-Seiten · css/style.css"]
-        B["Browserlogik<br/>js/*.js"]
+        P["Präsentationsschicht · 6 HTML-Seiten · css/style.css"]
+        B["Browserlogik · js/*.js"]
     end
     subgraph Server["Apache + PHP (localhost)"]
-        A["Backend/API<br/>api/*.php"]
-        S["Gemeinsame Serverlogik<br/>config/database.php · config/helpers.php"]
-        F["Fachliche Konfigurationsdaten<br/>data/pizza_data.json"]
+        A["Backend/API · api/*.php"]
+        S["Gemeinsame Serverlogik · config/database.php · config/helpers.php"]
+        F["Fachliche Konfigurationsdaten · data/pizza_data.json"]
     end
-    D[("Persistenz<br/>MySQL/MariaDB · Datenbank pizza_tracker")]
-    CDN["Bootstrap 5.3.3<br/>cdn.jsdelivr.net (extern)"]
+    D[("Persistenz · MySQL/MariaDB · Datenbank pizza_tracker")]
+    CDN["Bootstrap 5.3.3 · cdn.jsdelivr.net (extern)"]
 
     P -->|"script-Tags, IDs, data-Attribute"| B
     B -->|"fetch() · JSON über HTTP"| A
@@ -61,7 +64,7 @@ ausgeliefert, **ausgeführt** werden sie aber im Browser. Die Zuordnung zu Rechn
 | **Übersichtsdiagramm** | Abbildung oben. |
 | **Enthaltene Bausteine** | Sechs Bausteine, siehe Tabelle unten. |
 | **Lokale Beziehungen** | Siehe Tabelle „Lokale Beziehungen“ unten. |
-| **Entwurfsentscheidungen** | Dreischichtige Webanwendung ([§ 4.1](A04-loesungsstrategie.md)). PHP als Backend-Sprache, sessionbasierte Anmeldung, Bootstrap für die Gestaltung und mehrere einzelne Seiten statt einer Single-Page-Anwendung ([P2](../spec/P2-architekturueberblick.md)). Begründungen und Alternativen stehen in [Kapitel 9](A09-architecture-decisions.md) (siehe offener Punkt O-1). |
+| **Entwurfsentscheidungen** | Dreischichtige Webanwendung ([§ 4.1](A04-loesungsstrategie.md)). PHP als Backend-Sprache, sessionbasierte Anmeldung, Bootstrap für die Gestaltung und mehrere einzelne Seiten statt einer Single-Page-Anwendung ([P2](../spec/P2-architekturueberblick.md)). Begründungen und Alternativen stehen in [Kapitel 9](A09-architecture-decisions.md). |
 | **Verworfene Alternativen** | Werden in [Kapitel 9](A09-architecture-decisions.md) begründet und hier nicht wiederholt. |
 | **Referenzen** | Laufzeit: [Kapitel 6](A06%20-%20Laufzeitsicht.md) · Verteilung: [Kapitel 7](A07-deployment-view.md) · Querschnitt: [Kapitel 8](A08-cross-cutting-concepts.md) · Risiken: [Kapitel 11](A11-risks-and-technical-debts.md) |
 | **Offene Punkte** | Siehe § 5.4. |
@@ -70,54 +73,54 @@ ausgeliefert, **ausgeführt** werden sie aber im Browser. Die Zuordnung zu Rechn
 
 | # | Baustein | Schicht (§ 4.1) | Code-Artefakte | Verantwortung |
 |---|----------|-----------------|----------------|---------------|
-| 5.1.1 | **Präsentationsschicht** | Präsentation | `startseite.html`, `konfigurator.html`, `login.html`, `registrierung.html`, `meine-pizzen.html`, `css/style.css` | Aufbau und Gestaltung der fünf Dialoge |
-| 5.1.2 | **Browserlogik** | Präsentation | `js/auth.js`, `js/startseite.js`, `js/konfigurator.js`, `js/login.js`, `js/registrierung.js`, `js/meine-pizzen.js` | Alles, was im Browser abläuft: Anzeige, Live-Berechnung, Formulare, Aufrufe der API |
+| 5.1.1 | **Präsentationsschicht** | Präsentation | `startseite.html`, `konfigurator.html`, `login.html`, `registrierung.html`, `meine-pizzen.html`, `allergene.html`, `css/style.css`, `img/` | Aufbau und Gestaltung der fünf Hauptdialoge und der Allergenseite |
+| 5.1.2 | **Browserlogik** | Präsentation | `js/auth.js`, `js/startseite.js`, `js/konfigurator.js`, `js/login.js`, `js/registrierung.js`, `js/meine-pizzen.js`, `js/site-footer.js` | Alles, was im Browser abläuft: Anzeige, Live-Berechnung, Formulare, Aufrufe der API |
 | 5.1.3 | **Backend/API** | Anwendung | `api/session.php`, `api/login.php`, `api/logout.php`, `api/register.php`, `api/coupon.php`, `api/save_config.php`, `api/load_configs.php`, `api/delete_config.php` | HTTP-Grenze des Servers: Anfragen annehmen, Anmeldung prüfen, SQL ausführen, JSON antworten |
 | 5.1.4 | **Gemeinsame Serverlogik** | Anwendung | `config/database.php`, `config/helpers.php` | Datenbankverbindung, Sitzung, Validierung, Preis- und Gutscheinlogik |
-| 5.1.5 | **Fachliche Konfigurationsdaten** | Anwendung (Daten) | `data/pizza_data.json` | Auswahloptionen mit Preis und kcal sowie drei Vorlagen |
+| 5.1.5 | **Fachliche Konfigurationsdaten** | Anwendung (Daten) | `data/pizza_data.json` | Auswahloptionen mit Preis, kcal, Nährwerten und Metadaten sowie drei Vorlagen |
 | 5.1.6 | **Persistenz** | Persistenz | `database/schema.sql`, Datenbank `pizza_tracker` | Dauerhafte Speicherung von Nutzern, Konfigurationen und Gutscheinen |
 
 **Lokale Beziehungen**
 
 | Schnittstelle | Zwischen | Vertrag |
 |---------------|----------|---------|
-| DOM-Anbindung | Präsentationsschicht → Browserlogik | Jede Seite bindet `js/auth.js` und ihr eigenes Skript per `<script>` ein. Die Skripte finden ihre Elemente über feste IDs (z. B. `priceValue`, `couponCode`, `saveButton`, `groesseOptions`) und `data-`-Attribute (`data-auth-guest`, `data-auth-user`, `data-template`, `data-action="logout"`). |
-| JSON-API | Browserlogik → Backend/API | `fetch()` mit `credentials: 'same-origin'`, damit das Session-Cookie mitgesendet wird. Anfragen und Antworten sind JSON. Jede Antwort enthält `success`, im Fehlerfall zusätzlich `error` und einen passenden HTTP-Status. Einzelheiten in § 5.2.2. |
+| DOM-Anbindung | Präsentationsschicht → Browserlogik | Die fünf Hauptseiten binden `js/auth.js` und ihr Seitenskript ein. `allergene.html` verwendet kein `auth.js` und kein eigenes Seitenskript. `site-footer.js` wird auf Startseite, Konfigurator, Login und Allergenseite geladen. Die Skripte finden ihre Elemente über feste IDs (z. B. `priceValue`, `couponCode`, `saveButton`, `groesseOptions`) und `data-`-Attribute (`data-auth-guest`, `data-auth-user`, `data-template`, `data-action="logout"`). |
+| JSON-API | Browserlogik → Backend/API | `fetch()` mit `credentials: 'same-origin'`, damit das Session-Cookie mitgesendet wird. Nutzdaten werden bei den entsprechenden POST-Aufrufen als JSON gesendet; GET-Aufrufe benötigen keinen JSON-Body. Reguläre API-Antworten enthalten `success`, behandelte Fehler zusätzlich `error` und einen passenden HTTP-Status. Unbehandelte Ausnahmen sind davon nicht erfasst (O-8). Einzelheiten in § 5.2.2. |
 | Fachdaten im Browser | Browserlogik → Fachdaten | `konfigurator.js` lädt `data/pizza_data.json` per `fetch()` als statische Datei. |
 | Fachdaten im Server | Gemeinsame Serverlogik → Fachdaten | `loadPizzaData()` liest dieselbe Datei per `file_get_contents()`, um Eingaben zu prüfen und den Preis beim Speichern neu zu berechnen. |
 | Serverfunktionen | Backend/API → Gemeinsame Serverlogik | Jeder Endpunkt bindet `config/helpers.php` per `require_once` ein und ruft dessen Funktionen auf (Übersicht in § 5.1.4). |
 | Datenbankzugriff | Backend/API, Gemeinsame Serverlogik → Persistenz | `getDatabase()` liefert ein PDO-Objekt. SQL-Anweisungen stehen direkt in den Endpunkten und in `validateCoupon()` und werden als Prepared Statements mit benannten Platzhaltern ausgeführt. Eine eigene Datenzugriffsschicht gibt es nicht. |
 | Anmeldestatus | Browser ↔ Backend/API | PHP-Session. Der Server speichert nach der Anmeldung `user_id`, `vorname` und `email` in `$_SESSION`; der Browser hält nur das Session-Cookie. |
-| Gestaltung | Präsentationsschicht → Bootstrap-CDN | Bootstrap 5.3.3 (CSS und `bootstrap.bundle.min.js`) wird in allen fünf Seiten von `cdn.jsdelivr.net` geladen. |
+| Gestaltung | Präsentationsschicht → Bootstrap-CDN | Bootstrap 5.3.3 (CSS und `bootstrap.bundle.min.js`) wird in allen sechs Seiten von `cdn.jsdelivr.net` geladen. |
 
 ### 5.1.1 Blackbox Präsentationsschicht
 
 | Blackbox | Inhalt |
 |----------|--------|
-| **Zweck/Verantwortung** | Legt Struktur, Navigation und Aussehen der fünf Dialoge aus [B1](../spec/B1-dialogspezifikation.md) fest (DLG-01 bis DLG-05). Enthält selbst keine Logik. |
+| **Zweck/Verantwortung** | Legt Struktur, Navigation und Aussehen der fünf Hauptdialoge (DLG-01 bis DLG-05) sowie der Informationsseite `allergene.html` fest; siehe [B1](../spec/B1-dialogspezifikation.md). Dynamisches Verhalten liegt in den Skripten. |
 | **Angebotene Schnittstellen** | DOM-Elemente mit festen IDs und `data-`-Attributen, die die Browserlogik anspricht. Leere Container (z. B. `groesseOptions`, `pizzaGrid`), die erst durch die Browserlogik gefüllt werden. Navigationslinks zwischen den Seiten. |
 | **Benötigte Schnittstellen** | Bootstrap 5.3.3 (CSS und JavaScript) vom CDN. Das Akkordeon im Konfigurator und das Menü auf kleinen Bildschirmen nutzen `data-bs-toggle` und hängen damit vom Bootstrap-JavaScript ab. Browserlogik für alle dynamischen Inhalte. |
 | **Qualität/Performance** | Responsive Darstellung über das Bootstrap-Raster (z. B. `col-md-6`, `navbar-expand-lg`) und eigene Regeln in `css/style.css` (u. a. `@media (max-width: 991.98px)`), Bezug zu NFA06 in [N1](../spec/N1-nichtfunktional.md). |
 | **Abhängigkeiten** | Bootstrap-CDN, also Internetzugang beim Laden der Seiten (Risiko: [Kapitel 11](A11-risks-and-technical-debts.md)). |
-| **Code-Artefakte** | `startseite.html` (DLG-01), `konfigurator.html` (DLG-02), `login.html` (DLG-03), `registrierung.html` (DLG-04), `meine-pizzen.html` (DLG-05), `css/style.css` |
-| **Erfüllte Anforderungen** | Dialogstruktur aus [B1](../spec/B1-dialogspezifikation.md). |
-| **Variabilität** | Die Navigationsleiste ist in allen fünf HTML-Dateien einzeln enthalten; Änderungen daran müssen an fünf Stellen erfolgen. Die drei Vorlagenkarten der Startseite (Name, Beschreibung, Schlüssel in `data-template`) stehen fest im HTML und müssen bei Änderungen an den Vorlagen in `pizza_data.json` von Hand angepasst werden. |
+| **Code-Artefakte** | `startseite.html` (DLG-01), `konfigurator.html` (DLG-02), `login.html` (DLG-03), `registrierung.html` (DLG-04), `meine-pizzen.html` (DLG-05), `allergene.html`, `css/style.css`, lokale Bilder unter `img/` |
+| **Anforderungsbezug** | Dialogstruktur aus [B1](../spec/B1-dialogspezifikation.md). |
+| **Variabilität** | Die Navigation steht in den HTML-Dateien und wird nicht aus einer gemeinsamen Vorlage erzeugt; Änderungen müssen in den betroffenen Seiten nachgeführt werden. Die Allergenseite besitzt eine eigene, vereinfachte Navigation. Die drei Vorlagenkarten der Startseite (Name, Beschreibung, Schlüssel in `data-template`) stehen fest im HTML und müssen bei Änderungen an den Vorlagen in `pizza_data.json` von Hand angepasst werden. |
 | **Tests** | Keine automatisierten Tests im Repository. Nachweis über manuelle Funktionstests (O-3). |
-| **Offene Punkte** | Keine eigenen; CDN-Abhängigkeit siehe oben. |
+| **Offene Punkte** | Die gemeinsame Fußzeile fehlt auf Registrierung und „Meine Pizzen“, da dort `site-footer.js` nicht eingebunden ist. Die Allergentabellen stehen statisch im HTML und müssen bei Datenänderungen mitgepflegt werden. CDN-Abhängigkeit siehe oben. |
 | **Verfeinert in** | Nicht weiter verfeinert (§ 5.2.3). |
 
 ### 5.1.2 Blackbox Browserlogik
 
 | Blackbox | Inhalt |
 |----------|--------|
-| **Zweck/Verantwortung** | Führt alle Abläufe im Browser aus: Anmeldestatus anzeigen, Konfigurator aufbauen, Preis und kcal live berechnen, Formulare absenden, gespeicherte Pizzen anzeigen und löschen, Daten zwischen Seiten übergeben. |
+| **Zweck/Verantwortung** | Führt alle Abläufe im Browser aus: Anmeldestatus anzeigen, Konfigurator aufbauen, Preis, kcal und Makronährwerte live berechnen, Kennzeichnungen und Foto-Vorschau aktualisieren, Fußzeilen ergänzen, Formulare absenden, gespeicherte Pizzen anzeigen und löschen, Daten zwischen Seiten übergeben. |
 | **Angebotene Schnittstellen** | Globales Objekt `window.PizzaAuth` mit `checkSession()`, `logoutUser()` und `getState()` sowie das Ereignis `pizza-auth-changed` (beides aus `auth.js`). |
 | **Benötigte Schnittstellen** | DOM der Präsentationsschicht; alle acht API-Endpunkte (§ 5.2.2); `data/pizza_data.json`; der Browserspeicher `sessionStorage`. |
-| **Qualität/Performance** | Preis und kcal werden bei jeder Änderung ohne Serveranfrage berechnet (`calculateLocalTotals()` in `konfigurator.js`), Bezug zu NFA01. HTML-Sonderzeichen in gespeicherten Daten werden vor der Ausgabe maskiert (`escapeHtml()` in `meine-pizzen.js`). |
+| **Qualität/Performance** | Preis, kcal und Makronährwerte werden bei Auswahländerungen ohne Serveranfrage berechnet (`calculateLocalTotals()` in `konfigurator.js`), Bezug zu NFA01. HTML-Sonderzeichen in gespeicherten Daten werden vor der Ausgabe maskiert (`escapeHtml()` in `meine-pizzen.js`). |
 | **Abhängigkeiten** | Keine Bibliotheken außer Bootstrap. Kein Build-Schritt, kein Frontend-Framework. |
-| **Code-Artefakte** | `js/auth.js`, `js/startseite.js`, `js/konfigurator.js`, `js/login.js`, `js/registrierung.js`, `js/meine-pizzen.js` |
-| **Erfüllte Anforderungen** | UC01–UC11 aus [F2](../spec/F2-anwendungsfaelle.md) auf Browserseite; Zuordnung in § 5.2.1. |
-| **Variabilität** | Die Auswahlkarten im Konfigurator werden vollständig aus `pizza_data.json` erzeugt. Neue Optionen erfordern daher keine Änderung an HTML oder JavaScript. |
+| **Code-Artefakte** | `js/auth.js`, `js/startseite.js`, `js/konfigurator.js`, `js/login.js`, `js/registrierung.js`, `js/meine-pizzen.js`, `js/site-footer.js` |
+| **Anforderungsbezug** | UC01–UC11 aus [F2](../spec/F2-anwendungsfaelle.md) auf Browserseite; Zuordnung in § 5.2.1. |
+| **Variabilität** | Die Auswahlkarten der sechs vorhandenen Kategorien werden aus `pizza_data.json` erzeugt. Weitere Optionen innerhalb dieser Kategorien sind datengetrieben. Neue Kategorien, geänderte Kennzeichnungsregeln oder besondere Vorschau-Markierungen benötigen dagegen Codeanpassungen; statische Allergentabellen und Vorlagenkarten sind gesondert zu pflegen. |
 | **Tests** | Keine automatisierten Tests im Repository (O-3). |
 | **Offene Punkte** | Siehe § 5.4 (O-4 bis O-7). |
 | **Verfeinert in** | § 5.2.1 |
@@ -126,13 +129,13 @@ ausgeliefert, **ausgeführt** werden sie aber im Browser. Die Zuordnung zu Rechn
 
 | Blackbox | Inhalt |
 |----------|--------|
-| **Zweck/Verantwortung** | Bildet die Grenze zwischen Browser und Server. Jeder Endpunkt prüft die HTTP-Methode, liest die JSON-Eingabe, prüft bei Bedarf die Anmeldung, führt die fachliche Aktion aus und antwortet mit JSON. |
+| **Zweck/Verantwortung** | Bildet die Grenze zwischen Browser und Server. Jeder Endpunkt prüft die HTTP-Methode, liest bei Bedarf JSON-Eingaben, prüft bei geschützten Vorgängen die Anmeldung und führt die jeweilige Aktion aus. Reguläre Antworten werden als JSON gesendet; unbehandelte Ausnahmen siehe O-8. |
 | **Angebotene Schnittstellen** | Acht JSON-Endpunkte unter `api/`, beschrieben in § 5.2.2. |
 | **Benötigte Schnittstellen** | Funktionen der Gemeinsamen Serverlogik (§ 5.1.4); Tabellen `users`, `konfigurationen` (§ 5.1.6). |
 | **Qualität/Performance** | Endpunkte für gespeicherte Konfigurationen verlangen eine Anmeldung (`requireLogin()`), Bezug zu NFA05. Löschen berücksichtigt nur Datensätze des angemeldeten Nutzers (`WHERE id = :id AND user_id = :user_id`). Passwörter werden mit `password_hash(…, PASSWORD_BCRYPT)` gespeichert und mit `password_verify()` geprüft (NFA02). Das E-Mail-Format wird mit `FILTER_VALIDATE_EMAIL` geprüft (NFA04). Nach Anmeldung und Registrierung wird die Session-ID erneuert (`session_regenerate_id(true)`). |
 | **Abhängigkeiten** | PHP mit den Erweiterungen PDO/`pdo_mysql` und `mbstring`. Der Rückgabetyp `never` in `jsonResponse()` setzt mindestens PHP 8.1 voraus. |
 | **Code-Artefakte** | `api/*.php` (acht Dateien, Liste in § 5.1) |
-| **Erfüllte Anforderungen** | UC04–UC10 auf Serverseite; UC02/UC03 beim Speichern (Neuberechnung). |
+| **Anforderungsbezug** | UC04–UC10 auf Serverseite; UC02/UC03 beim Speichern (Neuberechnung). |
 | **Variabilität** | Ein neuer Endpunkt ist eine neue PHP-Datei nach demselben Muster (§ 5.2.2). Es gibt kein Routing und keine zentrale Einstiegsdatei. |
 | **Tests** | Keine automatisierten Tests im Repository (O-3). |
 | **Offene Punkte** | Siehe § 5.4 (O-4, O-5, O-8). |
@@ -148,7 +151,7 @@ ausgeliefert, **ausgeführt** werden sie aber im Browser. Die Zuordnung zu Rechn
 | **Qualität/Performance** | PDO wird mit `ERRMODE_EXCEPTION`, `FETCH_ASSOC` und `EMULATE_PREPARES = false` konfiguriert, die Verbindung wird pro Request nur einmal aufgebaut. Das Session-Cookie ist `httponly` und `SameSite=Lax`; `secure` wird nur bei HTTPS gesetzt. Auswahlwerte werden nur akzeptiert, wenn sie in `pizza_data.json` vorkommen (`assertChoice()`), Bezug zu NFA03. |
 | **Abhängigkeiten** | PHP ≥ 8.1, PDO mit MySQL-Treiber, `mbstring`. |
 | **Code-Artefakte** | `config/database.php`, `config/helpers.php` |
-| **Erfüllte Anforderungen** | Querschnittskonzepte aus [N2](../spec/N2-querschnittskonzepte.md): Eingabevalidierung, Preisberechnung, Gutscheine. |
+| **Anforderungsbezug** | Querschnittskonzepte aus [N2](../spec/N2-querschnittskonzepte.md): Eingabevalidierung, Preisberechnung, Gutscheine. |
 | **Variabilität** | Die Datenbankverbindung lässt sich über die genannten Umgebungsvariablen ändern; ohne sie gelten die XAMPP-Standardwerte (`127.0.0.1`, `3306`, `pizza_tracker`, `root`, leeres Passwort). |
 | **Tests** | Keine automatisierten Tests im Repository (O-3). |
 | **Offene Punkte** | Mehrere Funktionen beenden den Request bei Fehlern direkt mit `jsonResponse()`. Die Fachlogik ist dadurch fest an HTTP gebunden und nicht getrennt nutzbar. Siehe außerdem O-5, O-8 und O-9. |
@@ -162,28 +165,28 @@ ausgeliefert, **ausgeführt** werden sie aber im Browser. Die Zuordnung zu Rechn
 | `startAppSession()` | `helpers.php` | Startet die PHP-Session mit den Cookie-Einstellungen | `session`, `login`, `register`, `logout`, `currentUserId()` |
 | `jsonResponse()` | `helpers.php` | Sendet JSON mit HTTP-Status und beendet das Skript | allen Endpunkten und Prüffunktionen |
 | `requireMethod()` | `helpers.php` | Antwortet mit 405, wenn die HTTP-Methode nicht passt | allen Endpunkten |
-| `readJsonBody()` | `helpers.php` | Liest den Request-Body als JSON; 400 bei ungültigem JSON | `login`, `register`, `coupon`, `save_config`, `delete_config` |
+| `readJsonBody()` | `helpers.php` | Liest den Request-Body; leerer Body ergibt `[]`, nicht als PHP-Array dekodierbares JSON ergibt 400 | `login`, `register`, `coupon`, `save_config`, `delete_config` |
 | `currentUserId()` | `helpers.php` | Liefert die `user_id` aus der Session oder `null` | `coupon`, `requireLogin()` |
 | `requireLogin()` | `helpers.php` | Antwortet mit 401, wenn niemand angemeldet ist | `save_config`, `load_configs`, `delete_config` |
-| `cleanString()` | `helpers.php` | Wandelt Eingaben in getrimmte Zeichenketten um | `login`, `register`, `coupon`, `normalizeConfig()` |
+| `cleanString()` | `helpers.php` | Trimmt Zeichenketten; Nicht-Zeichenketten werden zu einer leeren Zeichenkette | `login`, `register`, `coupon`, `normalizeConfig()` |
 | `loadPizzaData()` | `helpers.php` | Liest `pizza_data.json` (einmal pro Request) | `assertChoice()`, `calculatePizzaTotals()` |
 | `assertChoice()`, `assertChoices()` | `helpers.php` | Prüft Auswahlwerte gegen `pizza_data.json`; 400 bei unbekanntem Wert | `normalizeConfig()` |
 | `normalizeConfig()` | `helpers.php` | Vereinheitlicht die Konfiguration, prüft Pflichtfelder und Namenslänge (≤ 100 Zeichen), setzt „Meine Pizza“ als Standardnamen | `save_config` |
 | `calculatePizzaTotals()` | `helpers.php` | Summiert Preis und kcal, zieht den Rabatt ab und rundet auf zwei Nachkommastellen | `save_config` |
-| `validateCoupon()` | `helpers.php` | Prüft, ob ein Code existiert, aktiv und nicht abgelaufen ist; bei `WELCOME` zusätzlich Anmeldung und bisherige Nutzung | `coupon`, `save_config` |
+| `validateCoupon()` | `helpers.php` | Prüft, ob ein Code existiert, aktiv und nicht abgelaufen ist; bei `WELCOME` zusätzlich Anmeldung und Nutzung in noch vorhandenen Konfigurationen (O-9) | `coupon`, `save_config` |
 
 ### 5.1.5 Blackbox Fachliche Konfigurationsdaten
 
 | Blackbox | Inhalt |
 |----------|--------|
-| **Zweck/Verantwortung** | Einzige Quelle für die wählbaren Optionen mit Preis und kcal sowie für die Vorlagen. |
-| **Angebotene Schnittstellen** | JSON-Objekt mit den Abschnitten `groessen`, `teige`, `saucen`, `kaese`, `belaege` und `extras`. Jeder Abschnitt ordnet einem Optionsnamen ein Objekt `{ "preis": …, "kcal": … }` zu; Größen haben zusätzlich `label`. Der Abschnitt `vorlagen` ordnet einem Schlüssel (`margherita`, `salami`, `hawaii`) eine vollständige Konfiguration zu. |
+| **Zweck/Verantwortung** | Gemeinsame Datengrundlage für die wählbaren Optionen, Preis und kcal sowie für Nährwertanzeigen und Vorlagen. Kennzeichnungsregeln werden zusätzlich im JavaScript implementiert. |
+| **Angebotene Schnittstellen** | JSON-Objekt mit den Abschnitten `groessen`, `teige`, `saucen`, `kaese`, `belaege` und `extras`. Jeder Abschnitt ordnet einem Optionsnamen Preis, kcal, `protein`, `kohlenhydrate`, `fett`, `ballaststoffe`, `allergene`, `vegetarisch` und `vegan` zu. Größen haben zusätzlich `label` und `cm`; einzelne Optionen außerdem `leicht` und `neu`. Der Abschnitt `vorlagen` ordnet einem Schlüssel (`margherita`, `salami`, `hawaii`) eine Konfiguration mit Bildpfad `bild` zu. Weitere Abschnitte enthalten `naehrwert_hinweis` und `kennzeichnungs_regeln`. |
 | **Benötigte Schnittstellen** | Keine. |
-| **Qualität/Performance** | Da Browser und Server dieselbe Datei nutzen, verwenden beide dieselben Preise und kcal-Werte. Die Werte für Größe, Teig, Sauce und Käse entsprechen [D2](../spec/D2-datentypen.md). |
+| **Qualität/Performance** | Da Browser und Server dieselbe Datei nutzen, verwenden beide dieselben Preise und kcal-Werte. Die fachliche Beschreibung steht in [D2](../spec/D2-datentypen.md); dessen Auswahllisten müssen bei Änderungen mitgeführt werden. Identische Ausgangswerte garantieren wegen unterschiedlicher Rundungsschritte noch keinen identischen Endpreis (O-5). |
 | **Abhängigkeiten** | Keine. Die Datei wird vom Browser direkt über Apache abgerufen und muss deshalb öffentlich erreichbar sein. |
 | **Code-Artefakte** | `data/pizza_data.json` |
-| **Erfüllte Anforderungen** | Datengrundlage für UC01–UC03 und UC11. |
-| **Variabilität** | Preise, kcal-Werte und neue Optionen lassen sich ohne Codeänderung pflegen. Die Optionsnamen sind zugleich die Werte, die in der Tabelle `konfigurationen` gespeichert werden; eine Umbenennung passt daher nicht mehr zu bereits gespeicherten Konfigurationen. Das Feld `label` bei den Größen wird im aktuellen Code nicht verwendet. |
+| **Anforderungsbezug** | Datengrundlage für UC01–UC03 und UC11. |
+| **Variabilität** | Preise, kcal-Werte und neue Optionen lassen sich ohne Codeänderung pflegen. Die Optionsnamen sind zugleich die Werte, die in der Tabelle `konfigurationen` gespeichert werden; eine Umbenennung passt daher nicht mehr zu bereits gespeicherten Konfigurationen. `optionCard()` verwendet `label` und `cm` für die Größenkarten; `renderPreview()` verwendet `cm` für die Vorschaugröße. `nutritionBadges()` enthält feste Regeln, die nicht aus `kennzeichnungs_regeln` ausgeführt werden. Eine Änderung dieses JSON-Abschnitts allein ändert daher das Verhalten nicht. |
 | **Tests** | Keine automatisierten Tests im Repository (O-3). |
 | **Offene Punkte** | Keine. |
 | **Verfeinert in** | Nicht weiter verfeinert (§ 5.2.3). |
@@ -198,7 +201,7 @@ ausgeliefert, **ausgeführt** werden sie aber im Browser. Die Zuordnung zu Rechn
 | **Qualität/Performance** | InnoDB-Tabellen mit Fremdschlüssel `konfigurationen.user_id → users.id` (`ON DELETE CASCADE`). E-Mail-Adressen und Gutscheincodes sind eindeutig (`UNIQUE`). |
 | **Abhängigkeiten** | MySQL oder MariaDB mit Unterstützung für den Spaltentyp `JSON`. |
 | **Code-Artefakte** | `database/schema.sql` (legt Datenbank und Tabellen an und füllt vier Gutscheine ein) |
-| **Erfüllte Anforderungen** | Datenmodell aus [D1](../spec/D1-datenmodell.md). |
+| **Anforderungsbezug** | Datenmodell aus [D1](../spec/D1-datenmodell.md). |
 | **Variabilität** | `schema.sql` verwendet `CREATE TABLE IF NOT EXISTS`; ein erneuter Import ändert bestehende Tabellen nicht. Die Gutscheine werden bei erneutem Import über `ON DUPLICATE KEY UPDATE` aktualisiert. |
 | **Tests** | Keine automatisierten Tests im Repository (O-3). |
 | **Offene Punkte** | Siehe O-9. |
@@ -221,14 +224,14 @@ ausgeliefert, **ausgeführt** werden sie aber im Browser. Die Zuordnung zu Rechn
 ### 5.2.1 Whitebox Browserlogik
 
 ```mermaid
-flowchart LR
-    AU["auth.js<br/>window.PizzaAuth"]
+flowchart TD
+    AU["auth.js · window.PizzaAuth"]
     ST["startseite.js"]
     KO["konfigurator.js"]
     LO["login.js"]
     RE["registrierung.js"]
     MP["meine-pizzen.js"]
-    SS[/"sessionStorage<br/>Schlüssel pizza-edit-config"/]
+    SS[/"sessionStorage · Schlüssel pizza-edit-config"/]
 
     ST -->|"URL-Parameter ?template=…"| KO
     MP -->|"schreibt"| SS
@@ -242,7 +245,7 @@ flowchart LR
 |----------|--------|
 | **Whitebox von** | Browserlogik (§ 5.1.2) |
 | **Übersichtsdiagramm** | Abbildung oben. Die Aufrufe der API zeigt die Tabelle „Lokale Blackboxes“. |
-| **Enthaltene Bausteine** | Ein gemeinsames Skript (`auth.js`), das auf jeder Seite geladen wird, und ein Skript pro Seite. |
+| **Enthaltene Bausteine** | Sieben Skripte: `auth.js`, fünf Seitenskripte und `site-footer.js`. Die Allergenseite lädt nur das gemeinsame Footer-Skript und Bootstrap. Das Diagramm zeigt die Datenübergaben; das unabhängig arbeitende Footer-Skript ist in der Tabelle erfasst. |
 | **Lokale Beziehungen** | Siehe Tabelle unten. |
 | **Entwurfsentscheidungen** | Aufteilung nach Seiten, passend zur Entscheidung für mehrere einzelne Seiten ([P2](../spec/P2-architekturueberblick.md)). Seitenübergreifende Daten werden ohne Server übergeben. |
 | **Verworfene Alternativen** | Siehe [Kapitel 9](A09-architecture-decisions.md). |
@@ -253,12 +256,13 @@ flowchart LR
 
 | Baustein | Verantwortung | Ruft auf | Anwendungsfälle |
 |----------|---------------|----------|-----------------|
-| `auth.js` | Fragt beim Laden jeder Seite den Anmeldestatus ab, blendet Elemente mit `data-auth-guest` / `data-auth-user` ein oder aus, zeigt den Vornamen am Abmelden-Link und löst `pizza-auth-changed` aus. Meldet nach Klick auf „Abmelden“ ab und leitet zur Startseite. | `GET api/session.php`, `POST api/logout.php` | UC07 |
+| `auth.js` | Fragt beim Laden der fünf Hauptseiten den Anmeldestatus ab, blendet Elemente mit `data-auth-guest` / `data-auth-user` ein oder aus, zeigt den Vornamen am Abmelden-Link und löst `pizza-auth-changed` aus. Meldet nach Klick auf „Abmelden“ ab und leitet zur Startseite. | `GET api/session.php`, `POST api/logout.php` | UC07 |
 | `startseite.js` | Leitet beim Klick auf eine Vorlage zu `konfigurator.html?template=<Schlüssel>` weiter. | – | UC11 |
-| `konfigurator.js` | Lädt `pizza_data.json` und erzeugt daraus die Auswahlkarten. Hält die Auswahl im Objekt `state`, berechnet Preis und kcal lokal, prüft Gutscheine und speichert Konfigurationen. Übernimmt beim Laden entweder eine Konfiguration aus `sessionStorage` oder eine Vorlage aus dem URL-Parameter. Zeigt den Speichern-Button nur angemeldeten Nutzern. | `GET data/pizza_data.json`, `POST api/coupon.php`, `POST api/save_config.php` | UC01, UC02, UC03, UC04, UC08, UC11 |
+| `konfigurator.js` | Lädt `pizza_data.json` und erzeugt daraus die Auswahlkarten. Hält die Auswahl im Objekt `state`, berechnet Preis, kcal und Makronährwerte lokal, aktualisiert Kennzeichnungen und Foto-Vorschau, prüft Gutscheine und speichert Konfigurationen. Übernimmt beim Laden entweder eine Konfiguration aus `sessionStorage` oder eine Vorlage aus dem URL-Parameter. Zeigt den Speichern-Button nur angemeldeten Nutzern. | `GET data/pizza_data.json`, `POST api/coupon.php`, `POST api/save_config.php` | UC01, UC02, UC03, UC04, UC08, UC11 |
 | `login.js` | Sendet E-Mail und Passwort, zeigt Fehlermeldungen an und leitet nach Erfolg zum Konfigurator. Schaltet die Passwortanzeige um. | `POST api/login.php` | UC06 |
 | `registrierung.js` | Prüft vorab, ob beide Passwörter übereinstimmen, sendet das Formular als JSON und leitet nach Erfolg zum Konfigurator. | `POST api/register.php` | UC05 |
-| `meine-pizzen.js` | Lädt die gespeicherten Konfigurationen und zeigt sie als Karten an; zeigt bei fehlender Anmeldung einen Hinweis und bei leerer Liste die leere Ansicht. „Erneut bearbeiten“ legt die Konfiguration in `sessionStorage` ab und öffnet den Konfigurator. „Löschen“ fragt nach und entfernt nach Erfolg die Karte. | `GET api/load_configs.php`, `POST api/delete_config.php` | UC09, UC10 |
+| `meine-pizzen.js` | Lädt die gespeicherten Konfigurationen und zeigt sie als Karten an; zeigt bei fehlender Anmeldung einen Hinweis und bei leerer Liste die leere Ansicht. „Erneut bearbeiten“ legt die Konfiguration in `sessionStorage` ab und öffnet den Konfigurator. „Löschen“ verwendet den Browserdialog `confirm()` und entfernt nach erfolgreicher HTTP-Antwort die Karte. | `GET api/load_configs.php`, `POST api/delete_config.php` | UC09, UC10 |
+| `site-footer.js` | Fügt bei `DOMContentLoaded` eine gemeinsame Fußzeile mit Link auf `allergene.html` hinzu, sofern noch kein Element mit `data-site-footer` existiert. Eingebunden auf Startseite, Konfigurator, Login und Allergenseite. | DOM, keine API | Ergänzende Information/Navigation |
 
 **Lokale Beziehungen**
 
@@ -271,7 +275,7 @@ flowchart LR
 ### 5.2.2 Whitebox Backend/API
 
 ```mermaid
-flowchart LR
+flowchart TD
     subgraph Konto["Konto und Sitzung"]
         SE["session.php"]
         LI["login.php"]
@@ -286,7 +290,7 @@ flowchart LR
         LD["load_configs.php"]
         DL["delete_config.php"]
     end
-    H["Gemeinsame Serverlogik<br/>config/"]
+    H["Gemeinsame Serverlogik · config/"]
     T1[("users")]
     T2[("konfigurationen")]
     T3[("gutscheine")]
@@ -316,14 +320,14 @@ flowchart LR
 
 **Lokale Blackboxes (Endpunkte)**
 
-Jeder Endpunkt antwortet bei falscher HTTP-Methode mit **405** und bei ungültigem JSON im Body mit **400**.
-Alle Antworten enthalten `success`; Fehlerantworten zusätzlich `error` mit einer deutschen Meldung.
+Jeder Endpunkt antwortet bei falscher HTTP-Methode mit **405**. Nur `login`, `register`, `coupon`, `save_config` und `delete_config` lesen den Body mit `readJsonBody()`; erreicht die Verarbeitung diese Prüfung, führt ungültiges beziehungsweise nicht als Array dekodierbares JSON zu **400**. Bei geschützten Endpunkten kann bereits vorher **401** zurückgegeben werden.
+Reguläre JSON-Antworten enthalten `success`; behandelte Fehler zusätzlich `error`. Die Erfolgsspalte zeigt die weiteren Felder, jeweils zusätzlich zu `success: true`. Unbehandelte Serverausnahmen fallen nicht unter diesen Antwortvertrag (O-8).
 
 | Endpunkt | Methode | Anmeldung | Eingabe (JSON) | Erfolg | Weitere Fehler | Anwendungsfall |
 |----------|---------|-----------|----------------|--------|----------------|----------------|
 | `session.php` | GET | nein | – | 200 `{ loggedIn: false }` oder `{ loggedIn: true, user: { id, vorname, email } }` | – | Hilfsfunktion für alle Seiten |
 | `login.php` | POST | nein | `email`, `passwort` | 200 `{ user }`; Session enthält `user_id`, `vorname`, `email` | 400 Felder leer · 401 falsche Zugangsdaten | UC06 |
-| `register.php` | POST | nein | `vorname`, `nachname`, `email`, `passwort`, `strasse`, `hausnummer`, `plz`, `stadt`; optional `passwort_bestaetigung`, `telefon` | 201 `{ user }`; Nutzer ist sofort angemeldet | 400 Pflichtfeld leer, E-Mail ungültig, Passwort kürzer als 6 Zeichen, Passwörter verschieden · 409 E-Mail bereits registriert | UC05 |
+| `register.php` | POST | nein | `vorname`, `nachname`, `email`, `passwort`, `strasse`, `hausnummer`, `plz`, `stadt`; optional `passwort_bestaetigung`, `telefon` | 201 `{ user }`; Nutzer ist sofort angemeldet | 400 Pflichtfeld leer, E-Mail ungültig, Passwort kürzer als 6 Zeichen, nicht leere Passwortbestätigung abweichend · 409 E-Mail bereits registriert | UC05 |
 | `logout.php` | POST | nein | – | 200; Session-Daten und Session-Cookie werden gelöscht | – | UC07 |
 | `coupon.php` | POST | nur für `WELCOME` | `code` | 200 `{ coupon: { code, rabatt_prozent } }` | 400 leer oder nicht aktiv · 401 `WELCOME` ohne Anmeldung · 404 unbekannt · 409 `WELCOME` bereits verwendet · 410 abgelaufen | UC04 |
 | `save_config.php` | POST | ja | `name`, `groesse`, `teig`, `sauce`, `kaese`, `belaege[]`, `extras[]`, `gutschein_code` | 201 `{ id, preis, kcal }` | 400 Pflichtfeld fehlt, unbekannter Wert, Name zu lang · 401 nicht angemeldet · Gutscheinfehler wie bei `coupon.php` | UC08 |
@@ -332,7 +336,7 @@ Alle Antworten enthalten `success`; Fehlerantworten zusätzlich `error` mit eine
 
 Zwei Eigenschaften von `save_config.php` sind für das Verständnis wichtig:
 
-- Der Browser sendet **keinen Preis**. Der Server prüft alle Werte gegen `pizza_data.json`, prüft den Gutschein
+- Der Browser sendet **keinen Preis**. Der Server prüft die Auswahlkennungen gegen `pizza_data.json` (Grenzen siehe O-11), prüft den Gutschein
   erneut und berechnet den Preis selbst (`calculatePizzaTotals()`). Gespeichert wird nur dieser Serverpreis.
 - Der Endpunkt führt **immer ein `INSERT`** aus. Eine Funktion zum Ändern (`UPDATE`) einer bestehenden
   Konfiguration gibt es nicht (O-4).
@@ -341,7 +345,7 @@ Zwei Eigenschaften von `save_config.php` sind für das Verständnis wichtig:
 
 | Baustein | Begründung |
 |----------|------------|
-| Präsentationsschicht | Die fünf HTML-Dateien entsprechen eins zu eins den Dialogen aus [B1](../spec/B1-dialogspezifikation.md) und enthalten keine Logik. Eine Zerlegung würde nur B1 wiederholen. |
+| Präsentationsschicht | Die sechs HTML-Dateien bilden fünf Hauptdialoge und eine Informationsseite ab. Aufbau und Inhalte gehören in [B1](../spec/B1-dialogspezifikation.md); das dynamische Verhalten wird bei der Browserlogik beschrieben. |
 | Gemeinsame Serverlogik | Zwei Dateien mit einzelnen Funktionen; die Tabelle in § 5.1.4 beschreibt sie bereits vollständig. Eine weitere Ebene würde nur den Code nacherzählen. |
 | Fachliche Konfigurationsdaten | Eine einzelne Datendatei ohne Verhalten; ihre Struktur ist in § 5.1.5 beschrieben. |
 | Persistenz | Drei Tabellen; die Einzelheiten stehen in [D1](../spec/D1-datenmodell.md) und in § 5.1.6. |
@@ -358,17 +362,19 @@ ohne zusätzliche Architekturinformation zu liefern.
 
 ## 5.4 Offene Punkte und Abhängigkeiten
 
-Die folgenden Punkte sind im Code von Commit `619acf4` belegt oder hängen von anderen Kapiteln ab.
+Die folgenden Punkte beziehen sich auf den oben genannten Exportstand oder auf Abhängigkeiten zwischen Dokumentationskapiteln. O-1 ist erledigt; die Nummer bleibt für bestehende Verweise erhalten.
 Die Bewertung als Risiko oder technische Schuld erfolgt in [Kapitel 11](A11-risks-and-technical-debts.md).
 
 | # | Punkt | Beleg | Betrifft |
 |---|-------|-------|----------|
-| O-1 | Die Architekturentscheidungen sind noch nicht in Kapitel 9 ausgearbeitet; bis dahin verweist § 5.1 auf [P2](../spec/P2-architekturueberblick.md). | `A09-architecture-decisions.md` | Kapitel 9 |
+| O-1 | **Erledigt:** Architekturentscheidungen, Begründungen und Alternativen sind in Kapitel 9 ausgearbeitet. | `A09-architecture-decisions.md` | Kapitel 9 |
 | O-2 | Die Links auf andere Kapitel verwenden die aktuellen Dateinamen. Werden Dateien umbenannt, müssen die Links angepasst werden. | `docs/arch/` | alle Kapitel |
-| O-3 | Es gibt keine automatisierten Tests. Die Funktionsnachweise erfolgen manuell; die zugehörigen Test-IDs sind nachzutragen, sobald das Testprotokoll vorliegt. | Repository | Testprotokoll |
+| O-3 | Es gibt keine automatisierten Tests. Manuelle Funktionsnachweise stehen noch aus beziehungsweise sind in diesem Export nicht durch ein ausgefülltes Testprotokoll belegt. Die Szenarien QS-01 bis QS-13 aus A10 sind Prüfkriterien, keine bestandenen Tests. | Repository | Testprotokoll |
 | O-4 | „Erneut bearbeiten“ füllt den Konfigurator vor; beim Speichern entsteht ein **neuer** Datensatz. Ein zuvor gespeicherter Gutschein wird nicht übernommen. | `save_config.php` (nur `INSERT`), `applyConfig()` in `konfigurator.js` | § 5.2.1, § 5.2.2 |
-| O-5 | Preis im Browser und gespeicherter Preis können bei Gutscheinen um einen Cent abweichen: Der Browser zieht den Rabatt ungerundet ab und rundet erst bei der Anzeige, der Server rundet den Rabattbetrag vorher. Beispiel: Margherita M mit `STUDENT5` zeigt im Browser 7,13 €, die Serverregel ergibt 7,12 €. | `calculateLocalTotals()` in `konfigurator.js`, `calculatePizzaTotals()` in `helpers.php` | § 5.1.2, § 5.1.4 |
-| O-6 | Jede Änderung an der Auswahl setzt einen aktiven Gutschein zurück. | Change-Handler in `renderOptions()` | § 5.2.1 |
-| O-7 | Die `fetch()`-Aufrufe in `konfigurator.js`, `login.js`, `registrierung.js` und `meine-pizzen.js` fangen Netzwerkfehler und Antworten ohne gültiges JSON nicht ab. Ein fehlgeschlagenes Löschen wird dem Nutzer nicht angezeigt. | genannte Dateien | § 5.1.2 |
+| O-5 | Preis im Browser und gespeicherter Preis können bei Gutscheinen um einen Cent abweichen: Der Browser zieht den Rabatt ungerundet ab und rundet erst bei der Anzeige, der Server rundet den Rabattbetrag vorher. Rechenbeispiel bei 7,50 € Ausgangspreis und `STUDENT5`: Die Browserregel ergibt 7,125 € (Anzeige 7,13 €), die Serverregel rundet den Rabatt auf 0,38 € und ergibt 7,12 €. Dies ist eine Ableitung aus den Berechnungsregeln, kein protokollierter Laufzeittest. | `calculateLocalTotals()` in `konfigurator.js`, `calculatePizzaTotals()` in `helpers.php` | § 5.1.2, § 5.1.4 |
+| O-6 | Änderungen an Größen-, Teig-, Saucen-, Käse-, Belag- oder Extra-Auswahl setzen den aktiven Gutschein und das Eingabefeld zurück; Änderungen am Namen tun dies nicht. | Change-Handler in `renderOptions()` | § 5.2.1 |
+| O-7 | Der Konfigurator behandelt Fehler beim Fachdatenladen sowie bei Gutscheinprüfung und Speichern; die letzten beiden Abläufe besitzen `try/catch/finally` und eine temporäre Schaltflächensperre. Login, Registrierung und Laden eigener Pizzen fangen Netzwerk-/JSON-Fehler dagegen nicht ab; Löschen zeigt fehlgeschlagene HTTP-Antworten nicht an. `auth.js` setzt bei fehlgeschlagener Sessionabfrage den Gastzustand, während die Abmeldung keine eigene Fehlerbehandlung hat. | genannte Dateien | § 5.1.2 |
 | O-8 | Fehler beim Lesen von `pizza_data.json` (`RuntimeException`) und Datenbankfehler (`PDOException`) werden nicht abgefangen; der Endpunkt antwortet dann nicht mit JSON. | `loadPizzaData()`, `getDatabase()` | § 5.1.3, § 5.1.4 |
 | O-9 | Die `WELCOME`-Sperre prüft, ob eine **noch vorhandene** gespeicherte Konfiguration des Nutzers diesen Code enthält. Nach dem Löschen dieser Konfiguration ist der Code erneut verwendbar. Die Tabelle `konfigurationen` speichert keine kcal-Werte. | `validateCoupon()`, `schema.sql` | § 5.1.4, § 5.1.6 |
+| O-10 | Nach gültigem Gutschein lässt die erneute Prüfung eines leeren Eingabefelds `activeCoupon` unverändert. `getPayload()` sendet dann weiterhin dessen Code. | `validateCoupon()`, `getPayload()` in `konfigurator.js` | § 5.1.2; A11 R-06 |
+| O-11 | Belag-/Extra-Kennungen werden geprüft, aber Duplikate nicht entfernt. Nicht als Array übergebene Listen werden zu leeren Arrays normalisiert. | `normalizeConfig()`, `assertChoices()` in `helpers.php` | § 5.1.4, § 5.2.2 |

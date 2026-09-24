@@ -15,14 +15,14 @@ Pizza Tracker ist eine lokale Webanwendung für das Hochschulmodul Wirtschaftsin
 - Gutscheincodes mit serverseitiger Prüfung
 - Registrierung, Anmeldung und PHP-Session
 - Speichern, Anzeigen, erneutes Bearbeiten und Löschen eigener Pizzen
-- Informationen zu Allergenen, Datenschutz und Projektverantwortung
+- Informationsseite zu Allergenen und Inhaltsstoffen
 
 ## Technologien
 
 - HTML5 und CSS3
-- Bootstrap 5.3
+- Bootstrap 5.3.3, geladen über `cdn.jsdelivr.net` (Internetzugang beim Laden der Seiten erforderlich)
 - JavaScript ohne zusätzliches Framework
-- PHP 8
+- PHP ab 8.1 mit den Erweiterungen PDO/`pdo_mysql` und `mbstring`
 - PDO mit Prepared Statements
 - MySQL oder MariaDB
 - XAMPP oder MAMP für den lokalen Betrieb
@@ -76,7 +76,7 @@ js/          Browserlogik
 
 ## Datenschutz
 
-Die Anwendung ist für einen lokalen Lehrbetrieb vorgesehen. Sie verarbeitet Registrierungsdaten, eine technisch notwendige PHP-Session und gespeicherte Pizza-Konfigurationen. Details stehen unter [datenschutz.html](datenschutz.html).
+Die Anwendung ist für einen lokalen Lehrbetrieb vorgesehen. Sie verarbeitet Registrierungsdaten, eine technisch notwendige PHP-Session und gespeicherte Pizza-Konfigurationen. Eigene Datenschutz- oder Impressumsseiten sind in der M3-Version nicht enthalten.
 
 ## Team
 
@@ -84,7 +84,7 @@ Die Rollen und Mitglieder sind in [TEAMINFO.md](TEAMINFO.md) dokumentiert.
 
 ## Einsatz von KI-Werkzeugen
 
-KI-Werkzeuge wurden unterstützend für Codeanalyse, Entwürfe, Dokumentation und die Erstellung der lokalen Pizza-Bilder eingesetzt. Alle übernommenen Ergebnisse müssen von der Projektgruppe geprüft und verstanden werden. Genannt wurden im Projektverlauf insbesondere Claude, GitHub Copilot und ChatGPT/Codex.
+KI-Werkzeuge wurden unterstützend für Codeanalyse, Entwürfe, Dokumentation und die Erstellung der lokalen Pizza-Bilder eingesetzt. Alle übernommenen Ergebnisse müssen von der Projektgruppe geprüft und verstanden werden. Genannt wurden im Projektverlauf insbesondere Claude, GitHub Copilot und ChatGPT/Codex. Die Offenlegung steht in [docs/spec/README.md](docs/spec/README.md#eingesetzte-ki-werkzeuge) und [docs/arch/README.md](docs/arch/README.md#eingesetzte-ki-werkzeuge).
 
 ## Nährwerte
 

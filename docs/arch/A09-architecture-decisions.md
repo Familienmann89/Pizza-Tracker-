@@ -1,8 +1,16 @@
 # A09 – Architekturentscheidungen
 
-> **Standhinweis:** Dieses Kapitel beschreibt die im Projekt verwendeten Architekturentscheidungen auf Grundlage des bereitgestellten Projektstands `Pizza-Tracker--main(1).zip` und der vom Team bestätigten Entscheidungsgründe. Technische Aussagen beziehen sich auf den aktuell geprüften Stand. Änderungen von Person 1 an Rabatt-Rundung, WELCOME-Regel und Fehlerbehandlung können einzelne technische Details betreffen, ändern jedoch nicht die hier dokumentierten grundlegenden Architekturentscheidungen.
+> **Einordnung:** Die folgenden Entscheidungen sind im vorliegenden Code umgesetzt. Ihre technische Begründung und die Alternativen werden hier nachvollziehbar eingeordnet. Daraus wird nicht abgeleitet, dass das Team jede Alternative vor der Implementierung praktisch erprobt oder einen formalen Entscheidungsprozess protokolliert hat.
 
-Dieses Kapitel dokumentiert zentrale technische Entscheidungen des Projekts „Pizza Tracker“. Für jede Entscheidung werden Kontext, gewählte Lösung, Begründung, betrachtete beziehungsweise nachträglich eingeordnete Alternativen sowie positive und negative Konsequenzen beschrieben.
+Dieses Kapitel dokumentiert zentrale technische Entscheidungen des Projekts „Pizza Tracker“. Für jede Entscheidung werden Kontext, gewählte Lösung, Begründung, nachträglich eingeordnete Alternativen sowie positive und negative Konsequenzen beschrieben. Die Nummern 9.1 bis 9.5 dienen als stabile Entscheidungsreferenzen (ADR: Architecture Decision Record). Der Status „umgesetzt“ bezeichnet den Implementierungsstand, nicht ein bestandenes Testergebnis.
+
+| Referenz | Entscheidung | Status | Zentrale Codebelege |
+|---|---|---|---|
+| ADR 9.1 | PHP für das Backend | Umgesetzt | `api/*.php`, `config/helpers.php` |
+| ADR 9.2 | MySQL/MariaDB für dauerhafte Daten | Umgesetzt | `database/schema.sql`, `config/database.php` |
+| ADR 9.3 | PHP-Sessions für den Loginzustand | Umgesetzt | `config/helpers.php`, `api/login.php`, `api/logout.php` |
+| ADR 9.4 | `fetch()` und JSON-API | Umgesetzt | `js/*.js`, `api/*.php` |
+| ADR 9.5 | JSON-Datei für Konfigurator-Fachdaten | Umgesetzt | `data/pizza_data.json`, `js/konfigurator.js`, `config/helpers.php` |
 
 ---
 
@@ -36,7 +44,7 @@ Die API-Endpunkte werden von JavaScript über `fetch()` aufgerufen.
 
 ### Begründung
 
-Das Team hat PHP gewählt, weil es gut zur vorgesehenen lokalen XAMPP-Umgebung passt und für den Umfang der Anwendung ausreichend ist.
+PHP passt zur vorgesehenen lokalen XAMPP-/MAMP-Umgebung und deckt die benötigten Backend-Funktionen ab. Der Einsatz lässt sich damit durch einen überschaubaren Einrichtungsaufwand und vorhandene Standardfunktionen begründen.
 
 PHP ermöglicht:
 
@@ -56,7 +64,7 @@ Als Alternativen wären beispielsweise denkbar:
 - Java mit Spring,
 - andere serverseitige Web-Technologien.
 
-Diese Alternativen wurden für die technische Einordnung betrachtet, aber nicht gewählt.
+Node.js mit Express würde JavaScript auch im Backend ermöglichen, aber einen Node-Prozess und zusätzliche Paketverwaltung erfordern. Java mit Spring bietet umfangreiche Strukturen und Bibliotheken, erhöht für diese kleine Anwendung jedoch den Einrichtungs- und Lernaufwand. Ein praktischer Vergleich dieser Alternativen ist nicht dokumentiert.
 
 ### Positive Konsequenzen
 
@@ -71,7 +79,8 @@ Diese Alternativen wurden für die technische Einordnung betrachtet, aber nicht 
 - Frontend und Backend verwenden unterschiedliche Programmiersprachen.
 - PHP-Dateien müssen über einen Webserver ausgeführt werden und können nicht einfach als lokale Dateien gestartet werden.
 - Mit wachsender Projektgröße könnte ohne zusätzliche Strukturierung die Wartbarkeit schwieriger werden.
-- Die vorhandene Implementierung verwendet bewusst keinen zusätzlichen Backend-Framework-Layer.
+- Ohne Backend-Framework müssen übergreifende Aufgaben wie einheitliche Fehlerantworten und Validierung selbst strukturiert werden; die vorhandenen Hilfsfunktionen decken das nur teilweise ab.
+- Der Rückgabetyp `never` in `jsonResponse()` setzt PHP ab Version 8.1 voraus.
 
 ---
 
@@ -99,7 +108,7 @@ Der Zugriff erfolgt in PHP über PDO.
 
 ### Begründung
 
-Das Team hat MySQL/MariaDB gewählt, weil relationale Daten gut zum fachlichen Modell des Projekts passen.
+Die relationale Speicherung passt zu den Beziehungen und Integritätsanforderungen des fachlichen Modells.
 
 Die Datenbank unterstützt:
 
@@ -122,7 +131,7 @@ Als Alternativen wären beispielsweise möglich:
 
 SQLite wäre für ein kleines lokales Projekt technisch möglich gewesen, bietet aber eine andere Betriebsweise als die bereits vorhandene XAMPP-/MySQL-Umgebung.
 
-Eine reine Dateiablage wäre für Beziehungen, eindeutige E-Mail-Adressen und parallele Änderungen weniger geeignet.
+SQLite würde einen separaten Datenbankserver vermeiden, erforderte aber eine Anpassung des MySQL-spezifischen Schemas und der Verbindungskonfiguration. Eine reine JSON-Dateiablage würde zusätzliche eigene Mechanismen für Eindeutigkeit, Beziehungen und konkurrierende Schreibzugriffe benötigen. Diese Alternativen sind technisch eingeordnet, nicht als durchgeführter Produktvergleich belegt.
 
 ### Positive Konsequenzen
 
@@ -139,6 +148,8 @@ Eine reine Dateiablage wäre für Beziehungen, eindeutige E-Mail-Adressen und pa
 - Das Schema muss vor dem ersten Start importiert werden.
 - Schemaänderungen können später Migrationsschritte erforderlich machen.
 - Die Datenbank erhöht die Komplexität gegenüber einer rein dateibasierten Speicherung.
+- Beläge und Extras sind JSON-Spalten statt eigener Zuordnungstabellen. Dadurch bleibt das Schema klein, aber einzelne Optionskennungen werden nicht durch Fremdschlüssel abgesichert; ihre Gültigkeit prüft die Anwendung.
+- „MySQL/MariaDB“ bezeichnet die vorgesehene Datenbankfamilie, keine nachgewiesene Kompatibilität mit jeder Version. Die tatsächlich verwendete Umgebung muss im Testprotokoll genannt werden.
 
 ---
 
@@ -170,7 +181,7 @@ Die Session-ID wird über das PHP-Session-Cookie zwischen Browser und Server üb
 
 ### Begründung
 
-Das Team hat PHP-Sessions gewählt, weil sie für die lokale Webanwendung einfacher und ausreichend sind.
+Für die Browseranwendung mit PHP-Backend auf derselben Herkunft bieten PHP-Sessions einen einfachen Loginzustand ohne selbst entwickeltes Tokenformat.
 
 Der Loginzustand bleibt serverseitig verwaltet. Der Browser muss keine Benutzer-ID als vertrauenswürdige Information selbst mitsenden.
 
@@ -180,22 +191,24 @@ Die Anwendung kann bei geschützten Endpunkten über die Session feststellen, we
 
 Eine mögliche Alternative wäre eine tokenbasierte Authentifizierung, zum Beispiel mit JWT.
 
-JWT wäre insbesondere bei stärker verteilten Systemen oder mehreren unabhängigen Clients interessant. Für die lokale Anwendung mit Browser und PHP-Backend wäre dies jedoch zusätzlicher Aufwand.
+Ein Tokenansatz wie JWT kann für unabhängige Clients oder verteilte Dienste sinnvoll sein, benötigt aber Entscheidungen zu Speicherung, Laufzeit, Erneuerung und Widerruf. Für die vorhandene Browseranwendung ist dieser zusätzliche Mechanismus nicht erforderlich. Verteilung erzwingt keinen Wechsel zu JWT: Auch Sessions lassen sich mit gemeinsamem Session-Speicher betreiben. Eine reine Login-Markierung in `localStorage` wäre dagegen keine sichere Alternative zur serverseitigen Authentifizierung.
 
 ### Positive Konsequenzen
 
 - Einfache Integration mit PHP.
 - Benutzer-ID wird serverseitig verwaltet.
 - Geschützte Endpunkte können zentral prüfen, ob eine Anmeldung besteht.
-- Kein eigener Token-Lebenszyklus erforderlich.
+- Kein eigener JWT-Ausgabe- und Erneuerungsmechanismus erforderlich; die Gültigkeit der Session muss dennoch berücksichtigt werden.
 - Logout kann durch Zerstören der Session umgesetzt werden.
 
 ### Negative Konsequenzen
 
 - Der Server verwaltet Sessionzustand.
 - Der Browser benötigt das Session-Cookie.
-- Bei einer späteren stark verteilten Architektur wäre eine andere Authentifizierungsstrategie möglicherweise geeigneter.
-- Session- und Cookie-Konfiguration müssen korrekt umgesetzt werden.
+- Mehrere Backend-Instanzen würden eine abgestimmte Sessionverwaltung benötigen, beispielsweise einen gemeinsamen Session-Speicher.
+- Session- und Cookie-Konfiguration müssen korrekt umgesetzt werden. `HttpOnly`, `SameSite=Lax` und ein bei HTTPS gesetztes `Secure`-Attribut ersetzen keine vollständige Sicherheitsprüfung.
+
+Die Zuordnung einer Session beantwortet, **wer** handelt. Ob dieser Nutzer eine konkrete Pizza laden oder löschen darf, wird zusätzlich über die Nutzer-ID in der Datenbankabfrage geprüft. Diese Autorisierung ist in [A08, Abschnitt 8.6](A08-cross-cutting-concepts.md#86-autorisierung) beschrieben.
 
 ---
 
@@ -223,25 +236,13 @@ Das Frontend kommuniziert über `fetch()` mit PHP-Endpunkten.
 
 Die Daten werden überwiegend als JSON gesendet und empfangen.
 
-Beispielhafter Ablauf:
-
-```text
-Browser
-  ↓ fetch()
-PHP-API
-  ↓
-Validierung / Datenbank
-  ↓
-JSON-Antwort
-  ↓
-JavaScript aktualisiert Benutzeroberfläche
-```
+Ein API-Aufruf folgt dem Ablauf: JavaScript sendet eine Anfrage; PHP prüft sie und führt bei Bedarf einen Datenbankzugriff aus; JavaScript verarbeitet anschließend die JSON-Antwort. POST-Aufrufe transportieren Eingaben als JSON, GET-Aufrufe lesen Sessionstatus oder gespeicherte Konfigurationen ohne JSON-Request-Body.
 
 ### Begründung
 
-Das Team hat `fetch()` und JSON gewählt, weil diese Kommunikation gut zur interaktiven Oberfläche des Pizza Trackers passt.
+`fetch()` und JSON passen zur interaktiven Oberfläche und sind mit den vorhandenen JavaScript- und PHP-Funktionen direkt nutzbar.
 
-Aktionen können im Hintergrund durchgeführt werden, ohne dass die gesamte Seite neu geladen werden muss.
+API-Anfragen können asynchron verarbeitet werden, ohne dass ihre Antwort eine vollständige HTML-Seite ersetzen muss. Das bedeutet nicht, dass die Anwendung niemals navigiert: Nach erfolgreichem Login oder Registrierung öffnet sie den Konfigurator, nach Logout die Startseite. Die normale Live-Berechnung der Pizza läuft sogar ohne API-Anfrage im Browser.
 
 Dadurch lassen sich:
 
@@ -256,7 +257,7 @@ direkt mit JavaScript in der bestehenden Seite darstellen.
 
 Eine Alternative wären klassische HTML-Formulare mit vollständigem Seitenwechsel beziehungsweise Server-Rendering.
 
-Auch andere Schnittstellenkonzepte wären grundsätzlich denkbar. Für den aktuellen Projektumfang ist eine kleine JSON-API jedoch ausreichend.
+Server-Rendering und klassische Formulare würden weniger eigene JavaScript-Logik für Formularantworten benötigen, aber meist vollständige Seitennavigationen auslösen. Eine zusätzliche Bibliothek für HTTP-Anfragen würde den nativen `fetch()`-Aufruf kapseln, jedoch eine weitere Abhängigkeit schaffen. Für die wenigen Endpunkte ist diese Abhängigkeit nicht notwendig.
 
 ### Positive Konsequenzen
 
@@ -273,7 +274,7 @@ Auch andere Schnittstellenkonzepte wären grundsätzlich denkbar. Für den aktue
 - Fehlerhafte oder ungültige JSON-Antworten müssen berücksichtigt werden.
 - Bei fehlgeschlagenen Netzwerkzugriffen ist zusätzliche Benutzerkommunikation notwendig.
 
-Im aktuell geprüften Stand ist die Fehlerbehandlung für Netzwerk- und JSON-Fehler noch nicht an allen Stellen einheitlich umgesetzt.
+Die Fehlerbehandlung für Netzwerk- und JSON-Fehler ist nicht überall gleich vollständig. Gutscheinprüfung und Speichern besitzen bereits `try/catch/finally`; Login, Registrierung und weitere Abläufe haben noch Lücken. Diese Einschränkung betrifft die Umsetzung der Entscheidung und wird in [A06](A06%20-%20Laufzeitsicht.md) und [A08](A08-cross-cutting-concepts.md) konkret beschrieben.
 
 ---
 
@@ -290,10 +291,11 @@ Der Pizza-Konfigurator benötigt eine gemeinsame Menge fachlicher Daten:
 - Beläge,
 - Extras,
 - Preise,
-- kcal,
+- Kalorien und Makronährwerte,
+- Allergene und Ernährungsmerkmale,
 - Vorlagen.
 
-Diese Werte werden sowohl im Browser für die Auswahl und Live-Berechnung als auch im Backend für die Validierung und serverseitige Berechnung benötigt.
+Browser und Backend benötigen gemeinsame Optionskennungen, Preise und Kalorienwerte. Zusätzliche Nährwerte und Kennzeichnungen verwendet das Frontend; nicht jedes Datenfeld wird auch im Backend ausgewertet.
 
 ### Entscheidung
 
@@ -307,14 +309,15 @@ Sowohl JavaScript als auch PHP lesen diese Datei.
 
 ### Begründung
 
-Das Team hat sich für `pizza_data.json` entschieden, damit die relativ statischen Produktdaten an einer zentralen Stelle gepflegt werden können.
+Die JSON-Datei bündelt relativ statische Produktdaten an einer zentralen, zusammen mit dem Code versionierbaren Stelle. Für den vereinbarten Umfang ist keine Administrationsoberfläche zur laufenden Produktpflege vorhanden.
 
 Dadurch müssen Preise, kcal und Auswahlwerte nicht doppelt direkt in JavaScript und PHP hinterlegt werden.
 
 Der Browser kann die Datei verwenden, um:
 
 - Optionen anzuzeigen,
-- Live-Preise und kcal zu berechnen,
+- Live-Preise, Kalorien und Makronährwerte zu berechnen,
+- Ernährungskennzeichnungen und Vorschauinformationen darzustellen,
 - Vorlagen zu laden.
 
 Das Backend verwendet dieselbe Datei, um:
@@ -326,7 +329,7 @@ Das Backend verwendet dieselbe Datei, um:
 
 Eine Alternative wäre, alle Pizza-Daten in Datenbanktabellen zu speichern.
 
-Ebenfalls möglich wäre eine direkte Festschreibung der Daten im JavaScript- beziehungsweise PHP-Code.
+Datenbanktabellen würden veränderliche Produkte und eine spätere Administrationsoberfläche besser unterstützen, benötigten aber ein zusätzliches Schema sowie einen API-Zugriff für die Browserdaten. Direkt in JavaScript und PHP festgeschriebene Werte würden Dateiabrufe sparen, aber fachliche Daten mit Programmcode vermischen und doppelte Pflege begünstigen.
 
 ### Positive Konsequenzen
 
@@ -340,7 +343,9 @@ Ebenfalls möglich wäre eine direkte Festschreibung der Daten im JavaScript- be
 
 - Änderungen erfolgen direkt an einer Projektdatei und nicht über eine Administrationsoberfläche.
 - Bei häufig veränderlichen Produktdaten wäre eine Datenbank flexibler.
-- Frontend und Backend laden die Datei jeweils separat.
+- Frontend und Backend laden die Datei jeweils separat. Eine schon geöffnete Browserseite erhält spätere Dateiänderungen nicht automatisch.
+- Die Datei ist für den Browser öffentlich abrufbar und darf daher keine Zugangsdaten oder andere Geheimnisse enthalten.
+- PHP berechnet Preis und Kalorien, aber keine Makronährwerte. Gespeichert wird der Endpreis, nicht ein vollständiger historischer Nährwertstand.
 - Die Verwendung derselben Datenquelle garantiert nicht automatisch dieselbe Berechnungslogik. Beispielsweise kann eine unterschiedliche Rundungsregel weiterhin zu abweichenden Endpreisen führen.
 - Bei Erweiterung des fachlichen Modells können neben der JSON-Datei zusätzliche Codeänderungen erforderlich werden.
 
@@ -351,7 +356,7 @@ Ebenfalls möglich wäre eine direkte Festschreibung der Daten im JavaScript- be
 Die fünf Entscheidungen ergänzen sich zu einer einfachen lokalen Webarchitektur:
 
 ```mermaid
-flowchart LR
+flowchart TB
     UI["HTML / Bootstrap / JavaScript"]
     DATA["pizza_data.json"]
     API["PHP-API"]
@@ -378,16 +383,14 @@ Die gewählten Lösungen halten den Technologie-Stack klein und passen zur lokal
 
 ---
 
-## 9.7 Prüfpunkte vor der finalen Abgabe
+## 9.7 Gültigkeit und Überprüfung
 
-Vor der finalen M3-Abgabe sollte dieses Kapitel noch einmal gegen den zusammengeführten `main`-Stand geprüft werden.
+Die Entscheidungen beschreiben die vorhandene Implementierung. Sie sind erneut zu bewerten, wenn sich der Einsatzbereich wesentlich ändert, beispielsweise durch produktives öffentliches Hosting, mehrere Backend-Instanzen oder häufige Produktänderungen über eine Administrationsoberfläche.
 
-Dabei ist insbesondere sicherzustellen:
+Für den finalen Projektstand gilt:
 
-1. PHP bleibt die serverseitige Technologie.
-2. Die Anwendung verwendet weiterhin MySQL/MariaDB über PDO.
-3. Die Authentifizierung basiert weiterhin auf PHP-Sessions.
-4. Die Browser-Server-Kommunikation erfolgt weiterhin über `fetch()` und JSON.
-5. `pizza_data.json` bleibt die gemeinsame Fachdatenquelle für Konfiguratorwerte.
-6. Änderungen von Person 1 haben keine grundlegende Architekturentscheidung verändert.
-7. A06, A08 und A09 beschreiben denselben tatsächlichen Projektstand.
+1. **Codeabgleich:** PHP, PDO, Sessionverwaltung, JSON-Kommunikation und gemeinsame Fachdaten müssen weiterhin den hier genannten Mechanismen entsprechen.
+2. **Dokumentationsabgleich:** [A06](A06%20-%20Laufzeitsicht.md), [A07](A07-deployment-view.md), [A08](A08-cross-cutting-concepts.md) und dieses Kapitel müssen denselben Stand beschreiben.
+3. **Qualitätsnachweis:** Die Szenarien aus [A10](A10-quality-requirements.md) prüfen ausgewählte Auswirkungen der Entscheidungen. Ein Status „umgesetzt“ ersetzt keinen bestandenen Test.
+4. **Grenzen:** Rundungsabweichungen, WELCOME-Nachweis und uneinheitliche Fehlerbehandlung bleiben mit [A11](A11-risks-and-technical-debts.md) abzugleichen. Eine Architekturbegründung behebt diese Implementierungsprobleme nicht.
+5. **Teamverständnis:** Die Teammitglieder müssen die gewählten Lösungen und deren Nachteile erklären können. Historische Entscheidungsgründe dürfen nur als solche ergänzt werden, wenn das Team sie tatsächlich bestätigen kann.
