@@ -30,7 +30,7 @@ Die Tabelle umfasst projektspezifische Festlegungen und Voraussetzungen des vorh
 | ID | Randbedingung | Beschreibung | Quelle |
 |---|---|---|---|
 | ORG-01 | Hochschulprojekt | Das Projekt wird im Rahmen des Moduls **WK_1106 — Wirtschaftsinformatik-Projekt I (Softwaretechnik)** durchgeführt. | Modulvorgabe |
-| ORG-02 | Teamgröße | Die Entwicklung erfolgt durch eine Projektgruppe mit fünf Mitgliedern aus dem Studiengang Wirtschaftsinformatik B.Sc. | [P1](../spec/P1-ziele-rahmenbedingungen.md) |
+| ORG-02 | Teamgröße | Die Entwicklung erfolgt durch eine Projektgruppe mit vier Mitgliedern aus dem Studiengang Wirtschaftsinformatik B.Sc. | [P1](../spec/P1-ziele-rahmenbedingungen.md) |
 | ORG-03 | Finale M3-Deadline | Die finale Abgabe muss spätestens am **25. September 2026** erfolgen. | [P1](../spec/P1-ziele-rahmenbedingungen.md), M3-Vorgabe |
 | ORG-04 | Drei Bewertungsbereiche | Spezifikation, Architektur sowie Implementierung und Präsentation werden jeweils separat bewertet. Jeder Bereich muss mindestens 50 von 100 Punkten erreichen. | Modulvorgabe |
 | ORG-05 | Gemeinsames Repository | Spezifikation, Architekturdokumentation und Quellcode werden gemeinsam versioniert im Projekt-Repository gepflegt. | M3-Vorgabe |
