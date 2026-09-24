@@ -82,7 +82,7 @@ Die Navigation ist auf allen Seiten sichtbar. Welche Menüpunkte angezeigt werde
 | Pizza-Vorlagen | Auswahl | Drei vordefinierte Pizzen (Margherita, Salami, Hawaii) mit Bild und Preis |
 | Funktionshinweise | Anzeige | Vier Symbole mit kurzen Beschreibungen |
 | Projektinformation und FAQ | Anzeige | Erklärt Funktionsumfang und Projektgrenzen |
-| Fußzeile | Navigation | Verlinkt Allergene, Datenschutz und Impressum und kennzeichnet das Hochschulprojekt |
+| Fußzeile | Navigation | Verlinkt die Allergene-Seite und kennzeichnet das Hochschulprojekt |
 
 #### Aktionen (GUI Dynamik)
 
@@ -133,9 +133,9 @@ Die Navigation ist auf allen Seiten sichtbar. Welche Menüpunkte angezeigt werde
 #### Aktionen (GUI Dynamik)
 
 **Zutat auswählen**
-- **Auslöser:** Klick auf eine Auswahlkarte (Größe, Teig, Sauce, Käse, Belag)
+- **Auslöser:** Klick auf eine Auswahlkarte (Größe, Teig, Sauce, Käse, Belag, Extra)
 - **Voraussetzung:** Keine
-- **Ergebnis:** Preis und Kalorien werden sofort neu berechnet ([UC02](F2-anwendungsfaelle.md#uc02--preis-berechnen), [UC03](F2-anwendungsfaelle.md#uc03--kalorien-berechnen))
+- **Ergebnis:** Preis, Kalorien und Nährwerte werden sofort neu berechnet. Ein zuvor eingelöster Gutschein wird dabei zurückgesetzt und muss erneut eingelöst werden ([UC02](F2-anwendungsfaelle.md#uc02--preis-berechnen), [UC03](F2-anwendungsfaelle.md#uc03--kalorien-berechnen))
 
 **Gutscheincode einlösen**
 - **Auslöser:** Klick auf „Einlösen" nach Eingabe eines Codes
@@ -237,7 +237,7 @@ Die Navigation ist auf allen Seiten sichtbar. Welche Menüpunkte angezeigt werde
 | Ladeanzeige | Anzeige | Wird während des Ladens der gespeicherten Pizzen angezeigt |
 | Hinweis (nicht angemeldet) | Anzeige | Hinweis mit Link zur Anmeldung |
 | Leere Ansicht | Anzeige | Hinweis und Link zum Konfigurator wenn noch keine Pizzen gespeichert wurden |
-| Pizza-Karte | Anzeige | Zeigt Name, Datum, Größe, Teig, Sauce, Käse, Beläge, Preis und Gutschein-Badge |
+| Pizza-Karte | Anzeige | Zeigt Name, Datum, Größe, Teig, Sauce, Käse, Beläge, Extras, Preis und Gutschein-Badge |
 | Schaltfläche „Erneut bearbeiten" | Aktion | Pro Pizza-Karte |
 | Schaltfläche „Löschen" | Aktion | Pro Pizza-Karte |
 
@@ -260,14 +260,14 @@ Die Navigation ist auf allen Seiten sichtbar. Welche Menüpunkte angezeigt werde
 | Abschnitt | Inhalt |
 |---|---|
 | **Kennung** | DLG-06 |
-| **Name** | Allergene, Datenschutz und Impressum |
-| **Zweck** | Transparente Hinweise zu Projektgrenzen, verarbeiteten Daten und eindeutig ableitbaren Allergenen |
+| **Name** | Allergene und Inhaltsstoffe |
+| **Zweck** | Transparente Hinweise zu Projektgrenzen und eindeutig ableitbaren Allergenen |
 | **Zugang** | Über die gemeinsame Fußzeile auf allen Seiten |
 | **Ergebnis** | Der Nutzer erhält Informationen; es werden keine Daten verändert |
 
-Anmeldung (DLG-03) und Registrierung (DLG-04) verwenden dasselbe zweispaltige Layout mit dunklem Bildbereich und hellem Formularbereich. Auf schmalen Bildschirmen stapeln sich beide Bereiche untereinander.
+Die Anmeldung (DLG-03) verwendet ein zweispaltiges Layout mit dunklem Bildbereich und hellem Formularbereich; auf schmalen Bildschirmen stapeln sich beide Bereiche untereinander. Die Registrierung (DLG-04) verwendet eine einfache Formular-Karte.
 
-Die Informationsseiten kennzeichnen Pizza Tracker ausdrücklich als Hochschulprojekt ohne echte Bestell- oder Zahlungsfunktion. Nicht belegte Produktrezepturen oder Unternehmensdaten werden nicht erfunden.
+Die Informationsseite kennzeichnet Pizza Tracker ausdrücklich als Hochschulprojekt ohne echte Bestell- oder Zahlungsfunktion. Nicht belegte Produktrezepturen oder Unternehmensdaten werden nicht erfunden.
 
 ---
 
@@ -275,13 +275,13 @@ Die Informationsseiten kennzeichnen Pizza Tracker ausdrücklich als Hochschulpro
 
 ### Bestätigungsdialog
 
-Unwiderrufliche Aktionen — aktuell nur das Löschen einer Konfiguration — werden durch einen Bestätigungsdialog gesichert. Der Dialog nennt den Namen der betroffenen Pizza und bietet zwei Schaltflächen: „Bestätigen" und „Abbrechen". Bei „Abbrechen" bleibt alles unverändert. Bei „Bestätigen" wird die Konfiguration gelöscht.
+Unwiderrufliche Aktionen — aktuell nur das Löschen einer Konfiguration — werden durch einen Bestätigungsdialog gesichert. Verwendet wird der Bestätigungsdialog des Browsers. Er nennt den Namen der betroffenen Pizza und bietet eine Bestätigung und „Abbrechen"; die Beschriftung der Bestätigung hängt vom Browser ab. Bei „Abbrechen" bleibt alles unverändert. Bei Bestätigung wird die Konfiguration gelöscht.
 
 ### Fehlermeldungen
 
 Fehlermeldungen erscheinen direkt im betroffenen Dialog — nicht als kurz aufblitzendes Hinweisfenster. Der Nutzer kann die Eingabe korrigieren und erneut versuchen.
 
-Bei nicht erreichbaren JSON- oder API-Ressourcen erscheint eine verständliche Verbindungsmeldung. Während Gutscheinprüfung, Anmeldung, Registrierung, Speicherung und Löschung wird die ausgelöste Schaltfläche vorübergehend deaktiviert, um Mehrfachanfragen zu verhindern.
+Im Konfigurator erscheint eine verständliche Verbindungsmeldung, wenn die Pizzadaten, die Gutscheinprüfung oder das Speichern nicht erreichbar sind. Während Gutscheinprüfung und Speicherung wird die ausgelöste Schaltfläche vorübergehend deaktiviert, um Mehrfachanfragen zu verhindern. Im aktuellen Stand noch nicht umgesetzt (siehe [A11](../arch/A11-risks-and-technical-debts.md), R-04): Anmeldung und Registrierung zeigen fachliche Fehler der API an, besitzen aber keinen eigenen `try/catch` für Netzwerk- oder JSON-Fehler und sperren die Schaltfläche nicht. Das Laden von „Meine Pizzen" besitzt keinen allgemeinen Netzwerkfehler-Handler. Ein fehlgeschlagenes Löschen wird ohne sichtbare Fehlermeldung ignoriert.
 
 ### Nicht angemeldet
 
