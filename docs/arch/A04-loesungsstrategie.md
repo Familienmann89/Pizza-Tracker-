@@ -16,7 +16,7 @@ Die Lösungsstrategie basiert insbesondere auf:
 * [N2 — Querschnittskonzepte](../spec/N2-querschnittskonzepte.md)
 * [S3 — Inbetriebnahme](../spec/S3-inbetriebnahme.md)
 
-Die Lösungsstrategie beschreibt bewusst noch keine konkreten PHP-Dateien, Klassen oder Funktionen. Die tatsächliche Zerlegung der Implementierung wird in **A05 — Bausteinsicht** beschrieben und mit dem Quellcode abgeglichen.
+Die Lösungsstrategie beschreibt die grundlegenden architektonischen Ansätze und Verantwortlichkeiten des Systems. Konkrete Implementierungsdateien und Funktionen werden nur punktuell genannt, wenn sie zur nachvollziehbaren Begründung einer Strategie oder zum Abgleich mit dem vorliegenden Stand erforderlich sind. Die vollständige Zerlegung der Implementierung in Softwarebausteine wird in **A05 — Bausteinsicht** beschrieben.
 
 ---
 
@@ -32,14 +32,14 @@ Die drei Schichten sind:
 
 ```mermaid
 flowchart LR
-    UI["Präsentationsschicht\nHTML / CSS / Bootstrap 5.3 / JavaScript"]
-    APP["Anwendungsschicht\nPHP 8"]
+    UI["Präsentationsschicht\nHTML / CSS / Bootstrap 5.3.3 / JavaScript"]
+    APP["Anwendungsschicht\nPHP ab 8.1"]
     DB[("Persistenzschicht\nMySQL / MariaDB")]
 
-    UI -->|"Benutzeranfragen und Eingaben"| APP
+    UI -->|"Fetch-Anfragen / JSON"| APP
     APP -->|"Daten lesen / schreiben"| DB
     DB -->|"gespeicherte Daten"| APP
-    APP -->|"Seiten, Daten und Rückmeldungen"| UI
+    APP -->|"JSON-Antworten"| UI
 ```
 
 Die Trennung der Schichten unterstützt insbesondere:
@@ -50,7 +50,7 @@ Die Trennung der Schichten unterstützt insbesondere:
 * einfachere Wartung und Weiterentwicklung
 * kontrollierten Zugriff auf persistente Daten
 
-Der Browser greift nicht direkt auf die Datenbank zu. Der Zugriff erfolgt über die serverseitige Anwendungsschicht.
+Der Browser greift nicht direkt auf die Datenbank zu. Der Zugriff erfolgt über die serverseitige Anwendungsschicht. Die HTML-, CSS-, JavaScript- und JSON-Dateien werden als statische Projektdateien vom lokalen Webserver ausgeliefert; die PHP-Endpunkte bilden die JSON-basierte API für serverseitige Vorgänge.
 
 ---
 
@@ -65,44 +65,44 @@ Die zentralen Dialoge sind:
 * Anmeldung
 * Registrierung
 * „Meine Pizzen“
+* Informationsseite „Allergene & Inhaltsstoffe“
 
-Diese Dialogstruktur entspricht der [B1 — Dialogspezifikation](../spec/B1-dialogspezifikation.md).
+Diese Dialogstruktur entspricht der [B1 — Dialogspezifikation](../spec/B1-dialogspezifikation.md). Die Informationsseite ist dort als eigener Informationsdialog erfasst.
 
-Die Navigation berücksichtigt den Anmeldestatus des Nutzers. Gäste und angemeldete Nutzer sehen daher teilweise unterschiedliche Navigationsmöglichkeiten. Insbesondere steht „Meine Pizzen“ nur angemeldeten Nutzern zur Verfügung.
+Die Navigation berücksichtigt den Anmeldestatus des Nutzers. Gäste und angemeldete Nutzer sehen daher teilweise unterschiedliche Navigationsmöglichkeiten. Insbesondere steht „Meine Pizzen“ in der Navigation nur angemeldeten Nutzern zur Verfügung.
 
 Für Darstellung und Interaktion werden verwendet:
 
 * HTML
 * CSS
-* Bootstrap 5.3
+* Bootstrap 5.3.3
 * JavaScript
 
-Bootstrap unterstützt insbesondere die Anforderung einer auf unterschiedlichen Bildschirmgrößen nutzbaren Oberfläche.
+Bootstrap 5.3.3 wird für Layout, responsive Rasterstrukturen und wiederverwendbare Oberflächenelemente eingesetzt. Im aktuellen Stand wird die Bibliothek über `cdn.jsdelivr.net` geladen. Ohne vorhandenen Browsercache besteht deshalb beim Laden eine Internetabhängigkeit; dieses Risiko wird in A11 dokumentiert.
 
-JavaScript wird für unmittelbare Interaktionen innerhalb der Oberfläche eingesetzt. Die Spezifikation verlangt beispielsweise, dass Preis und Kalorien nach Änderungen der Pizza-Konfiguration direkt aktualisiert werden.
-
-Die konkrete Aufteilung der Berechnungslogik zwischen Browser und Server wird anhand der tatsächlichen Implementierung in den folgenden Architekturkapiteln dokumentiert.
+JavaScript übernimmt im Konfigurator die unmittelbare Aktualisierung der angezeigten Werte. Beim Speichern einer Konfiguration werden die relevanten Werte serverseitig erneut aus den übermittelten Konfigurationsdaten bestimmt. Die genaue Verantwortungsverteilung wird in A05 und A06 beschrieben.
 
 ---
 
 ## 4.3 Strategie der Anwendungslogik
 
-Die serverseitige Anwendungslogik wird mit **PHP 8** umgesetzt.
+Die serverseitige Anwendungslogik wird mit **PHP ab 8.1** umgesetzt.
 
-Sie bildet die Verbindung zwischen Benutzeroberfläche und Datenhaltung und verarbeitet insbesondere fachliche Vorgänge wie:
+Die Verantwortung ist im aktuellen Stand zwischen Browser und Server geteilt. JavaScript übernimmt die unmittelbare Konfigurator-Interaktion und die Live-Anzeige. PHP übernimmt die serverseitig maßgeblichen Prüfungen, die Verarbeitung geschützter Funktionen und sämtliche direkten Datenbankzugriffe. Dazu gehören insbesondere:
 
 * Registrierung
 * Anmeldung und Abmeldung
 * Prüfung des Benutzerstatus
 * Prüfung geschützter Funktionen
-* Verarbeitung von Pizza-Konfigurationen
+* Validierung und Normalisierung einer Konfiguration beim Speichern
+* erneute serverseitige Berechnung von Preis und Kalorien beim Speichern
 * Gutscheinprüfung
 * Speicherung von Konfigurationen
 * Laden gespeicherter Konfigurationen
 * Löschen gespeicherter Konfigurationen
 * Datenbankzugriffe
 
-Damit wird verhindert, dass die Benutzeroberfläche unmittelbar auf persistente Daten zugreift.
+Damit wird verhindert, dass die Benutzeroberfläche unmittelbar auf persistente Daten zugreift oder einen selbst übermittelten Preis als verbindlich speichern kann.
 
 Die konkrete Zerlegung dieser Verantwortlichkeiten in einzelne Softwarebausteine wird in **A05 — Bausteinsicht** beschrieben.
 
@@ -121,15 +121,13 @@ Der Nutzer kann insbesondere folgende Bestandteile auswählen:
 * Beläge
 * Extras
 
-Die zulässigen fachlichen Werte für zentrale Auswahlbereiche wie Größe, Teig, Sauce und Käse werden im [D2 — Datentypenverzeichnis](../spec/D2-datentypen.md) festgelegt.
+Die zulässigen fachlichen Werte für zentrale Auswahlbereiche wie Größe, Teig, Sauce und Käse werden im [D2 — Datentypenverzeichnis](../spec/D2-datentypen.md) festgelegt. Technische Quelle der auswählbaren Optionen und ihrer Preis-, Kalorien- und Nährwertwerte ist `data/pizza_data.json`.
 
-Architektur und Implementierung sollen dieselben fachlichen Bezeichnungen verwenden, damit die Werte zwischen Spezifikation, Benutzeroberfläche, Anwendungslogik und Datenhaltung konsistent bleiben.
+Nach Änderungen der Konfiguration berechnet `js/konfigurator.js` Preis, Kalorien und Makronährwerte unmittelbar im Browser und aktualisiert die Anzeige ohne zusätzlichen API-Aufruf. Ein gültiger Gutschein reduziert dabei nur den angezeigten Preis; Kalorien und Nährwerte bleiben unverändert.
 
-Nach Änderungen der Konfiguration werden Preis und Kalorien unmittelbar aktualisiert und dem Nutzer angezeigt.
+Beim Speichern behandelt der Server diese Browserwerte nicht als verbindlich. `api/save_config.php` normalisiert und validiert die Auswahl. Preis und Kalorien werden anschließend mit `calculatePizzaTotals()` serverseitig erneut aus `data/pizza_data.json` berechnet. Persistiert wird der serverseitig berechnete Preis; Kalorien und Makronährwerte werden nicht in `konfigurationen` gespeichert.
 
-Für die Preisberechnung werden die gewählten Bestandteile sowie mögliche Aufpreise berücksichtigt. Ein gültiger Gutschein reduziert anschließend den berechneten Preis entsprechend dem hinterlegten prozentualen Rabatt.
-
-Die Kalorienanzeige basiert auf den Kalorienwerten der ausgewählten Bestandteile.
+Die Rundung von Rabatt und Endpreis ist im Browser und im Backend derzeit nicht vollständig identisch. Bis zur Behebung ist der beim Speichern serverseitig berechnete Preis maßgeblich; die Abweichung ist als R-02 in A11 dokumentiert.
 
 Diese Strategie unterstützt insbesondere:
 
@@ -143,18 +141,21 @@ Diese Strategie unterstützt insbesondere:
 
 Die Gutscheinprüfung wird als eigenständiger fachlicher Verarbeitungsvorgang behandelt.
 
-Bei der Einlösung eines Gutscheincodes wird geprüft:
+Die interaktive Gutscheinprüfung erfolgt serverseitig über `api/coupon.php` und die gemeinsame Funktion `validateCoupon()`. Der API-Endpunkt lehnt ein leeres Gutscheinfeld ab. Beim Speichern darf dagegen kein Gutscheincode vorhanden sein; `validateCoupon()` behandelt einen leeren Code in diesem Fall als „kein Gutschein“ mit 0 % Rabatt.
 
-1. ob der Code vorhanden ist,
+Bei einem angegebenen Gutscheincode wird geprüft:
+
+1. ob der Code in `gutscheine` existiert,
 2. ob der Gutschein aktiv ist,
 3. ob der Gutschein noch gültig ist,
-4. welcher prozentuale Rabatt anzuwenden ist.
+4. bei `WELCOME` zusätzlich, ob der Nutzer angemeldet ist und in seinen aktuell gespeicherten Konfigurationen bereits `WELCOME` vorkommt,
+5. welcher prozentuale Rabatt anzuwenden ist.
 
-Nur ein gültiger Gutschein beeinflusst den Endpreis.
+Nur ein serverseitig bestätigter Gutschein beeinflusst den Endpreis. Wird ein geprüfter Code abgelehnt oder tritt bei der Gutscheinprüfung ein Verbindungsfehler auf, setzt der Konfigurator den aktiven Gutschein zurück und aktualisiert den angezeigten Preis ohne Rabatt.
 
-Bei einer fehlgeschlagenen Prüfung wird kein Rabatt angewendet und der Nutzer erhält eine verständliche Rückmeldung.
+Zwei bekannte Grenzen dürfen dabei nicht als bereits gelöst dargestellt werden: Die derzeitige `WELCOME`-Prüfung verliert ihren Nutzungsnachweis, wenn die betreffende Konfiguration gelöscht wird (A11, R-03). Außerdem setzt die bloße erneute Prüfung eines leeren Gutscheinfelds einen zuvor aktiven Gutschein aktuell nicht zurück (A11, R-06).
 
-Die persistierten Gutscheindaten enthalten laut Datenmodell insbesondere:
+Die persistierten Gutscheindaten enthalten insbesondere:
 
 * Gutscheincode
 * prozentualen Rabatt
@@ -171,59 +172,58 @@ Die genaue fachliche Prüfreihenfolge ist in [F3 — Anwendungsfunktionen](../sp
 
 Die Authentifizierung erfolgt gemäß [P2 — Architekturüberblick](../spec/P2-architekturueberblick.md) **session-basiert**.
 
-Nach erfolgreicher Anmeldung bleibt der Benutzerstatus während der Nutzung erhalten.
+Nach erfolgreicher Anmeldung oder Registrierung wird eine PHP-Session für den Nutzer geführt. `api/session.php` stellt dem Frontend den aktuellen Anmeldestatus bereit; `js/auth.js` passt daraufhin Navigation und sichtbare Funktionen an.
 
 Das System unterscheidet zwischen:
 
 * Gast
 * angemeldetem Nutzer
 
-Bestimmte Funktionen dürfen ausschließlich angemeldeten Nutzern zur Verfügung stehen.
-
-Dazu gehören insbesondere:
+Geschützte serverseitige Vorgänge verlangen eine aktive Session. Dazu gehören insbesondere:
 
 * Konfiguration speichern
-* „Meine Pizzen“ anzeigen
-* gespeicherte Konfiguration erneut laden
+* eigene gespeicherte Konfigurationen laden
 * eigene Konfiguration löschen
-* Abmelden
 
-Gespeicherte Konfigurationen werden einem Benutzerkonto zugeordnet.
+Die Seite „Meine Pizzen“ kann technisch direkt aufgerufen werden; ohne aktive Session liefert der zugehörige Datenendpunkt jedoch keine Konfigurationen, sondern eine nicht autorisierte Antwort. Der Speichern-Button wird für Gäste zusätzlich im Frontend ausgeblendet.
 
-Ein Nutzer darf nur auf seine eigenen gespeicherten Konfigurationen zugreifen, diese erneut laden oder löschen.
+Gespeicherte Konfigurationen werden einem Benutzerkonto zugeordnet. `load_configs.php` lädt nur Datensätze der aktiven `user_id`; `delete_config.php` löscht nur dann, wenn sowohl Konfigurations-ID als auch `user_id` der aktiven Session übereinstimmen.
 
 ---
 
 ## 4.7 Validierungs- und Sicherheitsstrategie
 
-Eingaben werden vor der Verarbeitung auf Vollständigkeit und Gültigkeit geprüft.
+Validierung und Schutzmaßnahmen werden überwiegend serverseitig umgesetzt und durch Frontend-Prüfungen ergänzt.
 
-Dazu gehören insbesondere:
+Zu den tatsächlich implementierten Prüfungen gehören insbesondere:
 
-* Prüfung von Pflichtfeldern
+* Prüfung von Pflichtfeldern bei der Registrierung
 * Prüfung des E-Mail-Formats
 * Prüfung, ob eine E-Mail-Adresse bereits registriert ist
+* Mindestlänge des Passworts
+* Prüfung der Passwortbestätigung, sofern sie an den Server übermittelt wird
+* Normalisierung und Prüfung der auswählbaren Pizza-Werte gegen `data/pizza_data.json`
 * Prüfung von Gutscheincodes
-* Prüfung des Anmeldestatus
-* Prüfung, ob eine gespeicherte Konfiguration dem angemeldeten Nutzer gehört
+* Prüfung des Anmeldestatus für geschützte API-Endpunkte
+* Begrenzung des Ladens und Löschens von Konfigurationen auf die aktive `user_id`
 
-Ungültige Eingaben oder nicht erlaubte Aktionen werden nicht verarbeitet.
+Passwörter werden bei der Registrierung mit `password_hash(..., PASSWORD_BCRYPT)` gehasht und beim Login mit `password_verify()` geprüft. Sie werden nicht im Klartext in der Datenbank gespeichert.
 
-Passwörter dürfen gemäß NFA02 nicht im Klartext gespeichert werden.
+Die Datenbankzugriffe erfolgen über PDO Prepared Statements; emulierte Prepared Statements sind deaktiviert. Dadurch werden SQL-Befehle und übergebene Werte getrennt verarbeitet.
 
-Gemäß NFA03 muss die Anwendung außerdem gegen das Einschleusen schädlicher Eingaben geschützt werden.
+Die PHP-Session setzt das Cookie mit `HttpOnly` und `SameSite=Lax`; `Secure` wird gesetzt, wenn die Anwendung über HTTPS läuft. Nach erfolgreicher Anmeldung und Registrierung wird die Session-ID erneuert.
 
-Die konkrete technische Umsetzung dieser Sicherheitsmaßnahmen wird erst nach Abgleich mit der tatsächlichen Implementierung in **A08 — Querschnittliche Konzepte** beschrieben.
+Beim Rendern gespeicherter Konfigurationen maskiert `js/meine-pizzen.js` dynamische Textwerte mit `escapeHtml()`. Diese einzelnen Maßnahmen reduzieren konkrete Risiken, stellen aber für sich allein keinen Nachweis vollständiger Anwendungssicherheit dar. Die technischen Details und Grenzen werden in **A08 — Querschnittliche Konzepte** dokumentiert.
 
 ---
 
 ## 4.8 Strategie für Fehlerbehandlung und Benutzerfeedback
 
-Fehler und ungültige Eingaben sollen einheitlich und verständlich behandelt werden.
+Erwartete Fehler und ungültige Eingaben werden über die API grundsätzlich als JSON-Antworten mit passenden HTTP-Statuscodes zurückgegeben. In den zentralen Dialogen für Anmeldung, Registrierung, Gutscheinprüfung und Speichern werden diese Rückmeldungen im jeweiligen Kontext angezeigt.
 
-Fehlermeldungen werden direkt im jeweils betroffenen Dialog angezeigt, damit der Nutzer seine Eingabe korrigieren und den Vorgang erneut versuchen kann.
+Die Fehlerbehandlung ist im aktuellen Stand jedoch noch nicht vollständig vereinheitlicht. Insbesondere unerwartete Serverfehler sowie Netzwerk- und JSON-Fehler werden nicht in jedem Frontend-Ablauf gleich behandelt. Diese Einschränkung ist in A11 als R-04 beziehungsweise S-04 dokumentiert.
 
-Typische Fehlerfälle sind beispielsweise:
+Typische serverseitig behandelte Fehlerfälle sind beispielsweise:
 
 * ungültiger Gutscheincode
 * abgelaufener Gutschein
@@ -232,13 +232,11 @@ Typische Fehlerfälle sind beispielsweise:
 * falsche Zugangsdaten
 * fehlende Pflichtfelder
 * fehlende Anmeldung
-* unzulässiger Zugriff auf fremde Konfigurationen
+* ungültige oder nicht dem Nutzer zugeordnete Konfigurations-ID
 
-Ungültige Aktionen werden nicht ausgeführt.
+Serverseitig erkannte ungültige oder nicht autorisierte Aktionen werden abgewiesen. Erfolgreiche Aktionen werden abhängig vom Ablauf durch eine Rückmeldung oder eine aktualisierte Ansicht sichtbar gemacht.
 
-Erfolgreiche Aktionen sollen ebenfalls verständlich bestätigt werden.
-
-Unwiderrufliche Aktionen werden zusätzlich abgesichert. Das Löschen einer gespeicherten Konfiguration erfordert beispielsweise eine Bestätigung durch den Nutzer.
+Unwiderrufliche Aktionen werden zusätzlich im Frontend abgesichert. Das Löschen einer gespeicherten Konfiguration erfordert beispielsweise eine Bestätigung durch den Nutzer; der Löschendpunkt begrenzt die Operation zusätzlich auf die `user_id` der aktiven Session.
 
 ---
 
@@ -246,36 +244,34 @@ Unwiderrufliche Aktionen werden zusätzlich abgesichert. Das Löschen einer gesp
 
 Für die persistente Datenhaltung wird **MySQL beziehungsweise MariaDB** eingesetzt.
 
-Das Datenmodell enthält drei zentrale Entitäten:
+Das Datenmodell enthält drei zentrale Tabellen:
 
 ### Benutzer (`users`)
 
-Speichert die registrierten Benutzerkonten und die zugehörigen Benutzerdaten.
+Speichert registrierte Benutzerkonten und die zugehörigen Benutzerdaten. Das Passwortfeld enthält den erzeugten Passwort-Hash.
 
 ### Konfigurationen (`konfigurationen`)
 
-Speichert die Pizza-Konfigurationen angemeldeter Nutzer.
+Speichert Pizza-Konfigurationen angemeldeter Nutzer.
 
-Jede Konfiguration besitzt eine `user_id` und ist damit genau einem Benutzer zugeordnet.
-
-Zwischen `users` und `konfigurationen` besteht eine **1:N-Beziehung**:
+Jede Konfiguration besitzt eine `user_id` und ist damit genau einem Benutzer zugeordnet. Zwischen `users` und `konfigurationen` besteht eine **1:N-Beziehung**:
 
 > Ein Benutzer kann mehrere Konfigurationen speichern, eine gespeicherte Konfiguration gehört genau einem Benutzer.
 
+Der Fremdschlüssel `fk_konfigurationen_user` ist mit `ON DELETE CASCADE` definiert. Wird ein Benutzer auf Datenbankebene gelöscht, werden damit auch seine zugehörigen Konfigurationen entfernt.
+
+Die mehrwertigen Eigenschaften `belaege` und `extras` werden als JSON in der Tabelle `konfigurationen` gespeichert. Beim Speichern werden die PHP-Arrays mit `json_encode()` serialisiert; beim Laden werden sie mit `json_decode()` wieder in Arrays umgewandelt.
+
 ### Gutscheine (`gutscheine`)
 
-Speichert die für die Gutscheinprüfung benötigten Informationen.
-
-Dazu gehören insbesondere:
+Speichert die für die Gutscheinprüfung benötigten Informationen:
 
 * Code
 * prozentualer Rabatt
 * Aktiv-Status
-* Gültigkeitsdatum
+* optionales Gültigkeitsdatum
 
-Eine Konfiguration kann zusätzlich den verwendeten Gutscheincode als Information speichern.
-
-Die konkrete technische Repräsentation mehrwertiger Eigenschaften wie `belaege` und `extras` wird anhand der tatsächlichen Datenbankimplementierung dokumentiert.
+`konfigurationen.gutschein_code` ist ein optionales `VARCHAR`-Feld und kein Fremdschlüssel auf `gutscheine`. Es hält den beim Speichern verwendeten Gutscheincode als Information fest.
 
 ```mermaid
 flowchart LR
@@ -301,7 +297,7 @@ Der Browser besitzt keinen direkten Datenbankzugriff.
 
 Angemeldete Nutzer können eigene Pizza-Konfigurationen dauerhaft speichern.
 
-Eine gespeicherte Konfiguration enthält gemäß Datenmodell unter anderem:
+Eine gespeicherte Konfiguration enthält unter anderem:
 
 * Name
 * Größe
@@ -311,19 +307,18 @@ Eine gespeicherte Konfiguration enthält gemäß Datenmodell unter anderem:
 * Beläge
 * Extras
 * gegebenenfalls verwendeten Gutscheincode
-* Preis
+* serverseitig berechneten Preis
 * Speicherzeitpunkt
 
 Die gespeicherte Konfiguration wird dem aktuell angemeldeten Benutzer zugeordnet.
 
-Im Dialog „Meine Pizzen“ kann der Nutzer seine gespeicherten Konfigurationen:
+Im Dialog „Meine Pizzen“ werden die eigenen Datensätze über `api/load_configs.php` geladen und als Karten angezeigt. Die Aktion „Erneut bearbeiten“ überträgt die Daten der ausgewählten Konfiguration über `sessionStorage` in den Konfigurator.
 
-* anzeigen,
-* erneut in den Konfigurator laden,
-* weiter bearbeiten,
-* löschen.
+Dieser Ablauf ist im aktuellen Stand **kein echtes Aktualisieren eines bestehenden Datensatzes**. `api/save_config.php` führt beim Speichern immer ein `INSERT` aus. Wird eine erneut geladene Pizza verändert und gespeichert, bleibt daher der ursprüngliche Datensatz bestehen und es entsteht eine neue Konfiguration. Diese technische Schuld ist in A11 als S-02 dokumentiert.
 
-Vor dem Löschen muss geprüft werden, ob die Konfiguration tatsächlich dem angemeldeten Nutzer gehört.
+Außerdem stellt `applyConfig()` beim erneuten Bearbeiten Größe, Teig, Sauce, Käse, Beläge, Extras und Namen wieder her, aktiviert einen zuvor gespeicherten `gutschein_code` jedoch nicht automatisch erneut. Preis und Nährwerte werden anhand der aktuell geladenen Fachdaten neu angezeigt.
+
+Das Löschen erfolgt über `api/delete_config.php`. Der Server verwendet dabei sowohl die übermittelte Konfigurations-ID als auch die `user_id` der aktiven Session, sodass ein Nutzer über diesen Endpunkt nur eigene Konfigurationen löschen kann.
 
 ---
 
@@ -331,25 +326,24 @@ Vor dem Löschen muss geprüft werden, ob die Konfiguration tatsächlich dem ang
 
 Der Pizza Tracker ist für einen **lokalen Betrieb** vorgesehen.
 
-Als Betriebsumgebung werden XAMPP beziehungsweise MAMP verwendet.
+Als primär dokumentierte Betriebsumgebung wird XAMPP verwendet. MAMP ist als Alternative vorgesehen, benötigt je nach Standardeinstellung angepasste Datenbankparameter und ist im vorliegenden Repository nicht durch ein eigenes Testprotokoll nachgewiesen.
 
 Für die Inbetriebnahme werden mindestens benötigt:
 
 * der Quellcode des Pizza Trackers
-* eine geeignete lokale Webserver- und PHP-Umgebung
+* eine lokale Webserver- und PHP-Umgebung mit PHP ab 8.1
+* PDO mit MySQL-Treiber
+* die von der Implementierung verwendete `mbstring`-Erweiterung
 * eine MySQL-/MariaDB-Datenbank
 * ein aktueller Webbrowser
-* die erforderlichen Ausgangs- und Testdaten
+* die statischen Fachdaten aus `data/pizza_data.json`
+* das Datenbankschema aus `database/schema.sql`
 
-Vor der Nutzung müssen insbesondere benötigte Daten für folgende Bereiche vorhanden sein:
+`pizza_data.json` enthält die im Konfigurator verwendeten Optionen sowie Preis-, Kalorien- und Nährwertwerte. `schema.sql` legt die Datenbanktabellen an und enthält die vorgesehenen Gutschein-Testdaten.
 
-* Zutaten
-* Preise
-* Kalorienwerte
-* Gutscheincodes
-* Rabatte
+Die Standardwerte der Datenbankverbindung sind auf eine typische XAMPP-Konfiguration ausgerichtet (`127.0.0.1`, Port `3306`, Datenbank `pizza_tracker`, Benutzer `root`, leeres Passwort). Abweichende Werte können über die vorgesehenen `PIZZA_DB_*`-Umgebungsvariablen gesetzt werden.
 
-Im Rahmen der Inbetriebnahme werden insbesondere folgende Funktionen geprüft:
+Für die Abnahme sind insbesondere folgende Funktionen praktisch zu prüfen:
 
 * Registrierung und Anmeldung
 * Pizza-Konfiguration
@@ -358,45 +352,46 @@ Im Rahmen der Inbetriebnahme werden insbesondere folgende Funktionen geprüft:
 * Gutscheinprüfung
 * Speicherung und Verwaltung eigener Konfigurationen
 
-Die fachlichen Anforderungen an die Inbetriebnahme sind in [S3 — Inbetriebnahme](../spec/S3-inbetriebnahme.md) beschrieben.
+Die fachlichen Anforderungen an die Inbetriebnahme sind in [S3 — Inbetriebnahme](../spec/S3-inbetriebnahme.md) beschrieben. Die konkreten Qualitäts- und Testszenarien werden in A10 festgehalten; ihre erfolgreiche Durchführung darf erst nach einem tatsächlich protokollierten Test als nachgewiesen gelten.
 
 ---
 
 ## 4.12 Bezug zu den Qualitätszielen
 
-Die gewählte Lösungsstrategie unterstützt die in A01 und N1 beschriebenen Qualitätsziele.
+Die gewählte Lösungsstrategie unterstützt die in A01 und N1 beschriebenen Qualitätsziele. Sie ersetzt jedoch nicht den praktischen Nachweis durch die vorgesehenen Tests.
 
-| Qualitätsziel               | Beitrag der Lösungsstrategie                                                                                                            |
-| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| **Sicherheit**              | Session-basierte Zugriffskontrolle, Eingabevalidierung, kein Klartext-Passwort und Beschränkung des Zugriffs auf eigene Konfigurationen |
-| **Funktionale Korrektheit** | Klare fachliche Verarbeitung von Pizza-Konfiguration, Preis, Kalorien und Gutscheinen                                                   |
-| **Benutzbarkeit**           | Strukturierte Dialoge, Bootstrap-basierte Oberfläche und verständliche Rückmeldungen                                                    |
-| **Performance**             | Preis und Kalorien werden während der Konfiguration unmittelbar aktualisiert                                                            |
-| **Kompatibilität**          | Webbasierter Ansatz für aktuelle gängige Browser                                                                                        |
-| **Betreibbarkeit**          | Lokale Betriebsumgebung mit PHP, MySQL/MariaDB und XAMPP beziehungsweise MAMP                                                           |
+| Qualitätsziel               | Beitrag der Lösungsstrategie |
+| --------------------------- | ---------------------------- |
+| **Sicherheit**              | Session-basierte Zugriffskontrolle, Passwort-Hashing, PDO Prepared Statements, serverseitige Validierung und Beschränkung des Datenzugriffs auf die aktive `user_id` |
+| **Funktionale Korrektheit** | Gemeinsame Fachdatenquelle für Konfiguration sowie serverseitige Neuberechnung von Preis und Kalorien beim Speichern; bekannte Abweichungen sind in A11 dokumentiert |
+| **Benutzbarkeit**           | Strukturierte Seiten, responsive Bootstrap-Oberfläche und kontextbezogene Rückmeldungen; bekannte Lücken der Fehlerbehandlung bleiben dokumentiert |
+| **Performance**             | Preis, Kalorien und Nährwerte werden während der Konfiguration lokal im Browser aktualisiert und benötigen dafür keinen API-Aufruf |
+| **Kompatibilität**          | Webbasierter Ansatz für aktuelle Browser; die tatsächlich getestete Browserabdeckung ist durch die praktischen Tests nachzuweisen |
+| **Betreibbarkeit**          | Lokale Betriebsumgebung mit PHP ab 8.1, MySQL/MariaDB und primär XAMPP; MAMP bleibt eine alternative, separat zu prüfende Umgebung |
 
 ---
 
 ## 4.13 Zusammenfassung
 
-| Bereich           | Lösungsstrategie                                                   |
-| ----------------- | ------------------------------------------------------------------ |
-| Architektur       | Dreischichtige Webanwendung                                        |
-| Präsentation      | HTML, CSS, Bootstrap 5.3 und JavaScript                            |
-| Dialogstruktur    | Startseite, Konfigurator, Anmeldung, Registrierung, „Meine Pizzen“ |
-| Backend           | PHP 8                                                              |
-| Persistenz        | MySQL / MariaDB                                                    |
-| Authentifizierung | Session-basiert                                                    |
-| Zugriffsschutz    | Benutzerstatus und Eigentümerschaft gespeicherter Daten            |
-| Preis / Kalorien  | Unmittelbare Aktualisierung während der Konfiguration              |
-| Gutscheine        | Prüfung auf Existenz, Aktivität und Gültigkeit                     |
-| Validierung       | Prüfung von Pflichtfeldern und fachlich ungültigen Eingaben        |
-| Fehlerbehandlung  | Verständliche Rückmeldung direkt im betroffenen Dialog             |
-| Betrieb           | Lokal mit XAMPP beziehungsweise MAMP                               |
-| Versionskontrolle | Git / GitHub                                                       |
+| Bereich           | Lösungsstrategie |
+| ----------------- | ---------------- |
+| Architektur       | Dreischichtige Webanwendung |
+| Präsentation      | HTML, CSS, Bootstrap 5.3.3 und JavaScript |
+| Dialogstruktur    | Startseite, Konfigurator, Anmeldung, Registrierung, „Meine Pizzen“ und „Allergene & Inhaltsstoffe“ |
+| Backend           | PHP ab 8.1 und JSON-basierte API-Endpunkte |
+| Persistenz        | MySQL / MariaDB; Beläge und Extras als JSON innerhalb der Konfiguration |
+| Authentifizierung | Session-basiert |
+| Zugriffsschutz    | Serverseitige Session-Prüfung und Begrenzung gespeicherter Daten auf die aktive `user_id` |
+| Preis / Kalorien  | Live-Berechnung im Browser; serverseitige Neuberechnung beim Speichern |
+| Gutscheine        | Serverseitige Prüfung; bekannte Grenzen bei `WELCOME` und leerer erneuter Eingabe in A11 dokumentiert |
+| Validierung       | Serverseitige Pflichtfeld-, Auswahl-, Gutschein-, Session- und Eigentumsprüfungen, ergänzt durch Frontend-Prüfungen |
+| Fehlerbehandlung  | Erwartete API-Fehler mit JSON und HTTP-Statuscodes; bekannte Frontend- und Exception-Lücken in A11 dokumentiert |
+| Gespeicherte Pizzen | Laden eigener Datensätze; „Erneut bearbeiten“ erzeugt beim späteren Speichern derzeit einen neuen Datensatz statt eines UPDATEs |
+| Betrieb           | Lokal primär mit XAMPP; PHP ab 8.1 und MySQL/MariaDB |
+| Versionskontrolle | Git / GitHub |
 
 Diese Lösungsstrategie bildet die Grundlage für **A05 — Bausteinsicht**.
 
-Dort wird die abstrakte Lösungsstrategie auf konkrete Softwarebausteine des Pizza Trackers abgebildet und anschließend mit der tatsächlichen Projektstruktur und Implementierung abgeglichen.
+Dort wird die Lösungsstrategie auf konkrete Softwarebausteine des Pizza Trackers abgebildet und mit der tatsächlichen Projektstruktur und Implementierung abgeglichen.
 
 Wesentliche technische Entscheidungen werden zusätzlich in **A09 — Architekturentscheidungen** als ADRs mit Kontext, Alternativen, Begründung und Konsequenzen dokumentiert.
