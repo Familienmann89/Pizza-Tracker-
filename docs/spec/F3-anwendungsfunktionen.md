@@ -16,12 +16,17 @@ flowchart TD
     D -->|Nein| E[Fehlermeldung:\nCode nicht aktiv]
     D -->|Ja| F{Ist der Code\nnoch gültig?}
     F -->|Abgelaufen| G[Fehlermeldung:\nCode abgelaufen]
-    F -->|Gültig| H[Rabatt berechnen]
+    F -->|Gültig| W{Code WELCOME?}
+    W -->|Nein| H[Rabatt berechnen]
+    W -->|Ja| X{Angemeldet und\nnoch nicht verwendet?}
+    X -->|Nein| Y[Fehlermeldung:\nnicht verfügbar]
+    X -->|Ja| H
     H --> I[Neuen Preis anzeigen]
     I --> J([Ende])
     C --> J
     E --> J
     G --> J
+    Y --> J
 ```
 
 ### Prüfschritte im Detail
@@ -31,8 +36,9 @@ flowchart TD
 | 1. Code vorhanden | Das System prüft ob der eingegebene Code überhaupt existiert | Fehlermeldung: Ungültiger Gutscheincode |
 | 2. Code aktiv | Das System prüft ob der Code nicht deaktiviert wurde | Fehlermeldung: Code nicht aktiv |
 | 3. Gültigkeitsdatum | Das System prüft ob der Code noch nicht abgelaufen ist | Fehlermeldung: Gutscheincode abgelaufen |
-| 4. Rabatt anwenden | Der Rabatt wird in Prozent vom aktuellen Preis abgezogen | — |
-| 5. Preis anzeigen | Der neue reduzierte Preis wird dem Nutzer angezeigt | — |
+| 4. Sonderregel WELCOME | Soll: nur für angemeldete Nutzer und nur einmal pro Nutzerkonto. Umsetzung: Die API sucht eine vorhandene Konfiguration desselben Nutzers mit `gutschein_code = 'WELCOME'`. Wird dieser Datensatz gelöscht, kann die frühere Verwendung nicht mehr erkannt werden ([A11](../arch/A11-risks-and-technical-debts.md), R-03) | Fehlermeldung: nur für registrierte Nutzer bzw. bereits verwendet |
+| 5. Rabatt anwenden | Der Rabatt wird in Prozent vom aktuellen Preis abgezogen | — |
+| 6. Preis anzeigen | Der neue reduzierte Preis wird dem Nutzer angezeigt | — |
 
 ### Verfügbare Gutscheincodes
 
@@ -40,8 +46,8 @@ flowchart TD
 |---|---|---|
 | PIZZA10 | 10 % | Zeitlich begrenzt |
 | SPARE20 | 20 % | Zeitlich begrenzt |
-| WELCOME | 15 % | Einmalig bei Registrierung |
-| STUDENT5 | 5 % | Dauerhaft für Studenten |
+| WELCOME | 15 % | Einmalig pro Nutzerkonto, nur angemeldet (Einschränkung siehe Schritt 4) |
+| STUDENT5 | 5 % | Kein Ablaufdatum; keine technische Prüfung des Studentenstatus |
 
 ## Nährwertberechnung (seit M3)
 
