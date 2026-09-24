@@ -4,9 +4,9 @@ Die Bausteinsicht zeigt, aus welchen Teilen der Pizza Tracker besteht, welche Ve
 und über welche Schnittstellen die Teile zusammenarbeiten. Jeder Baustein ist einem konkreten Verzeichnis
 oder einer konkreten Datei im Repository zugeordnet.
 
-> **Grundlage:** Quellcode aus `Pizza-Tracker--docs-final-documentation (3).zip`,
-> Export-Commit `04c330d159a67955149a12b2d9a7be1b8745379c` (ZIP-Kommentar), geprüft am 24.09.2026.
-> Beschrieben wird die im Code erkennbare Umsetzung. Dies ist kein Nachweis bestandener Funktionstests.
+> **Grundlage:** Quellcode des finalen M3-Stands auf dem Branch `main`.
+> Beschrieben wird die im Code erkennbare Umsetzung. Die tatsächlich durchgeführten Funktionstests
+> sind separat unter [`docs/test/testprotokoll.md`](../test/testprotokoll.md) dokumentiert.
 > Änderungen am Code erfordern einen erneuten Abgleich der betroffenen Aussagen.
 
 Die Tabellenzeile **Anforderungsbezug** ordnet Bausteine den Anforderungen zu; sie bestätigt keine erfolgreiche Abnahme.
