@@ -107,7 +107,10 @@ Die Tabelle enthält die verfügbaren Rabattcodes.
 
 | id | code | rabatt_prozent | aktiv | gueltig_bis | erstellt_am |
 |---|---|---|---|---|---|
-| 1 | PIZZA10 | 10.00 | 1 | 2027-12-31 | 2026-08-15 |
-| 2 | SPARE20 | 20.00 | 1 | 2027-06-30 | 2026-08-15 |
-| 3 | WELCOME | 15.00 | 1 | 2027-12-31 | 2026-08-15 |
-| 4 | STUDENT5 | 5.00 | 1 | NULL | 2026-08-15 |
+| 1 | PIZZA10 | 10.00 | 1 | 2027-12-31 | beim Import automatisch gesetzt |
+| 2 | SPARE20 | 20.00 | 1 | 2027-06-30 | beim Import automatisch gesetzt |
+| 3 | WELCOME | 15.00 | 1 | 2027-12-31 | beim Import automatisch gesetzt |
+| 4 | STUDENT5 | 5.00 | 1 | NULL | beim Import automatisch gesetzt |
+
+`erstellt_am` wird beim Einfügen der Seed-Daten durch den Datenbankstandard
+`CURRENT_TIMESTAMP` gesetzt. Der konkrete Wert entspricht daher dem Zeitpunkt des Schemaimports.
