@@ -55,7 +55,7 @@ flowchart TD
 |---|---|
 | **Auslöser** | Jede Änderung an Größe, Teig, Sauce, Käse, Belägen oder Extras |
 | **Ablauf** | Der Browser summiert `protein`, `kohlenhydrate`, `fett` und `ballaststoffe` aller gewählten Einträge aus `data/pizza_data.json` — dieselbe Datei, aus der Preis und Kalorien stammen |
-| **Ergebnis** | Anzeige als Kennzahlen und als Textzeile im Format „10,90 € · 920 kcal · 54 g Protein · 88 g Kohlenhydrate · 36 g Fett" |
+| **Ergebnis** | Anzeige als Kennzahlen und als Textzeile, zum Beispiel „10,90 € · 920 kcal · 54 g Protein · 88 g Kohlenhydrate · 36 g Fett · 8 g Ballaststoffe". Ballaststoffe werden ergänzt, wenn ihr berechneter Wert größer als null ist |
 | **Abgrenzung** | Ein Gutschein reduziert ausschließlich den Preis. Kalorien und Nährwerte bleiben unverändert |
 | **Verortung** | `calculateLocalTotals()` in `js/konfigurator.js` |
 
@@ -66,7 +66,8 @@ weiterhin serverseitig neu. Damit bleibt die sicherheitsrelevante Serverlogik un
 ## Ernährungskennzeichnungen (seit M3)
 
 Die Kennzeichnungen *High Protein*, *Low Carb*, *Vegetarisch*, *Vegan* und *Leichtere Wahl* werden in
-`nutritionBadges()` aus den berechneten Summen und den Zutateneigenschaften abgeleitet. Die Regeln stehen
-maschinenlesbar in `data/pizza_data.json` unter `kennzeichnungs_regeln` und in [D2](D2-datentypen.md).
+`nutritionBadges()` aus den berechneten Summen und den Zutateneigenschaften abgeleitet. Die ausführbaren
+Regeln sind in dieser JavaScript-Funktion implementiert. `data/pizza_data.json` enthält unter
+`kennzeichnungs_regeln` ergänzende Textbeschreibungen; [D2](D2-datentypen.md) dokumentiert dieselben Regeln.
 Es wird keine Aussage über Gesundheit oder Eignung getroffen und nie vom Namen einer Pizza auf ihre
 Eigenschaften geschlossen.
