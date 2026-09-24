@@ -1,4 +1,4 @@
-N2 — Querschnittskonzepte
+# N2 — Querschnittskonzepte
 
 ## Anmeldung und Benutzerstatus
 
@@ -44,4 +44,3 @@ N2 — Querschnittskonzepte
 - Gespeicherte Konfigurationen werden dem jeweiligen Benutzerkonto zugeordnet.
 - Nutzer können ihre gespeicherten Konfigurationen einsehen.
 - Nicht mehr benötigte Konfigurationen können gelöscht werden.
-```
