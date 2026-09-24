@@ -6,14 +6,14 @@ Der Pizza Tracker ist eine Webanwendung, in der Nutzer ihre eigene Pizza zusamme
 
 ## Was die App können soll
 
-- Pizza zusammenstellen: Größe, Teig, Sauce, Käse und Beläge wählen
+- Pizza zusammenstellen: Größe, Teig, Sauce, Käse, Beläge und Extras wählen
 - Preis und Kalorien werden live berechnet ohne Neuladen der Seite
 - Gutscheincodes für prozentuale Rabatte einlösen
 - Registrierung und Login
 - Eigene Konfigurationen speichern, anzeigen und löschen
 - Pizza-Größen mit Durchmesser anzeigen
 - Auswahl in einer dynamischen Pizza-Vorschau darstellen
-- Projekt-, Datenschutz- und Allergenhinweise bereitstellen
+- Projekt- und Allergenhinweise bereitstellen
 - Makronährstoffe (Protein, Kohlenhydrate, Fett, Ballaststoffe) live mitberechnen
 - Leichtere Zutatenvarianten und einen Protein-/Low-Carb-Teig anbieten
 - Nachvollziehbare Ernährungskennzeichnungen aus den hinterlegten Zutatendaten ableiten
@@ -22,15 +22,15 @@ Der Pizza Tracker ist eine Webanwendung, in der Nutzer ihre eigene Pizza zusamme
 
 Der Pizza Tracker bietet ein Gutschein-System, mit dem Nutzer beim Konfigurieren ihrer Pizza einen Preisnachlass erhalten können.
 
-Ein Gutscheincode besteht aus einer Buchstaben-Zahlen-Kombination (z.B. PIZZA10) und gewährt bei Eingabe einen prozentualen Rabatt auf den Gesamtpreis der konfigurierten Pizza. Das System prüft dabei automatisch ob der Code gültig, aktiv und noch nicht abgelaufen ist.
+Ein Gutscheincode besteht aus einer Buchstaben-Zahlen-Kombination (z.B. PIZZA10) und gewährt bei Eingabe einen prozentualen Rabatt auf den Gesamtpreis der konfigurierten Pizza. Das System prüft dabei automatisch, ob der Code gültig, aktiv und noch nicht abgelaufen ist; bei WELCOME zusätzlich, ob der Nutzer angemeldet ist und den Code noch nicht verwendet hat.
 
 Es gibt verschiedene Arten von Gutscheincodes:
 
 | Art | Beschreibung | Beispiel |
 |---|---|---|
 | Zeitlich begrenzt | Gilt nur bis zu einem bestimmten Datum | PIZZA10 (10 %), SPARE20 (20 %) |
-| Einmalig | Gilt nur bei der ersten Bestellung nach der Registrierung | WELCOME (15 %) |
-| Dauerhaft | Gilt unbegrenzt für eine bestimmte Zielgruppe | STUDENT5 (5 % für Studenten) |
+| Einmalig | Nur für angemeldete Nutzer, einmal pro Nutzerkonto. Technische Einschränkung: Die bisherige Nutzung wird nur über eine noch vorhandene gespeicherte Konfiguration erkannt; nach deren Löschung kann der Code erneut verwendet werden ([A11](../arch/A11-risks-and-technical-debts.md), R-03) | WELCOME (15 %) |
+| Dauerhaft | STUDENT5 gewährt 5 % Rabatt und besitzt kein Ablaufdatum; eine Prüfung des Studentenstatus findet nicht statt | STUDENT5 (5 %) |
 
 ## Wer benutzt die App?
 
@@ -66,8 +66,8 @@ Es gibt verschiedene Arten von Gutscheincodes:
 | Kategorie | Was gilt |
 |---|---|
 | Kurs | Wirtschaftsinformatik-Projekt I (Softwaretechnik), WK_1106, THM |
-| Gruppe | 5 Personen, Wirtschaftsinformatik B.Sc. |
-| Technik | PHP 8, JavaScript, MySQL/MariaDB, Bootstrap 5.3 |
+| Gruppe | 4 Personen, Wirtschaftsinformatik B.Sc. |
+| Technik | PHP ab 8.1, JavaScript, MySQL/MariaDB, Bootstrap 5.3 |
 | Betrieb | Lokal per XAMPP oder MAMP |
 | Versionskontrolle | Git auf GitHub |
 | Abgabe M1 | Fr, 3. Juli 2026 |
