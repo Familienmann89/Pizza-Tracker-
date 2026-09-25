@@ -262,7 +262,7 @@ Die Navigation ist auf allen Seiten sichtbar. Welche Menüpunkte angezeigt werde
 | **Kennung** | DLG-06 |
 | **Name** | Allergene und Inhaltsstoffe |
 | **Zweck** | Transparente Hinweise zu Projektgrenzen und eindeutig ableitbaren Allergenen |
-| **Zugang** | Über die gemeinsame Fußzeile auf allen Seiten |
+| **Zugang** | Über die gemeinsame Fußzeile auf Startseite, Konfigurator, Anmeldung und Allergenseite sowie über direkte Allergiehinweise auf Startseite und im Konfigurator |
 | **Ergebnis** | Der Nutzer erhält Informationen; es werden keine Daten verändert |
 
 Die Anmeldung (DLG-03) verwendet ein zweispaltiges Layout mit dunklem Bildbereich und hellem Formularbereich; auf schmalen Bildschirmen stapeln sich beide Bereiche untereinander. Die Registrierung (DLG-04) verwendet eine einfache Formular-Karte.
